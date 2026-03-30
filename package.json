@@ -45,15 +45,11 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "jest": "^30.3.0",
     "jest-environment-node": "^30.3.0",
-    "postcss": "latest",
-    "tailwindcss": "latest",
     "ts-jest": "^29.4.6",
-    "typescript": "latest",
-    "xlsx": "^0.18.5"
+    "typescript": "latest"
   }
 }
