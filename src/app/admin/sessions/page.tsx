@@ -204,10 +204,11 @@ export default function SessionsManagement() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Meeting Link (Zoom / Google Meet)</label>
-                  <input required value={link} onChange={(e) => setLink(e.target.value)}
+                  <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Meeting Link (Optional — auto-generated if empty)</label>
+                  <input value={link} onChange={(e) => setLink(e.target.value)}
                     className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all"
-                    placeholder="https://zoom.us/j/... or https://meet.google.com/..." />
+                    placeholder="Leave blank to auto-generate a Jitsi link" />
+                  <p className="text-[10px] text-muted-foreground/50 ml-1">Paste a Zoom/Meet link, or leave blank for auto-generated room.</p>
                 </div>
 
                 <div className="space-y-1">

@@ -11,13 +11,17 @@ export async function POST(request: Request) {
 
     const { title, description, date, time, link, course_id } = await request.json();
 
-    if (!title || !date || !time || !link) {
+    if (!title || !date || !time) {
       return NextResponse.json({ error: "Missing session details" }, { status: 400 });
     }
 
+    // Auto-generate a unique meeting room link if not provided
+    const meetingLink = link?.trim() || 
+      `https://meet.jit.si/ajinora-${title.toLowerCase().replace(/\s+/g, '-')}-${Date.now().toString(36)}`;
+
     const result: any = await query(
       "INSERT INTO sessions (title, description, date, time, link, course_id) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
-      [title, description, date, time, link, course_id || null]
+      [title, description, date, time, meetingLink, course_id || null]
     );
 
     const sessionId = result[0]?.id;
@@ -36,6 +40,13 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
+    // Ensure course_id column exists (safe migration)
+    try {
+      await query("ALTER TABLE sessions ADD COLUMN course_id INTEGER");
+    } catch (e) {
+      // Column already exists — ignore
+    }
+
     const sessions = await query(
       `SELECT s.*, c.title as course_title 
        FROM sessions s 

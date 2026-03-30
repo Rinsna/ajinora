@@ -13,6 +13,11 @@ export async function GET() {
     const userRows: any = await query("SELECT course_id FROM users WHERE id = ?", [session.user.id]);
     const studentCourseId = userRows?.[0]?.course_id ?? null;
 
+    // Ensure course_id column exists (safe migration)
+    try {
+      await query("ALTER TABLE sessions ADD COLUMN course_id INTEGER");
+    } catch (e) { /* already exists */ }
+
     // Return sessions that are either:
     // 1. Not assigned to any course (visible to all students), OR
     // 2. Assigned to the student's enrolled course
