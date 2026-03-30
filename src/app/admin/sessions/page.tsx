@@ -7,6 +7,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+
+const ZoomMeeting = dynamic(() => import("@/components/ZoomMeeting"), { ssr: false });
+const JitsiMeeting = dynamic(() => import("@/components/JitsiMeeting"), { ssr: false });
 
 export default function SessionsManagement() {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -22,6 +26,41 @@ export default function SessionsManagement() {
   const [courseId, setCourseId] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+  const [activeMeeting, setActiveMeeting] = useState<any>(null);
+  const [activeIframe, setActiveIframe] = useState<any>(null);
+  const [signature, setSignature] = useState<string>("");
+  const [loadingMeeting, setLoadingMeeting] = useState<number | null>(null);
+
+  const isZoomLink = (link: string) => link?.toLowerCase().includes("zoom") || link?.match(/^\d{9,11}$/);
+
+  const handleJoin = async (session: any) => {
+    const link = session.link || "";
+
+    if (!isZoomLink(link)) {
+      setActiveIframe({ ...session, link });
+      return;
+    }
+
+    const meetingNumber = link.match(/\/j\/(\d+)/)?.[1] || link.match(/\d{9,11}/)?.[0] || link;
+    setLoadingMeeting(session.id);
+    
+    try {
+      const res = await fetch("/api/zoom/signature", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ meetingNumber, role: 1 }), // Admin role is 1
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to generate signature.");
+      setSignature(data.signature);
+      setActiveMeeting({ ...session, meetingNumber });
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Failed to join session as Host.");
+    } finally {
+      setLoadingMeeting(null);
+    }
+  };
 
   const fetchSessions = async () => {
     try {
@@ -80,6 +119,61 @@ export default function SessionsManagement() {
     today.setHours(0, 0, 0, 0);
     return activeTab === "upcoming" ? sessionDate >= today : sessionDate < today;
   });
+
+  if (activeMeeting) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
+        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
+              <Video size={16} />
+            </div>
+            <h2 className="text-white font-black uppercase tracking-widest text-xs">{activeMeeting.title}</h2>
+          </div>
+          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
+            onClick={() => { setActiveMeeting(null); setSignature(""); }}>
+            End/Leave Class
+          </Button>
+        </div>
+        <div className="flex-1 bg-zinc-900 relative">
+          <ZoomMeeting
+            meetingNumber={activeMeeting.meetingNumber}
+            passWord={activeMeeting.password || ""}
+            userName="Administrator"
+            userEmail="admin@ajinora.edu"
+            signature={signature}
+            sdkKey={process.env.NEXT_PUBLIC_ZOOM_SDK_KEY || ""}
+            onLeave={() => { setActiveMeeting(null); setSignature(""); }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (activeIframe) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
+        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
+              <Link2 size={16} />
+            </div>
+            <h2 className="text-white font-black uppercase tracking-widest text-xs">{activeIframe.title || "External Meeting"}</h2>
+          </div>
+          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
+            onClick={() => setActiveIframe(null)}>
+            End/Leave Class
+          </Button>
+        </div>
+        <div className="flex-1 bg-zinc-900 relative">
+          <JitsiMeeting 
+            url={activeIframe.link} 
+            onLeave={() => setActiveIframe(null)} 
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in slide-in-from-right duration-500">
@@ -141,9 +235,9 @@ export default function SessionsManagement() {
                 </div>
               </div>
               <div className="mt-6 pt-6 border-t border-dashed border-border/50">
-                <Button onClick={() => window.open(session.link, "_blank")} variant="ghost"
+                <Button onClick={() => handleJoin(session)} variant="ghost" disabled={loadingMeeting === session.id}
                   className="w-full h-12 rounded-xl border-2 border-dashed border-primary/20 text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white hover:border-transparent transition-all gap-2">
-                  <Link2 size={16} /> Open Link
+                  {loadingMeeting === session.id ? <Loader2 className="animate-spin" size={16} /> : <><Link2 size={16} /> {isZoomLink(session.link) ? "Host Zoom Class" : "Open external link"}</>}
                 </Button>
               </div>
             </CardContent>

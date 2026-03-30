@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const ZoomMeeting = dynamic(() => import("@/components/ZoomMeeting"), { ssr: false });
+const JitsiMeeting = dynamic(() => import("@/components/JitsiMeeting"), { ssr: false });
 
 export default function StudentSessions() {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -17,6 +18,7 @@ export default function StudentSessions() {
   const [loading, setLoading] = useState(true);
   const [loadingMeeting, setLoadingMeeting] = useState<number | null>(null);
   const [activeMeeting, setActiveMeeting] = useState<any>(null);
+  const [activeIframe, setActiveIframe] = useState<string | null>(null);
   const [signature, setSignature] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -35,19 +37,19 @@ export default function StudentSessions() {
     fetchSessions();
   }, []);
 
-  const isZoomLink = (link: string) => link?.includes("zoom.us") || link?.match(/^\d{9,11}$/);
+  const isZoomLink = (link: string) => link?.toLowerCase().includes("zoom") || link?.match(/^\d{9,11}$/);
 
   const handleJoin = async (session: any) => {
     const link = session.link || "";
 
-    // If it's a Google Meet or external link, open directly
+    // If it's a Google Meet or external link, embed it instead of new tab
     if (!isZoomLink(link)) {
-      window.open(link, "_blank");
+      setActiveIframe(link);
       return;
     }
 
     // Extract meeting number from Zoom link
-    const meetingNumber = link.match(/\/j\/(\d+)/)?.[1] || link;
+    const meetingNumber = link.match(/\/j\/(\d+)/)?.[1] || link.match(/\d{9,11}/)?.[0] || link;
     setLoadingMeeting(session.id);
     setError("");
 
@@ -99,6 +101,31 @@ export default function StudentSessions() {
             signature={signature}
             sdkKey={process.env.NEXT_PUBLIC_ZOOM_SDK_KEY || ""}
             onLeave={() => { setActiveMeeting(null); setSignature(""); }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (activeIframe) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
+        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
+              <Video size={16} />
+            </div>
+            <h2 className="text-white font-black uppercase tracking-widest text-xs">Live Session</h2>
+          </div>
+          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
+            onClick={() => setActiveIframe(null)}>
+            Exit
+          </Button>
+        </div>
+        <div className="flex-1 bg-zinc-900 relative">
+          <JitsiMeeting 
+            url={activeIframe} 
+            onLeave={() => setActiveIframe(null)} 
           />
         </div>
       </div>

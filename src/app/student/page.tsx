@@ -177,7 +177,9 @@ export default function StudentDashboard() {
                       <span className="flex items-center gap-1.5"><Clock size={12} /> {session.time}</span>
                     </div>
                   </div>
-                  <Button size="sm" className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[10px] bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95">Enter Room</Button>
+                  <Link href="/student/sessions" className="block shrink-0">
+                    <Button size="sm" className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[10px] bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95">Enter Room</Button>
+                  </Link>
                 </motion.div>
               )) : (
                 <div className="py-20 text-center text-[#a1a1a1] text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">No protocols scheduled for today.</div>
