@@ -4,14 +4,14 @@ import { getSession } from "@/lib/auth";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession();
   if (!session || session.user.role !== 'admin') {
      return NextResponse.json({ error: "Unauthorized access protocols." }, { status: 403 });
   }
 
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const results = await query(`
