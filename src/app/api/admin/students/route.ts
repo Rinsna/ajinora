@@ -49,7 +49,7 @@ export async function GET() {
     }
 
     const students = await query(`
-      SELECT u.id, u.username, u.full_name as name, u.created_at, 'active' as status, c.title as courseTitle 
+      SELECT u.id, u.username, u.full_name as name, u.course_id, u.created_at, 'active' as status, c.title as course_title 
       FROM users u
       LEFT JOIN courses c ON u.course_id = c.id
       WHERE u.role = 'student' 

@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 
 export default function StudentManagement() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterCourse, setFilterCourse] = useState("");
   const [students, setStudents] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -199,6 +200,16 @@ export default function StudentManagement() {
             />
           </div>
           <div className="flex items-center gap-3 w-full lg:w-auto">
+             <select
+               value={filterCourse}
+               onChange={(e) => setFilterCourse(e.target.value)}
+               className="bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl py-3.5 sm:py-5 px-4 text-xs font-black uppercase tracking-widest focus:ring-4 focus:ring-primary/10 focus:outline-none shadow-sm appearance-none"
+             >
+               <option value="">All Courses</option>
+               {courses.map(c => (
+                 <option key={c.id} value={c.id}>{c.title}</option>
+               ))}
+             </select>
              <div className="flex-1 lg:flex-none text-[10px] font-black uppercase tracking-widest text-[#a1a1a1] bg-white dark:bg-[#1a1a1a] px-4 sm:px-6 py-3.5 sm:py-5 rounded-xl sm:rounded-2xl border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm text-center">
                 Total Identity: {students.length}
              </div>
@@ -223,7 +234,7 @@ export default function StudentManagement() {
               </thead>
               <tbody className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]">
                 {students
-                  .filter(s => s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .filter(s => (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase())) && (!filterCourse || String(s.course_id) === String(filterCourse)))
                   .map((student) => (
                     <tr key={student.id} className="hover:bg-primary/5 transition-all group">
                       <td className="px-6 sm:px-8 py-4 sm:py-6">
@@ -241,7 +252,7 @@ export default function StudentManagement() {
                       <td className="px-6 sm:px-8 py-4 sm:py-6">
                         <span className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border border-primary/10 shadow-sm">
                            <BookOpen size={12} className="mr-2" />
-                           {student.courseTitle || 'Unassigned Path'}
+                           {student.course_title || 'Unassigned Path'}
                         </span>
                       </td>
                       <td className="px-6 sm:px-8 py-4 sm:py-6 text-[10px] sm:text-xs text-[#a1a1a1] font-bold uppercase tracking-tight opacity-50">

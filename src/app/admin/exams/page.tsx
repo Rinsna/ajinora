@@ -359,8 +359,8 @@ export default function ExamsManagement() {
 
       {/* ─── CREATE MODAL ─── */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/70 backdrop-blur-lg animate-in fade-in duration-300 overflow-y-auto">
-           <Card className="w-full max-w-2xl rounded-[3.5rem] border-2 border-primary/20 bg-card overflow-hidden shadow-3xl relative animate-in zoom-in-95 duration-500 scrollbar-none">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-lg animate-in fade-in duration-300 overflow-y-auto">
+           <Card className="w-full max-w-xl rounded-[2rem] border-2 border-primary/20 bg-card overflow-hidden shadow-3xl relative animate-in zoom-in-95 duration-500 scrollbar-none my-4 max-h-[90vh] overflow-y-auto">
               <button 
                 onClick={() => { setShowModal(false); resetForm(); }} 
                 className="absolute top-10 right-10 z-10 h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all hover:rotate-90"
@@ -368,7 +368,7 @@ export default function ExamsManagement() {
                 <X size={20} />
               </button>
 
-              <div className="bg-primary p-8 text-white overflow-hidden relative isolate">
+              <div className="bg-primary px-8 py-5 text-white overflow-hidden relative isolate">
                  {/* Decorative background blurs */}
                  <div className="absolute top-0 right-0 h-40 w-40 bg-white/10 rounded-full blur-[40px] -mr-10 -mt-10 pointer-events-none" />
                  <div className="absolute bottom-0 left-0 h-20 w-20 bg-white/5 rounded-full blur-[20px] -ml-5 -mb-5 pointer-events-none" />
@@ -379,112 +379,85 @@ export default function ExamsManagement() {
                  </div>
               </div>
 
-              <CardContent className="p-8 space-y-6">
-                 <form onSubmit={handleCreate} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="space-y-3">
+              <CardContent className="p-6 space-y-4">
+                 <form onSubmit={handleCreate} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div className="space-y-1">
                           <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Exam Title</label>
                           <div className="relative group">
-                            <input required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-2xl p-4 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner focus:bg-white dark:focus:bg-black/40" placeholder="e.g. Master's Finance - Mock 1" />
-                            <FileEdit size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground/20 group-focus-within:text-primary transition-colors" />
+                            <input required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner" placeholder="e.g. Master's Finance - Mock 1" />
                           </div>
                        </div>
                        
-                       <div className="space-y-3">
+                       <div className="space-y-1">
                           <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Protocol Date</label>
-                          <div className="relative group">
-                            <input required type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-2xl p-4 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner focus:bg-white dark:focus:bg-black/40 uppercase tracking-widest" />
-                          </div>
+                          <input required type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner uppercase tracking-widest" />
                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Timeout (Minutes)</label>
-                          <div className="relative group">
-                            <input required type="number" value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-2xl p-4 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner focus:bg-white dark:focus:bg-black/40" placeholder="60" />
-                            <Clock size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground/20 group-focus-within:text-primary transition-colors" />
-                          </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Duration (Minutes)</label>
+                          <input required type="number" value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner" placeholder="60" />
                        </div>
                        
-                       <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1 text-red-500/80">Negative Score / Wrong</label>
-                          <div className="relative group">
-                            <input type="number" step="0.25" value={negativeMark} onChange={(e) => setNegativeMark(e.target.value)} className="w-full bg-red-500/5 border-2 border-transparent rounded-2xl p-4 text-sm font-bold focus:border-red-500/40 focus:outline-none transition-all shadow-inner focus:bg-white dark:focus:bg-red-950/20 text-red-500" placeholder="0.25" />
-                            <AlertCircle size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-red-500/20 group-focus-within:text-red-500 transition-colors" />
-                          </div>
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1 text-red-500/80">Negative Mark / Wrong</label>
+                          <input type="number" step="0.25" value={negativeMark} onChange={(e) => setNegativeMark(e.target.value)} className="w-full bg-red-500/5 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-red-500/40 focus:outline-none transition-all shadow-inner text-red-500" placeholder="0.25" />
                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                       <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Target Academic Track</label>
-                          <div className="relative group">
-                            <select required value={targetCourse} onChange={(e) => setTargetCourse(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-2xl p-4 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner focus:bg-white dark:focus:bg-black/40 appearance-none">
-                              <option value="" disabled>Select Institutional Track</option>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Target Course</label>
+                          <div className="relative">
+                            <select required value={targetCourse} onChange={(e) => setTargetCourse(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner appearance-none">
+                              <option value="" disabled>Select Course</option>
                               {courses.map((c: any) => (
                                 <option key={c.id} value={c.id}>{c.title}</option>
                               ))}
                             </select>
-                            <ChevronDown size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground/40 pointer-events-none group-focus-within:text-primary transition-colors" />
                           </div>
                        </div>
 
-                       <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Strict Enforce Time</label>
-                          <div className="relative group">
-                            <input required type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-2xl p-4 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner focus:bg-white dark:focus:bg-black/40 uppercase tracking-widest" />
-                          </div>
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Start Time</label>
+                          <input required type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner" />
                        </div>
                     </div>
 
-                    <div className="space-y-6">
-                       <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Upload Question Protocol (Excel)</label>
-                       
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Upload Questions (Excel .xlsx)</label>
                        <div 
                          className={cn(
-                           "relative border-2 border-dashed rounded-[2.5rem] p-6 text-center transition-all duration-300",
+                           "relative border-2 border-dashed rounded-xl p-4 text-center transition-all duration-300 cursor-pointer",
                            uploadedQuestions.length > 0 
                              ? "bg-green-500/5 border-green-500/40" 
-                             : "bg-accent/20 border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer"
+                             : "bg-accent/20 border-border hover:border-primary/40 hover:bg-primary/5"
                          )}
                          onClick={() => fileInputRef.current?.click()}
                        >
-                         <input 
-                           type="file" 
-                           ref={fileInputRef} 
-                           accept=".xlsx" 
-                           className="hidden" 
-                           onChange={handleFileUpload}
-                         />
-                         
+                         <input type="file" ref={fileInputRef} accept=".xlsx" className="hidden" onChange={handleFileUpload} />
                          {uploadedQuestions.length > 0 ? (
-                           <div className="flex flex-col items-center gap-4 animate-in zoom-in-95">
-                              <div className="h-16 w-16 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 shadow-xl shadow-green-500/20">
-                                 <ShieldCheck size={32} />
-                              </div>
-                              <div>
-                                 <p className="text-sm font-black uppercase tracking-tight text-green-600">Protocol Validated</p>
-                                 <p className="text-[10px] font-black uppercase tracking-widest text-green-500/60 mt-1">{uploadedQuestions.length} Items Parsed Successfully</p>
+                           <div className="flex items-center justify-center gap-3">
+                              <ShieldCheck size={20} className="text-green-500" />
+                              <div className="text-left">
+                                 <p className="text-xs font-black uppercase tracking-tight text-green-600">Validated</p>
+                                 <p className="text-[10px] font-black uppercase tracking-widest text-green-500/60">{uploadedQuestions.length} Questions Parsed</p>
                               </div>
                            </div>
                          ) : (
-                           <div className="flex flex-col items-center gap-4">
-                              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
-                                 <Upload size={24} />
-                              </div>
-                              <div>
-                                 <p className="text-sm font-black uppercase tracking-tight text-foreground">Click or Drag to Upload .xlsx</p>
-                                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-2 italic underline underline-offset-4 decoration-primary/20 cursor-help" onClick={(e) => { e.stopPropagation(); setShowInstructions(true); }}>View Required Data Format</p>
-                              </div>
+                           <div className="flex items-center justify-center gap-3">
+                              <Upload size={18} className="text-primary" />
+                              <p className="text-xs font-black uppercase tracking-tight text-foreground">Click to Upload .xlsx</p>
                            </div>
                          )}
                        </div>
                        
                        {error && (
-                         <div className="p-4 bg-red-500/10 rounded-2xl border border-red-500/20 flex items-center gap-3 animate-in slide-in-from-top-2">
-                           <AlertCircle size={16} className="text-red-500 shrink-0" />
-                           <p className="text-[10px] font-black uppercase tracking-tight text-red-600 leading-relaxed">{error}</p>
+                         <div className="p-3 bg-red-500/10 rounded-xl border border-red-500/20 flex items-center gap-2">
+                           <AlertCircle size={14} className="text-red-500 shrink-0" />
+                           <p className="text-[10px] font-black uppercase tracking-tight text-red-600">{error}</p>
                          </div>
                        )}
                     </div>
@@ -492,14 +465,9 @@ export default function ExamsManagement() {
                     <Button 
                       type="submit" 
                       disabled={creating || (uploadedQuestions.length === 0)} 
-                      className="w-full h-16 rounded-2xl font-black uppercase tracking-[0.5em] text-[10px] bg-primary hover:bg-primary/95 text-white shadow-2xl shadow-primary/40 transition-all transform hover:scale-[1.01] active:scale-95 py-4 disabled:opacity-40 disabled:scale-100 group flex items-center justify-center gap-4"
+                      className="w-full h-12 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/95 text-white shadow-xl shadow-primary/20 transition-all disabled:opacity-40 flex items-center justify-center gap-3"
                     >
-                       {creating ? <Loader2 className="animate-spin" size={24} /> : (
-                         <>
-                           Launch Examination System
-                           <Target size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                         </>
-                       )}
+                       {creating ? <Loader2 className="animate-spin" size={18} /> : <><Target size={16} /> Launch Exam</>}
                     </Button>
                  </form>
               </CardContent>
