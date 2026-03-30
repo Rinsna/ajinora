@@ -40,13 +40,6 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    // Ensure course_id column exists (safe migration)
-    try {
-      await query("ALTER TABLE sessions ADD COLUMN course_id INTEGER");
-    } catch (e) {
-      // Column already exists — ignore
-    }
-
     const sessions = await query(
       `SELECT s.*, c.title as course_title 
        FROM sessions s 
