@@ -9,31 +9,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized Access" }, { status: 403 });
     }
 
-    const { title, description, date, time, link, assignedStudents } = await request.json();
+    const { title, description, date, time, link, course_id } = await request.json();
 
     if (!title || !date || !time || !link) {
       return NextResponse.json({ error: "Missing session details" }, { status: 400 });
     }
 
-    // Insert session
     const result: any = await query(
-      "INSERT INTO sessions (title, description, date, time, link) VALUES (?, ?, ?, ?, ?)",
-      [title, description, date, time, link]
+      "INSERT INTO sessions (title, description, date, time, link, course_id) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
+      [title, description, date, time, link, course_id || null]
     );
 
-    const sessionId = result.insertId;
+    const sessionId = result[0]?.id;
 
-    // Assign students if provided
-    if (assignedStudents && assignedStudents.length > 0) {
-      const placeholders = assignedStudents.map(() => "(?, ?, 'session')").join(", ");
-      const values = assignedStudents.flatMap((uid: number) => [uid, sessionId]);
-      await query(
-        `INSERT INTO user_assignments (user_id, item_id, item_type) VALUES ${placeholders}`,
-        values
-      );
-    }
-
-    // Audit Log
     await query(
       "INSERT INTO activity_logs (user_id, action) VALUES (?, ?)",
       [session.user.id, `Scheduled Session: ${title}`]
@@ -49,9 +37,26 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     const sessions = await query(
-      "SELECT * FROM sessions ORDER BY date DESC, time DESC"
+      `SELECT s.*, c.title as course_title 
+       FROM sessions s 
+       LEFT JOIN courses c ON s.course_id = c.id 
+       ORDER BY s.date DESC, s.time DESC`
     );
     return NextResponse.json(sessions);
+  } catch (error) {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const session = await getSession();
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+    const { id } = await request.json();
+    await query("DELETE FROM sessions WHERE id = ?", [id]);
+    return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

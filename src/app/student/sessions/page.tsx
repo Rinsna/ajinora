@@ -23,7 +23,7 @@ export default function StudentSessions() {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const res = await fetch("/api/admin/sessions");
+        const res = await fetch("/api/student/sessions");
         const data = await res.json();
         if (Array.isArray(data)) setSessions(data);
       } catch (e) {
