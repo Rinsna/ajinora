@@ -34,11 +34,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const result: any = await query(
-      "INSERT INTO course_content (course_id, title, details, type) VALUES (?, ?, ?, ?)",
+      "INSERT INTO course_content (course_id, title, details, type) VALUES (?, ?, ?, ?) RETURNING id",
       [id, title, details, type || 'lesson']
     );
 
-    return NextResponse.json({ success: true, id: result.insertId });
+    return NextResponse.json({ success: true, id: result[0]?.id });
   } catch (error) {
     console.error("Content Injection Fault:", error);
     return NextResponse.json({ error: "Failed to commit educational module." }, { status: 500 });

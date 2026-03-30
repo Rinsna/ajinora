@@ -31,8 +31,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Required fields missing." }, { status: 400 });
     }
 
-    const result: any = await query("INSERT INTO module_assets (module_id, title, type, details) VALUES (?, ?, ?, ?)", [contentId, title, type, details]);
-    return NextResponse.json({ id: result.insertId, title, type, details });
+    const result: any = await query("INSERT INTO module_assets (module_id, title, type, details) VALUES (?, ?, ?, ?) RETURNING id", [contentId, title, type, details]);
+    return NextResponse.json({ id: result[0]?.id, title, type, details });
   } catch (error) {
     console.error("Asset Injection Fault:", error);
     return NextResponse.json({ error: "Failed to inject institutional asset." }, { status: 500 });

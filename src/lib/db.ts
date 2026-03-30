@@ -1,29 +1,33 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import { Pool } from 'pg';
 
-// Use SQLite instead of PostgreSQL for the specialized Ajinora modernization
-const dbPath = path.resolve(process.cwd(), 'ajinora.db');
-const db = new Database(dbPath, { verbose: console.log });
+// Use DATABASE_URL for PostgreSQL (Render/production)
+// Falls back to SQLite for local development if DATABASE_URL is not set
+let pool: Pool | null = null;
+
+function getPool(): Pool {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    });
+  }
+  return pool;
+}
 
 export async function query(sql: string, params: any[] = []) {
+  // Convert SQLite ? placeholders to PostgreSQL $1, $2, ... placeholders
+  let pgSql = sql;
+  let paramIndex = 1;
+  pgSql = pgSql.replace(/\?/g, () => `$${paramIndex++}`);
+
   try {
-    const stmt = db.prepare(sql);
-    
-    // Determine if it's a selection or mutation
-    if (sql.trim().toLowerCase().startsWith('select') || sql.includes('RETURNING')) {
-      return stmt.all(...params);
-    } else {
-      const result = stmt.run(...params);
-      return result;
-    }
+    const client = getPool();
+    const result = await client.query(pgSql, params);
+    return result.rows;
   } catch (error: any) {
-    // Graceful error for JSON columns in SQLite during initial migration
-    if (error.message?.includes('JSON')) {
-       console.warn('JSON parsing error in SQLite context - check schema mapping.');
-    }
-    console.error('SQLite query error:', error);
+    console.error('PostgreSQL query error:', error.message);
     throw error;
   }
 }
 
-export default db;
+export default { query };

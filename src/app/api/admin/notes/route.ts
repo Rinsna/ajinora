@@ -16,11 +16,11 @@ export async function POST(request: Request) {
     }
 
     const result: any = await query(
-      "INSERT INTO notes (title, description, type, url, category, course_id) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO notes (title, description, type, url, category, course_id) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
       [title, description, type, url, category, course_id || null]
     );
 
-    const noteId = result.lastInsertRowid;
+    const noteId = result[0]?.id;
 
     await query(
       "INSERT INTO activity_logs (user_id, action) VALUES (?, ?)",

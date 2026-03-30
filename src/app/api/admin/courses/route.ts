@@ -33,11 +33,11 @@ export async function POST(request: Request) {
     }
 
     const result: any = await query(
-      "INSERT INTO courses (title, description, thumbnail) VALUES (?, ?, ?)",
+      "INSERT INTO courses (title, description, thumbnail) VALUES (?, ?, ?) RETURNING id",
       [title, description, thumbnail || 'https://via.placeholder.com/400x300']
     );
 
-    return NextResponse.json({ success: true, id: result.insertId });
+    return NextResponse.json({ success: true, id: result[0]?.id });
   } catch (error) {
     console.error("Course Generation Fault:", error);
     return NextResponse.json({ error: "Failed to commit course profile." }, { status: 500 });
