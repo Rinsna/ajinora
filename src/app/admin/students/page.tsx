@@ -301,7 +301,7 @@ export default function StudentManagement() {
               <CardContent className="p-6 sm:p-10 space-y-6 sm:space-y-8">
                  <form onSubmit={handleCreate} className="space-y-4 sm:space-y-6">
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Legal Identity</label>
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Full Name</label>
                        <input 
                          required
                          value={fullName}
@@ -312,17 +312,17 @@ export default function StudentManagement() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div className="space-y-2">
-                         <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Protocol ID (@)</label>
+                         <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Email ID</label>
                          <input 
                            required
                            value={username}
                            onChange={(e) => setUsername(e.target.value)}
                            className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner placeholder:text-[#a1a1a1]/30"
-                           placeholder="jarcher.official"
+                           placeholder="student@email.com"
                          />
                       </div>
                       <div className="space-y-2">
-                         <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Key Phrase</label>
+                         <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Password</label>
                          <input 
                            required
                            type="password"
@@ -335,7 +335,7 @@ export default function StudentManagement() {
                     </div>
 
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Academic Path Assignment</label>
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Course</label>
                        <select 
                          required
                          value={courseId}
