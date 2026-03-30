@@ -51,8 +51,8 @@ export async function POST(request: Request) {
       user: { id: user.id, username: user.username, role: user.role } 
     });
 
-  } catch (error) {
-    console.error("Critical Auth Fault:", error);
-    return NextResponse.json({ error: "System infrastructure error. Contact support." }, { status: 500 });
+  } catch (error: any) {
+    console.error("Critical Auth Fault:", error?.message || error);
+    return NextResponse.json({ error: error?.message || "System infrastructure error." }, { status: 500 });
   }
 }
