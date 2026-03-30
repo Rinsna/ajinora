@@ -1,0 +1,81 @@
+﻿Γû▓ Next.js 16.2.1 (Turbopack)
+- Environments: .env.local
+
+node.exe : ΓÜá The 
+"middleware" file convention 
+is deprecated. Please use 
+"proxy" instead. Learn more: 
+https://nextjs.org/docs/messa
+ges/middleware-to-proxy
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (ΓÜá The  
+   "middle...leware-to-pro   
+ xy:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+  Creating an optimized production build ...
+Found 2 warnings while 
+optimizing generated CSS:
+
+Issue #1:
+[2mΓöé   
+-webkit-backdrop-filter: 
+blur(10px);[22m
+[2mΓöé   border: 1px solid 
+rgba(255, 255, 255, 
+0.1);[22m
+[2mΓöé[22m   @keyframes 
+bounce-right {
+[2mΓöå[22m                 
+         [33m[2m^--[22m 
+Unknown at rule: 
+@keyframes[39m
+[2mΓöå[22m
+[2mΓöé     0%, 100% {[22m
+[2mΓöé       transform: 
+translateX(0);[22m
+
+Issue #2:
+[2mΓöé     }[22m
+[2mΓöé   }[22m
+[2mΓöé[22m   @keyframes 
+progress {
+[2mΓöå[22m                 
+     [33m[2m^--[22m 
+Unknown at rule: 
+@keyframes[39m
+[2mΓöå[22m
+[2mΓöé     0% {[22m
+[2mΓöé       width: 0%;[22m
+
+
+> Build error occurred
+Error: Turbopack build 
+failed with 1 errors:
+./src/app/admin/courses/page.
+tsx:590:1
+Expected '</', got '<eof>'
+  [90m588 |[0m [32m       
+ )}[0m
+  [90m589 |[0m [32m      
+</AnimatePresence>[0m
+[31m[1m>[0m [90m590 |[0m
+  [90m    |[0m 
+[31m[1m^[0m
+
+Parsing ecmascript source 
+code failed
+
+
+    at <unknown> (./src/app/a
+dmin/courses/page.tsx:590:1)

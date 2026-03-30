@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# env files
+.env.local
+.env*.local
+
+# SQLite database (contains real data)
+ajinora.db
+
+# debug
+npm-debug.log*
+
+# misc
+.DS_Store
+*.pem
+tmp/

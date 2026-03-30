@@ -1,0 +1,515 @@
+"use client";
+
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  MoreVertical, 
+  Edit2, 
+  Trash2, 
+  UserPlus, 
+  ShieldCheck, 
+  Mail,
+  MoreHorizontal,
+  Loader2,
+  CheckCircle2,
+  X,
+  BookOpen,
+  BarChart2,
+  Trophy,
+  ArrowLeft
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
+
+export default function StudentManagement() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [students, setStudents] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  
+  // Create Form State
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
+
+  // Edit State
+  const [editingStudent, setEditingStudent] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [eFullName, setEFullName] = useState("");
+  const [eUsername, setEUsername] = useState("");
+  const [eCourseId, setECourseId] = useState("");
+  const [updating, setUpdating] = useState(false);
+
+  const [showPerformance, setShowPerformance] = useState(false);
+  const [selectedPerformance, setSelectedPerformance] = useState<any>(null);
+  const [performanceResults, setPerformanceResults] = useState<any[]>([]);
+  const [performanceLoading, setPerformanceLoading] = useState(false);
+
+  const fetchStudents = async () => {
+    try {
+      const res = await fetch("/api/admin/students");
+      const data = await res.json();
+      if (Array.isArray(data)) setStudents(data);
+    } catch (e) {
+      console.error("Failed to fetch students");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch("/api/admin/courses");
+      const data = await res.json();
+      if (Array.isArray(data)) setCourses(data);
+    } catch (e) {
+      console.error("Failed to fetch courses");
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+    fetchCourses();
+  }, []);
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!courseId) {
+      setError("Please select an institutional academic path.");
+      return;
+    }
+    setCreating(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/admin/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, username, password, courseId: parseInt(courseId) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to create student");
+      
+      // Success
+      setShowModal(false);
+      setFullName("");
+      setUsername("");
+      setPassword("");
+      setCourseId("");
+      fetchStudents();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to terminate this student's institutional access? This action is irreversible.")) return;
+    try {
+      const res = await fetch(`/api/admin/students/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fetchStudents();
+      }
+    } catch (e) {
+      console.error("Identity termination failed");
+    }
+  };
+
+  const openEditModal = (student: any) => {
+    setEditingStudent(student);
+    setEFullName(student.name);
+    setEUsername(student.username);
+    setECourseId(student.course_id?.toString() || "");
+    setShowEditModal(true);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingStudent) return;
+    setUpdating(true);
+    setError("");
+
+    try {
+      const res = await fetch(`/api/admin/students/${editingStudent.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          fullName: eFullName, 
+          username: eUsername, 
+          courseId: eCourseId ? parseInt(eCourseId) : null 
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Update failed");
+      
+      setShowEditModal(false);
+      fetchStudents();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const openPerformanceModal = async (student: any) => {
+    setSelectedPerformance(student);
+    setShowPerformance(true);
+    setPerformanceLoading(true);
+    try {
+      const res = await fetch(`/api/admin/students/${student.id}/results`);
+      const data = await res.json();
+      if (res.ok) setPerformanceResults(data);
+    } catch (e) {
+      console.error("Failed to load performance matrix");
+    } finally {
+      setPerformanceLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-8 sm:space-y-10 animate-in fly-in-from-bottom duration-700 text-left">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
+        <div>
+          <h1 className="text-2xl sm:text-4xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none mb-2">Student Registry</h1>
+          <p className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-[#a1a1a1] mt-2 opacity-70 italic underline underline-offset-4 decoration-primary/20">Manage credentials and enrollments.</p>
+        </div>
+        <Button onClick={() => setShowModal(true)} className="flex items-center gap-3 h-12 sm:h-14 px-6 sm:px-8 shadow-xl shadow-primary/20 font-black uppercase tracking-widest text-[10px] sm:text-xs bg-primary hover:bg-primary/90 text-white rounded-xl sm:rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95">
+          <UserPlus size={18} /> Enroll Student
+        </Button>
+      </div>
+
+      <div className="bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl p-2 sm:p-4">
+        <div className="p-4 sm:p-8 border-b-2 border-dashed border-[#f3f3f2] dark:border-[#252525] flex flex-col lg:flex-row gap-4 sm:gap-6 justify-between items-center bg-[#f9fafb] dark:bg-[#202020] rounded-2xl sm:rounded-[2.5rem] mb-4 sm:mb-6">
+          <div className="relative w-full max-w-lg">
+            <Search className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-[#a1a1a1]/40" size={20} />
+            <input 
+              type="text" 
+              placeholder="Search by name, ID..." 
+              className="w-full bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl py-3.5 sm:py-5 pl-12 sm:pl-16 pr-6 focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-xl font-black tracking-tight text-xs sm:text-sm placeholder:text-[#a1a1a1]/30"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+             <div className="flex-1 lg:flex-none text-[10px] font-black uppercase tracking-widest text-[#a1a1a1] bg-white dark:bg-[#1a1a1a] px-4 sm:px-6 py-3.5 sm:py-5 rounded-xl sm:rounded-2xl border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm text-center">
+                Total Identity: {students.length}
+             </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto min-h-[300px] sm:min-h-[400px]">
+          {loading ? (
+            <div className="flex items-center justify-center py-20 sm:py-40">
+              <Loader2 className="animate-spin text-primary" size={40} />
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse min-w-[800px]">
+              <thead>
+                <tr className="border-b border-[#e5e7eb] dark:border-[#2e2e2e] bg-[#f3f3f2] dark:bg-[#252525]">
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Identity</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Protocol ID</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Academic Path</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Date Joined</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]">
+                {students
+                  .filter(s => s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((student) => (
+                    <tr key={student.id} className="hover:bg-primary/5 transition-all group">
+                      <td className="px-6 sm:px-8 py-4 sm:py-6">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white font-black uppercase text-sm sm:text-base transform group-hover:scale-110 transition-transform duration-500">
+                            {student.name?.[0] || 'U'}
+                          </div>
+                          <div>
+                            <p className="text-xs sm:text-sm font-black tracking-tight leading-none text-[#37352f] dark:text-white group-hover:text-primary transition-colors">{student.name}</p>
+                            <p className="text-[10px] text-[#a1a1a1] font-black uppercase tracking-widest pt-1 opacity-60">Verified Member</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 sm:px-8 py-4 sm:py-6 text-xs sm:text-sm font-black italic text-[#a1a1a1] tracking-tight">@{student.username}</td>
+                      <td className="px-6 sm:px-8 py-4 sm:py-6">
+                        <span className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border border-primary/10 shadow-sm">
+                           <BookOpen size={12} className="mr-2" />
+                           {student.courseTitle || 'Unassigned Path'}
+                        </span>
+                      </td>
+                      <td className="px-6 sm:px-8 py-4 sm:py-6 text-[10px] sm:text-xs text-[#a1a1a1] font-bold uppercase tracking-tight opacity-50">
+                        {new Date(student.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 sm:px-8 py-4 sm:py-6 text-right">
+                        <div className="flex items-center justify-end gap-2 sm:gap-3 lg:opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button onClick={() => openPerformanceModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-amber-500 hover:bg-amber-500/10 rounded-xl">
+                            <BarChart2 size={16} />
+                          </Button>
+                          <Button onClick={() => openEditModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-primary hover:bg-primary/10 rounded-xl">
+                            <Edit2 size={16} />
+                          </Button>
+                          <Button onClick={() => handleDelete(student.id)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-destructive hover:bg-destructive/10 rounded-xl">
+                            <Trash2 size={16} />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          )}
+          
+          {!loading && students.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-12 sm:p-20 bg-[#f9fafb] dark:bg-[#202020] rounded-[3rem] sm:rounded-[5rem] border-4 border-dashed border-primary/10 opacity-30 h-full min-h-[400px] text-center">
+                  <UserPlus className="text-primary w-10 h-10 sm:w-16 sm:h-16 mb-6" />
+                  <h3 className="text-xl font-black uppercase tracking-tighter text-[#37352f] dark:text-white">No Students Identified</h3>
+                  <p className="text-xs font-black uppercase tracking-widest text-[#a1a1a1] mt-2">Enroll a student instance to populate the registry.</p>
+               </div>
+          )}
+        </div>
+      </div>
+
+      {/* Creation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in">
+           <Card className="w-full max-w-xl rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl">
+              <CardHeader className="bg-primary p-8 sm:p-12 text-white relative">
+                 <button onClick={() => setShowModal(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
+                    <X className="w-6 h-6 sm:w-8 sm:h-8" />
+                 </button>
+                 <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">Enroll Instance</CardTitle>
+                 <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2">Generate identity credentials</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 sm:p-10 space-y-6 sm:space-y-8">
+                 <form onSubmit={handleCreate} className="space-y-4 sm:space-y-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Legal Identity</label>
+                       <input 
+                         required
+                         value={fullName}
+                         onChange={(e) => setFullName(e.target.value)}
+                         className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm sm:text-base font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner placeholder:text-[#a1a1a1]/30"
+                         placeholder="e.g. Jonathan Archer"
+                       />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Protocol ID (@)</label>
+                         <input 
+                           required
+                           value={username}
+                           onChange={(e) => setUsername(e.target.value)}
+                           className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner placeholder:text-[#a1a1a1]/30"
+                           placeholder="jarcher.official"
+                         />
+                      </div>
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Key Phrase</label>
+                         <input 
+                           required
+                           type="password"
+                           value={password}
+                           onChange={(e) => setPassword(e.target.value)}
+                           className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner placeholder:text-[#a1a1a1]/30"
+                           placeholder="Secret protocol"
+                         />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Academic Path Assignment</label>
+                       <select 
+                         required
+                         value={courseId}
+                         onChange={(e) => setCourseId(e.target.value)}
+                         className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner appearance-none uppercase"
+                       >
+                          <option value="">Select Path</option>
+                          {courses.map(course => (
+                            <option key={course.id} value={course.id}>{course.title}</option>
+                          ))}
+                       </select>
+                    </div>
+
+                    {error && (
+                      <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-[10px] font-black uppercase tracking-widest italic border border-red-500/20">
+                        {error}
+                      </div>
+                    )}
+
+                    <Button type="submit" disabled={creating} className="w-full h-14 sm:h-16 rounded-xl sm:rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] sm:text-xs bg-primary hover:bg-primary/90 text-white shadow-xl shadow-primary/20 transition-all transform hover:scale-[1.02] active:scale-95 py-6">
+                       {creating ? <Loader2 className="animate-spin" size={24} /> : "Finalize Enrollment"}
+                    </Button>
+                 </form>
+              </CardContent>
+           </Card>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in">
+           <Card className="w-full max-w-xl rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl">
+              <CardHeader className="bg-[#1a1a1a] dark:bg-black p-8 sm:p-12 text-white relative">
+                 <button onClick={() => setShowEditModal(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
+                    <X className="w-6 h-6 sm:w-8 sm:h-8" />
+                 </button>
+                 <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">Modify Identity</CardTitle>
+                 <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2">Update student parameters</CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 sm:p-10 space-y-6 sm:space-y-8">
+                 <form onSubmit={handleUpdate} className="space-y-4 sm:space-y-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Full Identity</label>
+                       <input 
+                         required
+                         value={eFullName}
+                         onChange={(e) => setEFullName(e.target.value)}
+                         className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm sm:text-base font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner"
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Protocol ID</label>
+                       <input 
+                         required
+                         value={eUsername}
+                         onChange={(e) => setEUsername(e.target.value)}
+                         className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner"
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Active Path Assignment</label>
+                       <select 
+                         required
+                         value={eCourseId}
+                         onChange={(e) => setECourseId(e.target.value)}
+                         className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black appearance-none uppercase"
+                       >
+                          <option value="">No Path Assigned</option>
+                          {courses.map(course => (
+                            <option key={course.id} value={course.id}>{course.title}</option>
+                          ))}
+                       </select>
+                    </div>
+
+                    {error && (
+                      <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-[10px] font-black uppercase tracking-widest italic border border-red-500/20">
+                        {error}
+                      </div>
+                    )}
+
+                    <Button type="submit" disabled={updating} className="w-full h-14 sm:h-16 rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs bg-primary hover:bg-primary/90 text-white shadow-xl py-6">
+                       {updating ? <Loader2 className="animate-spin" size={24} /> : "Record Modifications"}
+                    </Button>
+                 </form>
+              </CardContent>
+           </Card>
+        </div>
+      )}
+
+      {/* ── Performance Matrix Modal ── */}
+      {showPerformance && selectedPerformance && (
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+           <Card className="w-full max-w-4xl bg-white dark:bg-[#111] rounded-[2.5rem] sm:rounded-[4rem] shadow-3xl border-none overflow-hidden animate-in zoom-in-95 duration-500">
+              <CardHeader className="p-8 sm:p-14 pb-0 bg-gradient-to-br from-amber-500/10 to-transparent border-b-2 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e]">
+                 <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-6">
+                       <div className="h-16 w-16 rounded-[1.5rem] bg-amber-500 shadow-2xl flex items-center justify-center text-white rotate-6 hover:rotate-0 transition-transform duration-500">
+                          <BarChart2 size={32} />
+                       </div>
+                       <div>
+                          <p className="text-[10px] font-black uppercase text-amber-500 tracking-[0.3em] mb-1">Academic Performance Matrix</p>
+                          <h2 className="text-2xl sm:text-4xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">{selectedPerformance.name}</h2>
+                       </div>
+                    </div>
+                    <Button onClick={() => setShowPerformance(false)} variant="ghost" className="h-14 w-14 rounded-full bg-[#f9fafb] dark:bg-[#202020] text-[#a1a1a1] hover:text-red-500 transition-colors">
+                       <ArrowLeft size={24} />
+                    </Button>
+                 </div>
+              </CardHeader>
+              <CardContent className="p-8 sm:p-14">
+                 {performanceLoading ? (
+                   <div className="py-20 flex flex-col items-center justify-center space-y-4">
+                      <Loader2 className="animate-spin text-amber-500" size={48} />
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Synchronizing records...</p>
+                   </div>
+                 ) : performanceResults.length === 0 ? (
+                    <div className="py-20 text-center space-y-6 bg-[#f9fafb] dark:bg-[#202020] rounded-[3rem] border-4 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e] opacity-40">
+                       <Trophy className="mx-auto text-[#a1a1a1]/30" size={64} />
+                       <p className="text-xs font-black uppercase tracking-widest text-[#a1a1a1] italic">No exercise protocols identified for this instance.</p>
+                    </div>
+                 ) : (
+                    <div className="grid grid-cols-1 gap-6">
+                       {/* Performance Stats */}
+                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                          {[
+                            { label: 'Protocols Logged', value: performanceResults.length, color: 'text-primary' },
+                            { label: 'Matrix Mean', value: `${Math.round(performanceResults.reduce((acc, curr) => acc + curr.percentage, 0) / performanceResults.length)}%`, color: 'text-green-500' },
+                            { label: 'Accumulated Pts', value: performanceResults.reduce((acc, curr) => acc + curr.score, 0), color: 'text-amber-500' },
+                            { label: 'Efficiency', value: `${Math.round(performanceResults.reduce((acc, curr) => acc + (curr.correct_count || 0), 0) / performanceResults.reduce((acc, curr) => acc + (curr.total_questions || 1), 0) * 100)}%`, color: 'text-blue-500' }
+                          ].map((stat, i) => (
+                            <div key={i} className="p-6 rounded-[1.5rem] bg-[#f9fafb] dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-inner text-center">
+                               <p className="text-[8px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">{stat.label}</p>
+                               <p className={cn("text-2xl font-black tracking-tight", stat.color)}>{stat.value}</p>
+                            </div>
+                          ))}
+                       </div>
+
+                       {/* Detailed Registry */}
+                       <div className="bg-[#fdfdfd] dark:bg-[#151515] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-[2rem] overflow-hidden shadow-xl overflow-x-auto">
+                          <table className="w-full text-left min-w-[600px]">
+                             <thead>
+                                <tr className="bg-[#f3f3f2] dark:bg-[#252525] border-b border-[#e5e7eb] dark:border-[#2e2e2e]">
+                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Assessment Title</th>
+                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Integrity</th>
+                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Final Score</th>
+                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Date Protocol</th>
+                                </tr>
+                             </thead>
+                             <tbody className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]">
+                                {performanceResults.map((res: any, i: number) => (
+                                   <tr key={i} className="hover:bg-amber-500/5 transition-all group">
+                                      <td className="px-8 py-5">
+                                         <p className="font-black text-sm text-[#37352f] dark:text-white uppercase leading-none">{res.assetTitle}</p>
+                                         <p className="text-[10px] text-[#a1a1a1] pt-1 uppercase font-bold tracking-widest opacity-60">Archive ID: {res.asset_id}</p>
+                                      </td>
+                                      <td className="px-8 py-5">
+                                         <span className={cn(
+                                            "inline-flex items-center px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em]",
+                                            res.percentage >= 80 ? "bg-green-500/10 text-green-500" :
+                                            res.percentage >= 50 ? "bg-amber-500/10 text-amber-500" :
+                                            "bg-red-500/10 text-red-500"
+                                         )}>
+                                            {res.correct_count} / {res.total_questions} Valid
+                                         </span>
+                                      </td>
+                                      <td className="px-8 py-5">
+                                         <p className="text-xl font-black text-[#37352f] dark:text-white leading-none">{res.percentage}%</p>
+                                         <div className="mt-2 h-1.5 w-24 bg-[#f3f3f2] dark:bg-[#252525] rounded-full overflow-hidden">
+                                            <div className="h-full bg-amber-500" style={{ width: `${res.percentage}%` }} />
+                                         </div>
+                                      </td>
+                                      <td className="px-8 py-5 text-[10px] font-bold text-[#a1a1a1] uppercase">
+                                         {new Date(res.created_at).toLocaleString()}
+                                      </td>
+                                   </tr>
+                                ))}
+                             </tbody>
+                          </table>
+                       </div>
+                    </div>
+                 )}
+              </CardContent>
+           </Card>
+        </div>
+      )}
+    </div>
+  );
+}
