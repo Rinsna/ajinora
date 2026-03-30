@@ -12,8 +12,12 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/cookie": "^0.6.0",
+    "@types/node": "latest",
     "@types/pg": "^8.20.0",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
     "@zoom/meetingsdk": "^5.1.4",
     "autoprefixer": "latest",
     "bcryptjs": "^3.0.3",
@@ -22,6 +26,8 @@
     "clsx": "latest",
     "cookie": "^1.1.1",
     "crypto-js": "^4.2.0",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
     "framer-motion": "latest",
     "jose": "^6.2.2",
     "js-base64": "^3.7.8",
@@ -36,20 +42,14 @@
     "recharts": "latest",
     "tailwind-merge": "latest",
     "tailwindcss": "latest",
+    "typescript": "latest",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
     "@types/jest": "^30.0.0",
     "@types/jsrsasign": "^10.5.15",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
     "jest": "^30.3.0",
     "jest-environment-node": "^30.3.0",
-    "ts-jest": "^29.4.6",
-    "typescript": "latest"
+    "ts-jest": "^29.4.6"
   }
 }
