@@ -18,6 +18,7 @@
     "@types/pg": "^8.20.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@vercel/blob": "^2.3.3",
     "@zoom/meetingsdk": "^5.1.4",
     "autoprefixer": "latest",
     "bcryptjs": "^3.0.3",
@@ -51,4 +52,5 @@
     "jest": "^30.3.0",
     "jest-environment-node": "^30.3.0",
     "ts-jest": "^29.4.6"
-  }}
+  }
+}

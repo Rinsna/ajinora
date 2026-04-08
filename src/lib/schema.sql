@@ -133,3 +133,23 @@ CREATE TABLE IF NOT EXISTS student_asset_completions (
   UNIQUE (user_id, asset_id),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+-- Student Identity Documents
+CREATE TABLE IF NOT EXISTS student_documents (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  url TEXT NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending', -- pending, verified, rejected
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Institutional Certificates
+CREATE TABLE IF NOT EXISTS student_certificates (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL, -- e.g. Full-Stack Web Development Course Completion
+  url TEXT NOT NULL,
+  issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
