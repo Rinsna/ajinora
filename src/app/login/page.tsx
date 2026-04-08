@@ -52,7 +52,7 @@ export default function LoginPage() {
     <div className="min-h-screen w-full flex bg-background font-sans transition-colors duration-300">
       
       {/* ─── LEFT SIDE: Branding / Landing ─── */}
-      <div className="hidden lg:flex w-1/2 relative bg-[#0a0a0a] overflow-hidden flex-col justify-between p-12 lg:p-20 text-white">
+      <div className="hidden lg:flex w-1/2 relative bg-[#0a0a0a] overflow-hidden flex-col justify-between p-6 lg:p-8 text-white">
         {/* Background Effects */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none" />
@@ -66,18 +66,18 @@ export default function LoginPage() {
         </div>
 
         {/* Main Landing Copy */}
-        <div className="relative z-10 my-auto pt-10">
+        <div className="relative z-10 my-auto pt-2">
           <div className="inline-block px-3 py-1 mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-widest text-white">
             Next-Gen Learning
           </div>
-          <h1 className="text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.1] mb-4">
             Empowering the <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">minds of tomorrow</span>
           </h1>
-          <p className="text-lg text-white/60 max-w-md leading-relaxed font-medium mb-10">
+          <p className="text-lg text-white/60 max-w-md leading-relaxed font-medium mb-4">
             A limitless educational ecosystem combining intelligent tools, interactive curriculums, and seamless performance tracking
           </p>
 
-          <div className="space-y-5">
+          <div className="space-y-3">
             {[
                "World-class modular curriculum",
                "Real-time analytics and tracking",
@@ -94,7 +94,7 @@ export default function LoginPage() {
         </div>
 
         {/* Bottom Testimonial / Copyright */}
-        <div className="relative z-10 border-t border-white/10 pt-8 mt-12 grid grid-cols-2 gap-8 items-end">
+        <div className="relative z-10 border-t border-white/10 pt-4 mt-6 grid grid-cols-2 gap-8 items-end">
            <div>
              <p className="text-sm italic text-white/60 leading-relaxed mb-4">
                "Ajinora entirely revolutionized how our institution distributes digital learning."
@@ -109,25 +109,25 @@ export default function LoginPage() {
       </div>
 
       {/* ─── RIGHT SIDE: Login Form ─── */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-[#f8f9fb] dark:bg-background relative p-6 sm:p-12 overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-[#f8f9fb] dark:bg-background relative p-2 sm:p-4 overflow-y-auto">
         {/* Mobile only logo */}
-        <div className="absolute top-8 left-8 lg:hidden flex items-center gap-3">
+        <div className="absolute top-4 left-6 lg:hidden flex items-center gap-3">
           <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
           </div>
           <span className="text-xl font-black tracking-tighter uppercase text-gray-900 dark:text-white">Ajinora</span>
         </div>
 
-        <div className="w-full max-w-[420px] animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="mb-10 text-center lg:text-left mt-10 lg:mt-0">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-foreground mb-2">Welcome Back</h2>
-            <p className="text-[15px] text-gray-500 dark:text-muted-foreground">Please enter your details to sign in</p>
+        <div className="w-full max-w-[400px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="mb-4 text-center lg:text-left mt-2 lg:mt-0">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-foreground mb-1">Welcome Back</h2>
+            <p className="text-[14px] text-gray-500 dark:text-muted-foreground">Please sign in to your account</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            {/* Username Field */}
+          <form onSubmit={handleLogin} className="space-y-3">
+            {/* Username/Email Field */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="username">Username</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="username">Username/Email</label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500 group-focus-within:text-primary dark:group-focus-within:text-primary transition-colors">
                   <User size={18} />
@@ -138,8 +138,8 @@ export default function LoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your username"
-                  className="block w-full pl-10 pr-3 py-3.5 border border-gray-200 dark:border-border/60 rounded-xl text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white dark:bg-muted/30 hover:border-gray-300 dark:hover:bg-muted/50 focus:bg-white dark:focus:bg-card text-foreground shadow-sm"
+                  placeholder="Enter your username or email"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 dark:border-border/60 rounded-xl text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white dark:bg-muted/30 hover:border-gray-300 dark:hover:bg-muted/50 focus:bg-white dark:focus:bg-card text-foreground shadow-sm"
                 />
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full pl-10 pr-10 py-3.5 border border-gray-200 dark:border-border/60 rounded-xl text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white dark:bg-muted/30 hover:border-gray-300 dark:hover:bg-muted/50 focus:bg-white dark:focus:bg-card text-foreground shadow-sm"
+                  className="block w-full pl-10 pr-10 py-2.5 border border-gray-200 dark:border-border/60 rounded-xl text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white dark:bg-muted/30 hover:border-gray-300 dark:hover:bg-muted/50 focus:bg-white dark:focus:bg-card text-foreground shadow-sm"
                 />
                 <button
                   type="button"
@@ -193,11 +193,11 @@ export default function LoginPage() {
                </label>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-0.5">
               <Button
                 type="submit"
                 disabled={loading || !isFormValid}
-                className="w-full justify-center h-[52px] border border-transparent rounded-xl shadow-[0_4px_14px_0_rgb(0,0,0,0.1)] dark:shadow-none text-[15px] font-semibold text-white bg-primary hover:bg-primary/95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] group flex items-center gap-2"
+                className="w-full justify-center h-[44px] border border-transparent rounded-xl shadow-[0_4px_14px_0_rgb(0,0,0,0.1)] dark:shadow-none text-[15px] font-semibold text-white bg-primary hover:bg-primary/95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98] group flex items-center gap-2"
               >
                 {loading ? (
                   <Loader className="animate-spin w-5 h-5 text-white" />
@@ -211,17 +211,17 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <div className="mt-10">
+          <div className="mt-5">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-border/60" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-[#f8f9fb] dark:bg-background text-gray-400 dark:text-gray-500 text-xs font-semibold uppercase tracking-wider">Or continue with</span>
+                <span className="px-3 bg-[#f8f9fb] dark:bg-background text-gray-400 dark:text-gray-500 text-xs font-semibold uppercase tracking-wider">Or</span>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <div className="mt-3 flex flex-col sm:flex-row gap-3">
               <button
                  type="button"
                  className="flex-1 flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 dark:border-border/60 rounded-xl bg-white dark:bg-card shadow-[0_2px_10px_0_rgb(0,0,0,0.02)] text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/20 transition-all active:scale-[0.98]"

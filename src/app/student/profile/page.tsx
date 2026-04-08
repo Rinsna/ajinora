@@ -17,13 +17,18 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
-  UserCircle
+  UserCircle,
+  FileText,
+  Upload,
+  Plus, 
+  FileCheck,
+  Award
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 
 export default function StudentProfile() {
@@ -31,6 +36,11 @@ export default function StudentProfile() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [certificates, setCertificates] = useState<any[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [docTitle, setDocTitle] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -47,7 +57,58 @@ export default function StudentProfile() {
       }
     };
     fetchSession();
+    fetchDocuments();
+    fetchCertificates();
   }, []);
+
+  const fetchDocuments = async () => {
+    try {
+      const res = await fetch("/api/student/profile/documents");
+      const data = await res.json();
+      if (Array.isArray(data)) setDocuments(data);
+    } catch (e) {}
+  };
+
+  const fetchCertificates = async () => {
+    try {
+      const res = await fetch("/api/student/profile/certificates");
+      const data = await res.json();
+      if (Array.isArray(data)) setCertificates(data);
+    } catch (e) {}
+  };
+
+  const handleDocUpload = async (file: File) => {
+    if (!docTitle) return alert("Please specify document title protocol.");
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const uploadRes = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const uploadData = await uploadRes.json();
+      if (!uploadRes.ok) throw new Error(uploadData.error);
+
+      await fetch("/api/student/profile/documents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: docTitle, url: uploadData.url }),
+      });
+
+      setDocTitle("");
+      fetchDocuments();
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const deleteDoc = async (id: number) => {
+    if (!confirm("Decommission this identity credential?")) return;
+    try {
+      await fetch(`/api/student/profile/documents?id=${id}`, { method: "DELETE" });
+      fetchDocuments();
+    } catch (e) {}
+  };
 
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +120,7 @@ export default function StudentProfile() {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center">
         <Loader2 className="animate-spin text-primary mb-4" size={40} />
-        <p className="text-sm font-medium text-muted-foreground animate-pulse">Synchronizing Identity...</p>
+        <p className="text-sm font-medium text-muted-foreground animate-pulse">Synchronizing Profile...</p>
       </div>
     );
   }
@@ -71,7 +132,7 @@ export default function StudentProfile() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Profile Settings</h1>
-          <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">Configure your institutional identity and security protocols.</p>
+          <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">Configure your institutional profile and security protocols.</p>
         </div>
         {success && (
           <div className="flex items-center gap-2 bg-green-500/10 text-green-600 px-4 py-2 rounded-lg border border-green-500/20 text-xs font-semibold animate-in zoom-in-95">
@@ -203,15 +264,108 @@ export default function StudentProfile() {
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-green-500 shadow-sm" />
                   </div>
-                  <p className="text-[10px] font-medium text-muted-foreground/70 italic ml-1">Identity protocols suggest updating passwords every quarter.</p>
+                  <p className="text-[10px] font-medium text-muted-foreground/70 italic ml-1">Security protocols suggest updating passwords every quarter.</p>
                 </div>
 
-                <div className="pt-6 border-t border-border/50 flex flex-col sm:flex-row gap-4">
-                   <Button type="submit" className="h-14 flex-1 rounded-xl font-bold uppercase tracking-widest text-xs gap-3 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]">
-                      <Save size={18} /> Update Access Security
-                   </Button>
-                   <Button variant="ghost" className="h-14 rounded-xl font-bold uppercase tracking-widest text-xs text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 gap-3 px-6">
-                      <Trash2 size={18} /> Purge Records
+                {/* Identity Credentials Section */}
+                <div className="pt-8 border-t border-border/50 space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary leading-none mb-1.5 block">Identity Credentials</Label>
+                      <p className="text-[10px] font-medium text-muted-foreground italic">Upload identity proofs or institutional certifications for verification.</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div className="p-5 rounded-2xl bg-accent/30 border-2 border-dashed border-border flex flex-col items-center justify-center text-center space-y-4 hover:border-primary/40 transition-all group">
+                        <div className="h-10 w-10 rounded-xl bg-background flex items-center justify-center text-muted-foreground/40 group-hover:text-primary transition-colors">
+                           <Plus size={20} />
+                        </div>
+                        <div className="space-y-3 w-full max-w-[200px]">
+                           <Input 
+                              placeholder="Document Title..." 
+                              className="h-9 text-[10px] font-bold uppercase tracking-widest text-center bg-background border-none shadow-inner"
+                              value={docTitle}
+                              onChange={(e) => setDocTitle(e.target.value)}
+                           />
+                           <Button 
+                              onClick={() => fileRef.current?.click()} 
+                              disabled={uploading}
+                              variant="outline" 
+                              className="w-full h-9 rounded-lg text-[9px] font-black uppercase tracking-widest gap-2"
+                           >
+                              {uploading ? <Loader2 className="animate-spin" size={12} /> : <><Upload size={12} /> Select Matrix</>}
+                           </Button>
+                           <input ref={fileRef} type="file" className="hidden" onChange={(e) => e.target.files?.[0] && handleDocUpload(e.target.files[0])} />
+                        </div>
+                     </div>
+
+                     <div className="space-y-3">
+                        {documents.length === 0 ? (
+                           <div className="h-full flex items-center justify-center border border-border rounded-2xl border-dashed opacity-40">
+                              <p className="text-[10px] font-black uppercase tracking-widest italic">Zero Credentials Pulled.</p>
+                           </div>
+                        ) : documents.map((doc) => (
+                           <div key={doc.id} className="p-4 rounded-xl bg-background border border-border flex items-center justify-between group shadow-sm hover:shadow-md transition-all">
+                              <div className="flex items-center gap-3">
+                                 <div className="h-9 w-9 rounded-lg bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                    <FileCheck size={18} />
+                                 </div>
+                                 <div className="text-left">
+                                    <p className="text-[10px] font-black uppercase text-foreground leading-none">{doc.title}</p>
+                                    <p className={`text-[8px] font-bold uppercase tracking-widest mt-1 ${doc.status === 'pending' ? 'text-amber-500' : 'text-green-500'}`}>{doc.status}</p>
+                                 </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                 <Button onClick={() => window.open(doc.url, '_blank')} variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10 rounded-lg"><Eye size={14}/></Button>
+                                 <Button onClick={() => deleteDoc(doc.id)} variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10 rounded-lg"><Trash2 size={14}/></Button>
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
+                </div>
+
+                {/* Institutional Achievements Section */}
+                <div className="pt-8 border-t border-border/50 space-y-6">
+                   <div>
+                      <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-500 leading-none mb-1.5 block">Institutional Achievements</Label>
+                      <p className="text-[10px] font-medium text-muted-foreground italic">Authenticated course completion certificates issued by the academy.</p>
+                   </div>
+
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {certificates.length === 0 ? (
+                         <div className="col-span-full py-12 flex flex-col items-center justify-center border border-border rounded-2xl border-dashed opacity-40">
+                            <Award className="mb-2 text-muted-foreground" size={32} />
+                            <p className="text-[10px] font-black uppercase tracking-widest italic text-center">Zero achievements identified in record.</p>
+                         </div>
+                      ) : certificates.map((cert) => (
+                         <div key={cert.id} className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 flex items-center gap-4 group transition-all hover:bg-emerald-500/10 hover:shadow-lg">
+                            <div className="h-12 w-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform duration-500 shrink-0">
+                               <Award size={24} />
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                               <p className="text-xs font-black uppercase text-foreground leading-none truncate">{cert.title}</p>
+                               <p className="text-[9px] font-bold text-muted-foreground uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <Button onClick={() => window.open(cert.url, '_blank')} variant="outline" size="sm" className="h-10 px-4 rounded-xl border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest shrink-0">
+                               Download
+                            </Button>
+                         </div>
+                      ))}
+                   </div>
+                </div>
+
+                <div className="pt-6 border-t border-border/50">
+                   <Button 
+                      type="button" 
+                      onClick={() => {
+                        if (!docTitle) return alert("Please specify the document title above first.");
+                        fileRef.current?.click();
+                      }}
+                      className="h-16 w-full rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] gap-3 shadow-xl shadow-primary/20 bg-primary hover:bg-primary/95 transition-all active:scale-[0.98] group"
+                   >
+                      {uploading ? <Loader2 className="animate-spin" size={20} /> : <><Upload size={18} className="group-hover:translate-y-[-2px] transition-transform" /> Commit Institutional Documents</>}
                    </Button>
                 </div>
               </form>

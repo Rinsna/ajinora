@@ -42,9 +42,9 @@ export default function StudentSessions() {
   const handleJoin = async (session: any) => {
     const link = session.link || "";
 
-    // If it's a Google Meet or external link, embed it instead of new tab
+    // Open in new window instead of embedding for better reliability
     if (!isZoomLink(link)) {
-      setActiveIframe(link);
+      window.open(link, "_blank");
       return;
     }
 
@@ -62,7 +62,13 @@ export default function StudentSessions() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate signature.");
       setSignature(data.signature);
-      setActiveMeeting({ ...session, meetingNumber });
+      // For Zoom, we can also offer to open in a new window if the SDK fails, 
+      // but for now let's try to keep the SDK and add a fallback or just open in new window if user preferred.
+      // Given the user said "i am ok with it open new window", let's prioritize that for all.
+      
+      const zoomUrl = `https://zoom.us/wc/${meetingNumber}/join?prefer=1&pwd=${session.password || ""}`;
+      window.open(zoomUrl, "_blank");
+      setActiveMeeting(null); // Ensure we don't trigger the inline view
     } catch (err: any) {
       setError(err.message || "Failed to join session.");
     } finally {
@@ -77,60 +83,8 @@ export default function StudentSessions() {
     return activeTab === "upcoming" ? sessionDate >= today : sessionDate < today;
   });
 
-  if (activeMeeting) {
-    return (
-      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
-        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
-              <Video size={16} />
-            </div>
-            <h2 className="text-white font-black uppercase tracking-widest text-xs">{activeMeeting.title}</h2>
-          </div>
-          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
-            onClick={() => { setActiveMeeting(null); setSignature(""); }}>
-            Exit
-          </Button>
-        </div>
-        <div className="flex-1 bg-zinc-900 relative">
-          <ZoomMeeting
-            meetingNumber={activeMeeting.meetingNumber}
-            passWord={activeMeeting.password || ""}
-            userName="Student"
-            userEmail="student@ajinora.edu"
-            signature={signature}
-            sdkKey={process.env.NEXT_PUBLIC_ZOOM_SDK_KEY || ""}
-            onLeave={() => { setActiveMeeting(null); setSignature(""); }}
-          />
-        </div>
-      </div>
-    );
-  }
+  // Inline meeting views removed in favor of new window opening for reliability
 
-  if (activeIframe) {
-    return (
-      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
-        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
-              <Video size={16} />
-            </div>
-            <h2 className="text-white font-black uppercase tracking-widest text-xs">Live Session</h2>
-          </div>
-          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
-            onClick={() => setActiveIframe(null)}>
-            Exit
-          </Button>
-        </div>
-        <div className="flex-1 bg-zinc-900 relative">
-          <JitsiMeeting 
-            url={activeIframe} 
-            onLeave={() => setActiveIframe(null)} 
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8 sm:space-y-12 animate-in fade-in duration-700">

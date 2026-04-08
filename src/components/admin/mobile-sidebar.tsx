@@ -74,27 +74,43 @@ export function MobileAdminSidebar({ isOpen, onClose }: { isOpen: boolean; onClo
               </button>
             </div>
 
-            <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto scrollbar-none pt-4">
+            <motion.nav 
+              variants={{
+                show: {
+                  transition: { staggerChildren: 0.05, delayChildren: 0.2 }
+                }
+              }}
+              initial="hidden"
+              animate="show"
+              className="flex-1 px-4 space-y-1.5 overflow-y-auto scrollbar-none pt-4"
+            >
               {menuItems.map((item) => {
                 const isActive = pathname === item.path || (item.path !== "/admin" && pathname.startsWith(item.path));
                 return (
-                  <Link 
+                  <motion.div
                     key={item.path}
-                    href={item.path}
-                    onClick={onClose}
-                    className={cn(
-                      "group relative flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-300",
-                      isActive 
-                        ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]" 
-                        : "text-[#737373] dark:text-[#a1a1a1] hover:bg-[#ebeaea] dark:hover:bg-[#2e2e2e] hover:text-[#37352f] dark:hover:text-white"
-                    )}
+                    variants={{
+                      hidden: { opacity: 0, x: -20 },
+                      show: { opacity: 1, x: 0 }
+                    }}
                   >
-                    <item.icon className={cn("shrink-0", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary transition-colors")} size={20} />
-                    <span className="font-bold text-sm tracking-tight">{item.name}</span>
-                  </Link>
+                    <Link 
+                      href={item.path}
+                      onClick={onClose}
+                      className={cn(
+                        "group relative flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-300",
+                        isActive 
+                          ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]" 
+                          : "text-[#737373] dark:text-[#a1a1a1] hover:bg-[#ebeaea] dark:hover:bg-[#2e2e2e] hover:text-[#37352f] dark:hover:text-white"
+                      )}
+                    >
+                      <item.icon className={cn("shrink-0", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary transition-colors")} size={20} />
+                      <span className="font-bold text-sm tracking-tight">{item.name}</span>
+                    </Link>
+                  </motion.div>
                 );
               })}
-            </nav>
+            </motion.nav>
 
             <div className="p-6 border-t border-[#e5e7eb] dark:border-[#2e2e2e] bg-muted/30 pb-10">
                <Link 

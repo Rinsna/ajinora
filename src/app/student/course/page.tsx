@@ -42,6 +42,9 @@ export default function StudentCourse() {
     } else {
       setActiveAsset(asset);
       setShowViewer(true);
+      if (asset.type === 'video') {
+        setSidebarCollapsed(true);
+      }
       // Automatically verify on selection if not already marked (don't trigger auto-next yet)
       if (!asset.completed) {
         handleToggleAsset(asset.id, false, false);
@@ -190,62 +193,72 @@ export default function StudentCourse() {
     <div className="flex flex-col lg:flex-row h-full overflow-hidden bg-white dark:bg-[#0a0a0a]">
       {/* ── Left Sidebar: Module List ── */}
       <motion.div 
-        animate={{ width: sidebarCollapsed ? 0 : 380 }}
+        initial={false}
+        animate={{ 
+          width: sidebarCollapsed ? 0 : 380,
+          opacity: sidebarCollapsed ? 1 : 1
+        }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className={cn(
           "h-full border-r border-[#e5e7eb] dark:border-[#2e2e2e] bg-[#fdfdfd] dark:bg-[#111] flex flex-col relative shrink-0",
           sidebarCollapsed && "border-none"
         )}
       >
-        <div className="p-6 border-b border-[#e5e7eb] dark:border-[#2e2e2e] shrink-0">
-          <h1 className="text-lg font-black tracking-tighter text-[#37352f] dark:text-white uppercase truncate line-clamp-1">{data.course.title}</h1>
-          <div className="mt-4 h-1.5 w-full bg-[#f3f3f2] dark:bg-[#252525] rounded-full overflow-hidden">
-             <div className="h-full bg-primary rounded-full w-[15%]" />
+        <div className={cn("flex-1 flex flex-col min-w-[380px] h-full overflow-hidden transition-opacity duration-300", sidebarCollapsed ? "opacity-0 pointer-events-none" : "opacity-100")}>
+          <div className="p-6 border-b border-[#e5e7eb] dark:border-[#2e2e2e] shrink-0">
+            <h1 className="text-lg font-black tracking-tighter text-[#37352f] dark:text-white uppercase truncate line-clamp-1">{data.course.title}</h1>
+            <div className="mt-4 h-1.5 w-full bg-[#f3f3f2] dark:bg-[#252525] rounded-full overflow-hidden">
+               <div className="h-full bg-primary rounded-full w-[15%]" />
+            </div>
           </div>
-        </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-none p-4 space-y-2">
-          {data.content.map((module: any, idx: number) => {
-            const isActive = activeModule?.id === module.id;
-            return (
-              <button 
-                key={module.id} 
-                onClick={() => { setActiveModule(module); setActiveAsset(null); setShowViewer(false); }}
-                className={cn(
-                  "w-full flex items-start gap-4 p-6 min-h-[110px] rounded-[2rem] transition-all text-left group",
-                  isActive ? "bg-primary/5 ring-2 ring-primary/20 shadow-xl shadow-primary/5" : "hover:bg-[#f9fafb] dark:hover:bg-[#1a1a1a]"
-                )}
-              >
-                <div className={cn(
-                  "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 text-[10px] font-black border transition-all",
-                  isActive ? "bg-primary text-white border-primary" : "bg-white dark:bg-[#1a1a1a] text-[#a1a1a1] border-[#e5e7eb] dark:border-[#2e2e2e]"
-                )}>
-                  {String(idx + 1).padStart(2, '0')}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-[10px] font-black uppercase tracking-widest mb-0.5", isActive ? "text-primary" : "text-[#a1a1a1]")}>Module</p>
-                  <h4 className={cn("text-sm font-black tracking-tight leading-tight uppercase truncate", isActive ? "text-[#37352f] dark:text-white" : "text-[#737373] dark:text-[#a1a1a1]")}>{module.title}</h4>
-                  <div className="flex items-center gap-2 mt-1">
-                     <p className="text-[9px] font-bold text-[#a1a1a1] opacity-60 uppercase tracking-widest">{(module.assets?.length || 0)} ARCHIVES</p>
-                     {module.assets?.some((a: any) => a.completed) && (
-                        <>
-                          <span className="h-1 w-1 rounded-full bg-[#a1a1a1] opacity-30" />
-                          <p className="text-[9px] font-black text-green-500 uppercase tracking-widest">
-                            {module.assets.filter((a: any) => a.completed).length} VERIFIED
-                          </p>
-                        </>
-                     )}
+          <div className="flex-1 overflow-y-auto scrollbar-none p-4 space-y-2">
+            {data.content.map((module: any, idx: number) => {
+              const isActive = activeModule?.id === module.id;
+              return (
+                <button 
+                  key={module.id} 
+                  onClick={() => { setActiveModule(module); setActiveAsset(null); setShowViewer(false); }}
+                  className={cn(
+                    "w-full flex items-start gap-4 p-6 min-h-[110px] rounded-[2rem] transition-all text-left group",
+                    isActive ? "bg-primary/5 ring-2 ring-primary/20 shadow-xl shadow-primary/5" : "hover:bg-[#f9fafb] dark:hover:bg-[#1a1a1a]"
+                  )}
+                >
+                  <div className={cn(
+                    "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 text-[10px] font-black border transition-all",
+                    isActive ? "bg-primary text-white border-primary" : "bg-white dark:bg-[#1a1a1a] text-[#a1a1a1] border-[#e5e7eb] dark:border-[#2e2e2e]"
+                  )}>
+                    {String(idx + 1).padStart(2, '0')}
                   </div>
-                </div>
-              </button>
-            );
-          })}
+                  <div className="flex-1 min-w-0">
+                    <p className={cn("text-[10px] font-black uppercase tracking-widest mb-0.5", isActive ? "text-primary" : "text-[#a1a1a1]")}>Module</p>
+                    <h4 className={cn("text-sm font-black tracking-tight leading-tight uppercase truncate", isActive ? "text-[#37352f] dark:text-white" : "text-[#737373] dark:text-[#a1a1a1]")}>{module.title}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                       <p className="text-[9px] font-bold text-[#a1a1a1] opacity-60 uppercase tracking-widest">{(module.assets?.length || 0)} ARCHIVES</p>
+                       {module.assets?.some((a: any) => a.completed) && (
+                          <>
+                            <span className="h-1 w-1 rounded-full bg-[#a1a1a1] opacity-30" />
+                            <p className="text-[9px] font-black text-green-500 uppercase tracking-widest">
+                              {module.assets.filter((a: any) => a.completed).length} COMPLETED
+                            </p>
+                          </>
+                       )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <button 
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="absolute -right-4 top-1/2 -translate-y-1/2 h-10 w-8 bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-center rounded-r-xl shadow-md z-10 hover:text-primary transition-colors border-l-0"
+          className={cn(
+            "absolute top-1/2 -translate-y-1/2 h-14 w-10 bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-center rounded-r-2xl shadow-3xl z-[100] transition-all duration-500",
+            sidebarCollapsed ? "left-0 border-l-2" : "-right-5 border-l-0"
+          )}
         >
-          <ChevronRight size={18} className={cn("transition-transform duration-300", sidebarCollapsed ? "" : "rotate-180")} />
+          <ChevronRight size={24} className={cn("transition-transform duration-500 text-primary", sidebarCollapsed ? "" : "rotate-180")} />
         </button>
       </motion.div>
 
@@ -271,7 +284,7 @@ export default function StudentCourse() {
                  </div>
                </div>
                
-               <div className="flex-1 bg-black rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-3xl border-4 border-white/5 relative group min-h-[500px] lg:min-h-[600px]">
+               <div className="flex-1 flex max-w-5xl mx-auto w-full aspect-video bg-[#000] rounded-[1.5rem] sm:rounded-[3rem] overflow-hidden shadow-3xl border-[6px] border-white/5 relative group transition-all duration-700">
                   {activeAsset.type === 'video' ? (
                      <div className="w-full h-full">
                        {activeAsset.details.startsWith('http') 
@@ -279,7 +292,7 @@ export default function StudentCourse() {
                          : <video 
                               src={activeAsset.details} 
                               controls 
-                              className="w-full h-full object-contain" 
+                              className="w-full h-full object-contain shadow-2xl" 
                               autoPlay 
                               onEnded={() => loadNextAsset(activeAsset.id)}
                            />
@@ -304,7 +317,7 @@ export default function StudentCourse() {
                     )}
                   >
                     <CheckCircle2 size={18} />
-                    {activeAsset.completed ? "Verified Mission" : "Verify Protocol"}
+                    {activeAsset.completed ? "Next Session" : "Mark Complete"}
                   </Button>
                </div>
             </motion.div>

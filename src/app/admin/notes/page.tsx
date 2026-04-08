@@ -1,13 +1,15 @@
 "use client";
 
 import {
+  Link2, MonitorPlay, FileCode, HardDrive, Globe,
+  Check, XCircle, User, Clock, FileQuestion,
   Plus, Search, FileText, Trash2, Edit2,
-  UploadCloud, Loader2, X, ChevronRight,
-  Link2, MonitorPlay, FileCode, HardDrive, Globe
+  UploadCloud, Loader2, X, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useState, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 export default function NotesManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +18,8 @@ export default function NotesManagement() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [requestsLoading, setRequestsLoading] = useState(false);
 
   // Form state
   const [title, setTitle] = useState("");
@@ -52,10 +56,20 @@ export default function NotesManagement() {
     } catch (e) {}
   };
 
+  const fetchRequests = async () => {
+    try {
+      setRequestsLoading(true);
+      const res = await fetch("/api/admin/requests");
+      const data = await res.json();
+      if (Array.isArray(data)) setRequests(data);
+    } catch (e) {} finally { setRequestsLoading(false); }
+  };
+
   useEffect(() => {
     setMounted(true);
     fetchNotes();
     fetchCourses();
+    fetchRequests();
   }, []);
 
   const handleFileUpload = async (): Promise<string> => {
@@ -122,6 +136,39 @@ export default function NotesManagement() {
     } catch (e) {}
   };
 
+  const updateRequestStatus = async (id: number, status: string) => {
+    try {
+      const res = await fetch("/api/admin/requests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+      if (res.ok) {
+        fetchRequests();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Update failure.");
+      }
+    } catch (e) {
+      alert("Institutional connection interrupted.");
+    }
+  };
+
+  const deleteRequest = async (id: number) => {
+    if (!confirm("Decommission this request protocol?")) return;
+    try {
+      const res = await fetch(`/api/admin/requests?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fetchRequests();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Decommissioning failure.");
+      }
+    } catch (e) {
+      alert("Institutional connection interrupted.");
+    }
+  };
+
   const getIcon = (type: string) => {
     switch (type) {
       case "pdf": return <FileText size={22} className="text-red-500" />;
@@ -154,7 +201,7 @@ export default function NotesManagement() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 text-left">
           {loading ? (
             <div className="col-span-full py-40 flex items-center justify-center">
               <Loader2 className="animate-spin text-primary" size={40} />
@@ -168,7 +215,7 @@ export default function NotesManagement() {
                   <Button onClick={() => handleDelete(note.id)} variant="ghost" size="icon" className="h-10 w-10 text-destructive hover:bg-destructive/10"><Trash2 size={16} /></Button>
                 </div>
                 <CardHeader className="pb-4 p-8">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap text-left">
                     <div className="px-3 py-1.5 rounded-xl bg-primary/5 text-[9px] uppercase font-black tracking-[0.2em] text-primary border border-primary/10">
                       {note.category || 'General'}
                     </div>
@@ -182,15 +229,15 @@ export default function NotesManagement() {
                 </CardHeader>
                 <CardContent className="space-y-4 p-8 pt-0">
                   <div className="flex items-center gap-4 p-4 rounded-2xl bg-accent/30 border border-border/50 group-hover:bg-primary/5 transition-colors shadow-inner">
-                    <div className="p-3 rounded-xl bg-background shadow-xl group-hover:scale-110 transition-transform duration-500 border border-border/40">
+                    <div className="p-3 rounded-xl bg-background shadow-xl group-hover:scale-110 transition-transform duration-500 border border-border/40 text-left">
                       {getIcon(note.type)}
                     </div>
-                    <div className="flex-1 overflow-hidden">
+                    <div className="flex-1 overflow-hidden text-left">
                       <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">Type</p>
-                      <p className="text-xs font-black uppercase truncate italic">{note.type}</p>
+                      <p className="text-xs font-black uppercase truncate italic text-left">{note.type}</p>
                     </div>
                   </div>
-                  {note.description && <p className="text-[11px] font-medium text-muted-foreground italic leading-relaxed line-clamp-2 opacity-60 group-hover:opacity-100 transition-opacity">{note.description}</p>}
+                  {note.description && <p className="text-[11px] font-medium text-muted-foreground italic leading-relaxed line-clamp-2 opacity-60 group-hover:opacity-100 transition-opacity text-left">{note.description}</p>}
                   <div className="flex items-center justify-between pt-4 border-t border-dashed border-border/50">
                     <span className="text-[9px] text-muted-foreground/60 font-black uppercase tracking-widest italic">{mounted ? new Date(note.created_at).toLocaleDateString() : '...'}</span>
                     <Button onClick={() => window.open(note.url, '_blank')} variant="ghost" size="sm" className="h-10 text-[10px] font-black uppercase tracking-[0.2em] text-primary gap-2 p-0 hover:bg-transparent hover:translate-x-2 transition-transform">
@@ -209,29 +256,97 @@ export default function NotesManagement() {
             </Card>
           )}
         </div>
+
+        {/* Intelligence Requests Section */}
+        <div className="mt-20 space-y-8 text-left">
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-black tracking-tighter uppercase">Intelligence Requests</h2>
+            <div className="px-3 py-1 bg-amber-500/10 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-amber-500/20">
+              {requests.filter(r => r.status === 'pending').length} Actions Required
+            </div>
+          </div>
+
+          {requestsLoading ? (
+            <div className="py-20 flex justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>
+          ) : requests.length === 0 ? (
+            <Card className="rounded-[2.5rem] border-4 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e] bg-[#f9fafb] dark:bg-[#202020] p-12 text-center opacity-30">
+               <FileQuestion size={40} className="mx-auto mb-4 text-[#a1a1a1]" />
+               <p className="text-xs font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero pending requirement protocols.</p>
+            </Card>
+          ) : (
+             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {requests.map((req) => (
+                  <Card key={req.id} className="rounded-3xl border border-[#e5e7eb] dark:border-[#2e2e2e] bg-white/40 dark:bg-black/20 backdrop-blur-md shadow-sm hover:shadow-xl hover:border-primary/30 transition-all group overflow-hidden">
+                     <div className="p-6 space-y-4">
+                        <div className="flex justify-between items-start">
+                           <div className={cn("px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border shadow-sm", 
+                              req.status === 'fulfilled' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
+                              req.status === 'rejected' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
+                              'bg-amber-500/10 text-amber-500 border-amber-500/20')}>
+                              {req.status}
+                           </div>
+                           <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button onClick={() => updateRequestStatus(req.id, 'fulfilled')} className="h-8 w-8 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                 <Check size={14} />
+                              </button>
+                              <button onClick={() => updateRequestStatus(req.id, 'rejected')} className="h-8 w-8 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                 <XCircle size={14} />
+                              </button>
+                              <button onClick={() => deleteRequest(req.id)} className="h-8 w-8 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                 <Trash2 size={14} />
+                              </button>
+                           </div>
+                        </div>
+
+                        <div className="text-left">
+                           <h3 className="text-lg font-black uppercase tracking-tighter mb-1 group-hover:text-primary transition-colors leading-tight text-left">{req.topic}</h3>
+                           <p className="text-sm font-medium text-muted-foreground line-clamp-3 italic opacity-80 leading-relaxed text-left">{req.description}</p>
+                        </div>
+
+                        <div className="pt-4 border-t border-dashed border-border/40 flex items-center justify-between">
+                           <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                 <User size={14} />
+                              </div>
+                              <div className="text-left">
+                                 <p className="text-xs font-black uppercase text-foreground leading-none">{req.studentName}</p>
+                                 <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-1">@{req.studentId}</p>
+                              </div>
+                           </div>
+                           <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-tight opacity-50">
+                              <Clock size={12} />
+                              {new Date(req.created_at).toLocaleDateString()}
+                           </div>
+                        </div>
+                     </div>
+                  </Card>
+                ))}
+             </div>
+          )}
+        </div>
       </div>
 
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in overflow-y-auto">
-          <Card className="w-full max-w-lg rounded-[2rem] border-2 border-primary/20 bg-card overflow-hidden shadow-3xl my-4">
-            <CardHeader className="bg-primary px-8 py-5 text-white relative">
+          <Card className="w-full max-w-lg rounded-[2rem] border-2 border-primary/20 bg-card overflow-hidden shadow-3xl my-4 text-left">
+            <CardHeader className="bg-primary px-8 py-5 text-white relative text-left">
               <button onClick={() => { setShowModal(false); resetForm(); }} className="absolute top-5 right-7 text-white/60 hover:text-white transition-colors">
                 <X size={22} />
               </button>
-              <CardTitle className="text-xl font-black uppercase tracking-tighter leading-none">{editingNoteId ? 'Update Resource' : 'Upload Resource'}</CardTitle>
-              <CardDescription className="text-white/60 font-black uppercase text-[10px] tracking-widest pt-1 italic">{editingNoteId ? 'Modify existing resource' : 'Add to library'}</CardDescription>
+              <CardTitle className="text-xl font-black uppercase tracking-tighter leading-none text-left">{editingNoteId ? 'Update Resource' : 'Upload Resource'}</CardTitle>
+              <CardDescription className="text-white/60 font-black uppercase text-[10px] tracking-widest pt-1 italic text-left">{editingNoteId ? 'Modify existing resource' : 'Add to library'}</CardDescription>
             </CardHeader>
             <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 text-left">
                 {/* Title */}
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Title</label>
                   <input required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all shadow-inner" placeholder="Resource title" />
                 </div>
 
                 {/* Type + Category */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
+                <div className="grid grid-cols-2 gap-4 text-left">
+                  <div className="space-y-1 text-left">
                     <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Type</label>
                     <select value={type} onChange={(e) => setType(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all shadow-inner appearance-none">
                       <option value="pdf">PDF</option>
@@ -239,14 +354,14 @@ export default function NotesManagement() {
                       <option value="link">Link</option>
                     </select>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 text-left">
                     <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Category</label>
                     <input required value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all shadow-inner" placeholder="e.g. Frontend" />
                   </div>
                 </div>
 
                 {/* Course */}
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Assign to Course (optional)</label>
                   <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all shadow-inner appearance-none">
                     <option value="">— All Students —</option>
@@ -258,7 +373,7 @@ export default function NotesManagement() {
                 </div>
 
                 {/* Upload mode toggle */}
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Source</label>
                   <div className="grid grid-cols-2 gap-2">
                     <button type="button" onClick={() => setUploadMode("url")} className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-xs font-black uppercase transition-all ${uploadMode === "url" ? "border-primary bg-primary/10 text-primary" : "border-transparent bg-accent/30 text-muted-foreground"}`}>
@@ -271,21 +386,21 @@ export default function NotesManagement() {
                 </div>
 
                 {uploadMode === "url" ? (
-                  <div className="space-y-1">
+                  <div className="space-y-1 text-left">
                     <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">URL</label>
                     <input required value={url} onChange={(e) => setUrl(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all shadow-inner" placeholder="https://..." />
                   </div>
                 ) : (
-                  <div className="space-y-1">
+                  <div className="space-y-1 text-left">
                     <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">File</label>
                     <div
                       onClick={() => fileRef.current?.click()}
-                      className="w-full bg-accent/30 border-2 border-dashed border-primary/30 rounded-xl p-4 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all"
+                      className="w-full bg-accent/30 border-2 border-dashed border-primary/30 rounded-xl p-4 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all text-left"
                     >
                       {file ? (
-                        <p className="text-sm font-bold text-primary truncate">{file.name}</p>
+                        <p className="text-sm font-bold text-primary truncate text-left">{file.name}</p>
                       ) : (
-                        <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">Click to select file</p>
+                        <p className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest text-left">Click to select file</p>
                       )}
                     </div>
                     <input ref={fileRef} type="file" className="hidden" onChange={(e) => setFile(e.target.files?.[0] || null)} />
@@ -293,7 +408,7 @@ export default function NotesManagement() {
                 )}
 
                 {/* Description */}
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Description</label>
                   <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all h-16 resize-none shadow-inner" placeholder="Brief description..." />
                 </div>

@@ -17,12 +17,18 @@ import {
   BookOpen,
   BarChart2,
   Trophy,
-  ArrowLeft
+  ArrowLeft,
+  FileText,
+  Check,
+  XCircle,
+  Award,
+  Upload
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function StudentManagement() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,6 +58,17 @@ export default function StudentManagement() {
   const [selectedPerformance, setSelectedPerformance] = useState<any>(null);
   const [performanceResults, setPerformanceResults] = useState<any[]>([]);
   const [performanceLoading, setPerformanceLoading] = useState(false);
+
+  // Documents & Certificates State
+  const [showDocuments, setShowDocuments] = useState(false);
+  const [selectedDocStudent, setSelectedDocStudent] = useState<any>(null);
+  const [studentDocs, setStudentDocs] = useState<any[]>([]);
+  const [studentCerts, setStudentCerts] = useState<any[]>([]);
+  const [docsLoading, setDocsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'docs' | 'certs'>('docs');
+  const [certTitle, setCertTitle] = useState("");
+  const [issuing, setIssuing] = useState(false);
+  const certRef = useRef<HTMLInputElement>(null);
 
   const fetchStudents = async () => {
     try {
@@ -175,8 +192,72 @@ export default function StudentManagement() {
     }
   };
 
+  const openDocumentsModal = async (student: any) => {
+    setSelectedDocStudent(student);
+    setShowDocuments(true);
+    setDocsLoading(true);
+    setActiveTab('docs');
+    try {
+      const [docsRes, certsRes] = await Promise.all([
+        fetch(`/api/admin/students/${student.id}/documents`),
+        fetch(`/api/admin/students/${student.id}/certificates`)
+      ]);
+      const docs = await docsRes.json();
+      const certs = await certsRes.json();
+      if (Array.isArray(docs)) setStudentDocs(docs);
+      if (Array.isArray(certs)) setStudentCerts(certs);
+    } catch (e) {} finally { setDocsLoading(false); }
+  };
+
+  const updateDocStatus = async (docId: number, status: string) => {
+    try {
+      const res = await fetch(`/api/admin/students/${selectedDocStudent.id}/documents`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: docId, status }),
+      });
+      if (res.ok) {
+        const updatedDocs = studentDocs.map(d => d.id === docId ? { ...d, status } : d);
+        setStudentDocs(updatedDocs);
+      }
+    } catch (e) {}
+  };
+
+  const handleCertUpload = async (file: File) => {
+    if (!certTitle) return alert("Select certificate protocol designation.");
+    setIssuing(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const upRes = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const upData = await upRes.json();
+      if (!upRes.ok) throw new Error(upData.error);
+
+      await fetch(`/api/admin/students/${selectedDocStudent.id}/certificates`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: certTitle, url: upData.url }),
+      });
+
+      setCertTitle("");
+      openDocumentsModal(selectedDocStudent);
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIssuing(false);
+    }
+  };
+
+  const revokeCert = async (id: number) => {
+    if (!confirm("Revoke this institutional certificate?")) return;
+    try {
+      await fetch(`/api/admin/students/${selectedDocStudent.id}/certificates?id=${id}`, { method: "DELETE" });
+      openDocumentsModal(selectedDocStudent);
+    } catch (e) {}
+  };
+
   return (
-    <div className="space-y-8 sm:space-y-10 animate-in fly-in-from-bottom duration-700 text-left">
+    <div className="space-y-8 sm:space-y-10 animate-fly-in-up text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
         <div>
           <h1 className="text-2xl sm:text-4xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none mb-2">Student Registry</h1>
@@ -211,7 +292,7 @@ export default function StudentManagement() {
                ))}
              </select>
              <div className="flex-1 lg:flex-none text-[10px] font-black uppercase tracking-widest text-[#a1a1a1] bg-white dark:bg-[#1a1a1a] px-4 sm:px-6 py-3.5 sm:py-5 rounded-xl sm:rounded-2xl border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm text-center">
-                Total Identity: {students.length}
+                Total Students: {students.length}
              </div>
           </div>
         </div>
@@ -225,18 +306,32 @@ export default function StudentManagement() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="border-b border-[#e5e7eb] dark:border-[#2e2e2e] bg-[#f3f3f2] dark:bg-[#252525]">
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Identity</th>
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Protocol ID</th>
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Academic Path</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Student</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Username</th>
+                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Course</th>
                   <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Date Joined</th>
                   <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]">
+              <motion.tbody 
+                variants={{
+                  show: {
+                    transition: { staggerChildren: 0.03 }
+                  }
+                }}
+                className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]"
+              >
                 {students
                   .filter(s => (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase())) && (!filterCourse || String(s.course_id) === String(filterCourse)))
                   .map((student) => (
-                    <tr key={student.id} className="hover:bg-primary/5 transition-all group">
+                    <motion.tr 
+                      key={student.id} 
+                      variants={{
+                        hidden: { opacity: 0, x: -10 },
+                        show: { opacity: 1, x: 0 }
+                      }}
+                      className="hover:bg-primary/5 transition-all group"
+                    >
                       <td className="px-6 sm:px-8 py-4 sm:py-6">
                         <div className="flex items-center gap-3 sm:gap-4">
                           <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white font-black uppercase text-sm sm:text-base transform group-hover:scale-110 transition-transform duration-500">
@@ -244,7 +339,7 @@ export default function StudentManagement() {
                           </div>
                           <div>
                             <p className="text-xs sm:text-sm font-black tracking-tight leading-none text-[#37352f] dark:text-white group-hover:text-primary transition-colors">{student.name}</p>
-                            <p className="text-[10px] text-[#a1a1a1] font-black uppercase tracking-widest pt-1 opacity-60">Verified Member</p>
+                            <p className="text-[10px] text-[#a1a1a1] font-black uppercase tracking-widest pt-1 opacity-60">Verified Student</p>
                           </div>
                         </div>
                       </td>
@@ -252,7 +347,7 @@ export default function StudentManagement() {
                       <td className="px-6 sm:px-8 py-4 sm:py-6">
                         <span className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border border-primary/10 shadow-sm">
                            <BookOpen size={12} className="mr-2" />
-                           {student.course_title || 'Unassigned Path'}
+                           {student.course_title || 'Unassigned Course'}
                         </span>
                       </td>
                       <td className="px-6 sm:px-8 py-4 sm:py-6 text-[10px] sm:text-xs text-[#a1a1a1] font-bold uppercase tracking-tight opacity-50">
@@ -260,28 +355,31 @@ export default function StudentManagement() {
                       </td>
                       <td className="px-6 sm:px-8 py-4 sm:py-6 text-right">
                         <div className="flex items-center justify-end gap-2 sm:gap-3 lg:opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button onClick={() => openPerformanceModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-amber-500 hover:bg-amber-500/10 rounded-xl">
-                            <BarChart2 size={16} />
-                          </Button>
-                          <Button onClick={() => openEditModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-primary hover:bg-primary/10 rounded-xl">
-                            <Edit2 size={16} />
-                          </Button>
-                          <Button onClick={() => handleDelete(student.id)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-destructive hover:bg-destructive/10 rounded-xl">
-                            <Trash2 size={16} />
-                          </Button>
+                           <Button onClick={() => openDocumentsModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-emerald-500 hover:bg-emerald-500/10 rounded-xl">
+                             <FileText size={16} />
+                           </Button>
+                           <Button onClick={() => openPerformanceModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-amber-500 hover:bg-amber-500/10 rounded-xl">
+                             <BarChart2 size={16} />
+                           </Button>
+                           <Button onClick={() => openEditModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-primary hover:bg-primary/10 rounded-xl">
+                             <Edit2 size={16} />
+                           </Button>
+                           <Button onClick={() => handleDelete(student.id)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-destructive hover:bg-destructive/10 rounded-xl">
+                             <Trash2 size={16} />
+                           </Button>
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
-              </tbody>
+              </motion.tbody>
             </table>
           )}
           
           {!loading && students.length === 0 && (
             <div className="flex flex-col items-center justify-center p-12 sm:p-20 bg-[#f9fafb] dark:bg-[#202020] rounded-[3rem] sm:rounded-[5rem] border-4 border-dashed border-primary/10 opacity-30 h-full min-h-[400px] text-center">
                   <UserPlus className="text-primary w-10 h-10 sm:w-16 sm:h-16 mb-6" />
-                  <h3 className="text-xl font-black uppercase tracking-tighter text-[#37352f] dark:text-white">No Students Identified</h3>
-                  <p className="text-xs font-black uppercase tracking-widest text-[#a1a1a1] mt-2">Enroll a student instance to populate the registry.</p>
+                  <h3 className="text-xl font-black uppercase tracking-tighter text-[#37352f] dark:text-white">No Students Found</h3>
+                  <p className="text-xs font-black uppercase tracking-widest text-[#a1a1a1] mt-2">Enroll a student to populate the registry.</p>
                </div>
           )}
         </div>
@@ -295,8 +393,8 @@ export default function StudentManagement() {
                  <button onClick={() => setShowModal(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
                     <X className="w-6 h-6 sm:w-8 sm:h-8" />
                  </button>
-                 <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">Enroll Instance</CardTitle>
-                 <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2">Generate identity credentials</CardDescription>
+                 <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">Enroll Student</CardTitle>
+                 <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2">Generate student credentials</CardDescription>
               </CardHeader>
               <CardContent className="p-6 sm:p-10 space-y-6 sm:space-y-8">
                  <form onSubmit={handleCreate} className="space-y-4 sm:space-y-6">
@@ -342,7 +440,7 @@ export default function StudentManagement() {
                          onChange={(e) => setCourseId(e.target.value)}
                          className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black tracking-tight focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-inner appearance-none uppercase"
                        >
-                          <option value="">Select Path</option>
+                          <option value="">Select Course</option>
                           {courses.map(course => (
                             <option key={course.id} value={course.id}>{course.title}</option>
                           ))}
@@ -372,13 +470,13 @@ export default function StudentManagement() {
                  <button onClick={() => setShowEditModal(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
                     <X className="w-6 h-6 sm:w-8 sm:h-8" />
                  </button>
-                 <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">Modify Identity</CardTitle>
+                 <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">Modify Student</CardTitle>
                  <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2">Update student parameters</CardDescription>
               </CardHeader>
               <CardContent className="p-6 sm:p-10 space-y-6 sm:space-y-8">
                  <form onSubmit={handleUpdate} className="space-y-4 sm:space-y-6">
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Full Identity</label>
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Full Name</label>
                        <input 
                          required
                          value={eFullName}
@@ -387,7 +485,7 @@ export default function StudentManagement() {
                        />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Protocol ID</label>
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Username</label>
                        <input 
                          required
                          value={eUsername}
@@ -396,7 +494,7 @@ export default function StudentManagement() {
                        />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Active Path Assignment</label>
+                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Active Course Assignment</label>
                        <select 
                          required
                          value={eCourseId}
@@ -420,6 +518,140 @@ export default function StudentManagement() {
                        {updating ? <Loader2 className="animate-spin" size={24} /> : "Record Modifications"}
                     </Button>
                  </form>
+              </CardContent>
+           </Card>
+        </div>
+      )}
+
+      {/* ── Documents & Certificates Audit Modal ── */}
+      {showDocuments && selectedDocStudent && (
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+           <Card className="w-full max-w-2xl bg-white dark:bg-[#111] rounded-[2.5rem] shadow-3xl border-none overflow-hidden animate-in zoom-in-95 leading-none">
+              <CardHeader className="p-8 pb-0 border-b border-[#e5e7eb] dark:border-[#2e2e2e]">
+                 <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                       <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-black">
+                          <ShieldCheck size={24} />
+                       </div>
+                       <div>
+                          <p className="text-[10px] font-black uppercase text-emerald-500 tracking-widest mb-1">Institutional Locker Audit</p>
+                          <h2 className="text-xl font-black text-[#37352f] dark:text-white uppercase leading-none">{selectedDocStudent.name}</h2>
+                       </div>
+                    </div>
+                    <Button onClick={() => setShowDocuments(false)} variant="ghost" className="h-10 w-10 p-0 rounded-full text-[#a1a1a1] hover:text-red-500">
+                       <X size={20} />
+                    </Button>
+                 </div>
+
+                 {/* TAB NAVIGATION */}
+                 <div className="flex gap-8 border-b-2 border-transparent">
+                    <button 
+                      onClick={() => setActiveTab('docs')}
+                      className={cn(
+                        "pb-4 text-[10px] font-black uppercase tracking-widest transition-all relative",
+                        activeTab === 'docs' ? "text-primary" : "text-[#a1a1a1] opacity-60 hover:opacity-100"
+                      )}
+                    >
+                      Identity Proofs
+                      {activeTab === 'docs' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-full animate-in fade-in slide-in-from-bottom-1" />}
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab('certs')}
+                      className={cn(
+                        "pb-4 text-[10px] font-black uppercase tracking-widest transition-all relative",
+                        activeTab === 'certs' ? "text-emerald-500" : "text-[#a1a1a1] opacity-60 hover:opacity-100"
+                      )}
+                    >
+                      Issued Certificates
+                      {activeTab === 'certs' && <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-500 rounded-full animate-in fade-in slide-in-from-bottom-1" />}
+                    </button>
+                 </div>
+              </CardHeader>
+
+              <CardContent className="p-8">
+                 {docsLoading ? (
+                    <div className="py-20 flex justify-center"><Loader2 className="animate-spin text-emerald-500" size={32} /></div>
+                 ) : activeTab === 'docs' ? (
+                    /* IDENTITY PROOFS TAB */
+                    studentDocs.length === 0 ? (
+                       <div className="py-20 text-center opacity-40">
+                          <FileText className="mx-auto mb-4 text-[#a1a1a1]" size={40} />
+                          <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero identity artifacts pulled.</p>
+                       </div>
+                    ) : (
+                       <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                          {studentDocs.map((doc) => (
+                             <div key={doc.id} className="p-5 rounded-2xl bg-[#f9fafb] dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group">
+                                <div className="flex items-center gap-4">
+                                   <div className="h-10 w-10 rounded-xl bg-white dark:bg-black flex items-center justify-center text-primary shadow-sm border border-border/50 transition-transform group-hover:scale-110">
+                                      <FileText size={20} />
+                                   </div>
+                                   <div>
+                                      <p className="font-black text-sm uppercase text-[#37352f] dark:text-white leading-none">{doc.title}</p>
+                                      <p className={`text-[9px] font-black uppercase tracking-widest mt-2 ${doc.status === 'verified' ? 'text-green-500' : doc.status === 'rejected' ? 'text-red-500' : 'text-amber-500'}`}>
+                                         {doc.status}
+                                      </p>
+                                   </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                   <Button onClick={() => window.open(doc.url, '_blank')} variant="outline" size="sm" className="h-9 px-4 rounded-lg text-[10px] font-black uppercase tracking-widest border-[#e5e7eb]">View</Button>
+                                   <Button onClick={() => updateDocStatus(doc.id, 'verified')} disabled={doc.status === 'verified'} variant="ghost" size="icon" className="h-9 w-9 text-green-500 hover:bg-green-500/10 rounded-lg"><Check size={16}/></Button>
+                                   <Button onClick={() => updateDocStatus(doc.id, 'rejected')} disabled={doc.status === 'rejected'} variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-500/10 rounded-lg"><XCircle size={16}/></Button>
+                                </div>
+                             </div>
+                          ))}
+                       </div>
+                    )
+                 ) : (
+                    /* ISSUED CERTIFICATES TAB */
+                    <div className="space-y-6">
+                       {/* ISSUANCE CONTROL */}
+                       <div className="p-6 rounded-3xl bg-emerald-500/5 border-2 border-emerald-500/20 shadow-inner space-y-4">
+                          <p className="text-[10px] font-black uppercase text-emerald-600 tracking-widest leading-none">Issuance Protocol</p>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                             <input 
+                               value={certTitle}
+                               onChange={(e) => setCertTitle(e.target.value)}
+                               placeholder="CERTIFICATE DESIGNATION..."
+                               className="flex-1 bg-white dark:bg-black border border-emerald-500/20 rounded-xl px-5 h-12 text-[10px] font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                             />
+                             <Button 
+                               onClick={() => certRef.current?.click()}
+                               disabled={issuing}
+                               className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-500/20 gap-2 shrink-0"
+                             >
+                                {issuing ? <Loader2 className="animate-spin" size={14} /> : <><Upload size={14} /> Upload Matrix</>}
+                             </Button>
+                             <input ref={certRef} type="file" className="hidden" onChange={(e) => e.target.files?.[0] && handleCertUpload(e.target.files[0])} />
+                          </div>
+                       </div>
+
+                       <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                          {studentCerts.length === 0 ? (
+                             <div className="py-12 text-center opacity-40">
+                                <Award className="mx-auto mb-4 text-[#a1a1a1]" size={40} />
+                                <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero institutional certificates issued.</p>
+                             </div>
+                          ) : studentCerts.map((cert) => (
+                             <div key={cert.id} className="p-5 rounded-2xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group shadow-sm">
+                                <div className="flex items-center gap-4">
+                                   <div className="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-500">
+                                      <Award size={20} />
+                                   </div>
+                                   <div>
+                                      <p className="font-black text-sm uppercase text-[#37352f] dark:text-white leading-none">{cert.title}</p>
+                                      <p className="text-[9px] font-bold text-[#a1a1a1] uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.created_at).toLocaleDateString()}</p>
+                                   </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                   <Button onClick={() => window.open(cert.url, '_blank')} variant="ghost" size="icon" className="h-9 w-9 text-emerald-500 hover:bg-emerald-500/10 rounded-lg"><BookOpen size={16}/></Button>
+                                   <Button onClick={() => revokeCert(cert.id)} variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-500/10 rounded-lg"><Trash2 size={16}/></Button>
+                                </div>
+                             </div>
+                          ))}
+                       </div>
+                    </div>
+                 )}
               </CardContent>
            </Card>
         </div>

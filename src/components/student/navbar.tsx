@@ -28,7 +28,7 @@ export function StudentNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
       try {
         const res = await fetch("/api/auth/session");
         const data = await res.json();
-        if (data.authenticated) {
+        if (data.user) {
           setUser(data.user);
         }
       } catch (e) {

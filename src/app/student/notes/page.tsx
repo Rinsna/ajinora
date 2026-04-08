@@ -14,7 +14,11 @@ import {
   Clock, 
   Star,
   ChevronRight,
-  Bookmark
+  Bookmark,
+  X,
+  Loader2,
+  CheckCircle,
+  FileQuestion
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -25,6 +29,11 @@ export default function StudentNotes() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [notes, setNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [topic, setTopic] = useState("");
+  const [requestDescription, setRequestDescription] = useState("");
+  const [requesting, setRequesting] = useState(false);
+  const [requestSuccess, setRequestSuccess] = useState(false);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -42,6 +51,31 @@ export default function StudentNotes() {
     };
     fetchNotes();
   }, []);
+
+  const handleRequestSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRequesting(true);
+    try {
+      const res = await fetch("/api/student/notes/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, description: requestDescription }),
+      });
+      if (res.ok) {
+        setRequestSuccess(true);
+        setTimeout(() => {
+          setShowRequestModal(false);
+          setRequestSuccess(false);
+          setTopic("");
+          setRequestDescription("");
+        }, 2000);
+      }
+    } catch (e) {
+      console.error("Request failed");
+    } finally {
+      setRequesting(false);
+    }
+  };
 
   const uniqueCategories = Array.from(new Set(notes.map((n) => n.category))).filter(Boolean);
   const categories = ["All", ...uniqueCategories];
@@ -141,7 +175,7 @@ export default function StudentNotes() {
             </Card>
           ))}
           
-          <Card className="rounded-[2rem] border-2 border-dashed border-border flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-accent/20 group cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 min-h-[300px]">
+          <Card onClick={() => setShowRequestModal(true)} className="rounded-[2rem] border-2 border-dashed border-border flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-accent/20 group cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 min-h-[300px]">
              <div className="h-16 w-16 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-primary/10">
                 <Plus size={32} />
              </div>
@@ -149,6 +183,67 @@ export default function StudentNotes() {
              <p className="text-sm font-medium text-muted-foreground max-w-[200px] leading-relaxed">Need help with a specific topic? Send a request to your instructor.</p>
           </Card>
       </div>
+
+      {/* Request Material Modal */}
+      {showRequestModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+           <Card className="w-full max-w-lg rounded-[2.5rem] border-none bg-card shadow-3xl overflow-hidden animate-in zoom-in-95 duration-500">
+              <div className="bg-primary p-8 text-white relative">
+                 <button onClick={() => setShowRequestModal(false)} className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors">
+                    <X size={24} />
+                 </button>
+                 <div className="flex items-center gap-3 mb-2">
+                    <FileQuestion size={24} className="text-white/80" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60">Institutional Request</p>
+                 </div>
+                 <h2 className="text-2xl font-bold uppercase tracking-tight">Request Learning Material</h2>
+              </div>
+              
+              <CardContent className="p-8">
+                 {requestSuccess ? (
+                    <div className="py-12 flex flex-col items-center justify-center text-center space-y-4 animate-in zoom-in-95">
+                       <div className="h-20 w-20 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
+                          <CheckCircle size={48} />
+                       </div>
+                       <h3 className="text-xl font-bold">Request Deployed</h3>
+                       <p className="text-sm text-muted-foreground font-medium">Your request has been synchronised with the faculty. You will be notified once the material is archived.</p>
+                    </div>
+                 ) : (
+                    <form onSubmit={handleRequestSubmit} className="space-y-6">
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Topic Title</label>
+                          <input 
+                            required
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            className="w-full bg-accent/20 border border-border focus:border-primary/40 rounded-xl p-4 text-sm font-semibold focus:outline-none transition-all"
+                            placeholder="e.g. Advanced Calculus Modules"
+                          />
+                       </div>
+                       <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Detail Description</label>
+                          <textarea 
+                            required
+                            rows={4}
+                            value={requestDescription}
+                            onChange={(e) => setRequestDescription(e.target.value)}
+                            className="w-full bg-accent/20 border border-border focus:border-primary/40 rounded-xl p-4 text-sm font-semibold focus:outline-none transition-all resize-none"
+                            placeholder="Describe what specific resources or topics you need help with..."
+                          />
+                       </div>
+                       <Button 
+                         type="submit" 
+                         disabled={requesting}
+                         className="w-full h-14 rounded-xl font-bold uppercase tracking-widest text-xs bg-primary hover:bg-primary/95 text-white shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3"
+                       >
+                          {requesting ? <Loader2 className="animate-spin" size={20} /> : "Submit Request Protocol"}
+                       </Button>
+                    </form>
+                 )}
+              </CardContent>
+           </Card>
+        </div>
+      )}
     </div>
   );
 }

@@ -43,12 +43,13 @@ export async function POST(request: Request) {
     await login({
       id: user.id,
       username: user.username,
-      role: user.role
+      role: user.role,
+      full_name: user.full_name
     });
 
     return NextResponse.json({ 
       success: true, 
-      user: { id: user.id, username: user.username, role: user.role } 
+      user: { id: user.id, username: user.username, role: user.role, full_name: user.full_name } 
     });
 
   } catch (error: any) {

@@ -37,7 +37,7 @@ export default function SessionsManagement() {
     const link = session.link || "";
 
     if (!isZoomLink(link)) {
-      setActiveIframe({ ...session, link });
+      window.open(link, "_blank");
       return;
     }
 
@@ -53,7 +53,9 @@ export default function SessionsManagement() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate signature.");
       setSignature(data.signature);
-      setActiveMeeting({ ...session, meetingNumber });
+      const zoomUrl = `https://zoom.us/wc/${meetingNumber}/start?prefer=1&pwd=${session.password || ""}`;
+      window.open(zoomUrl, "_blank");
+      setActiveMeeting(null);
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Failed to join session as Host.");
@@ -120,60 +122,8 @@ export default function SessionsManagement() {
     return activeTab === "upcoming" ? sessionDate >= today : sessionDate < today;
   });
 
-  if (activeMeeting) {
-    return (
-      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
-        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
-              <Video size={16} />
-            </div>
-            <h2 className="text-white font-black uppercase tracking-widest text-xs">{activeMeeting.title}</h2>
-          </div>
-          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
-            onClick={() => { setActiveMeeting(null); setSignature(""); }}>
-            End/Leave Class
-          </Button>
-        </div>
-        <div className="flex-1 bg-zinc-900 relative">
-          <ZoomMeeting
-            meetingNumber={activeMeeting.meetingNumber}
-            passWord={activeMeeting.password || ""}
-            userName="Administrator"
-            userEmail="admin@ajinora.edu"
-            signature={signature}
-            sdkKey={process.env.NEXT_PUBLIC_ZOOM_SDK_KEY || ""}
-            onLeave={() => { setActiveMeeting(null); setSignature(""); }}
-          />
-        </div>
-      </div>
-    );
-  }
+  // Inline meeting views removed in favor of new window opening for reliability
 
-  if (activeIframe) {
-    return (
-      <div className="fixed inset-0 z-[100] bg-black flex flex-col">
-        <div className="h-14 bg-[#1a1a1a] border-b border-white/10 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white">
-              <Link2 size={16} />
-            </div>
-            <h2 className="text-white font-black uppercase tracking-widest text-xs">{activeIframe.title || "External Meeting"}</h2>
-          </div>
-          <Button variant="ghost" className="text-white/60 hover:text-white uppercase font-black tracking-widest text-xs"
-            onClick={() => setActiveIframe(null)}>
-            End/Leave Class
-          </Button>
-        </div>
-        <div className="flex-1 bg-zinc-900 relative">
-          <JitsiMeeting 
-            url={activeIframe.link} 
-            onLeave={() => setActiveIframe(null)} 
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8 animate-in slide-in-from-right duration-500">

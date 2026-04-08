@@ -35,6 +35,10 @@ export default function ExamsManagement() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [selectedExam, setSelectedExam] = useState<any>(null);
+  const [examResults, setExamResults] = useState<any[]>([]);
+  const [resultsLoading, setResultsLoading] = useState(false);
 
   // Form State
   const [title, setTitle] = useState("");
@@ -216,17 +220,41 @@ export default function ExamsManagement() {
     }
   };
 
+  const openResultsModal = async (exam: any) => {
+    setSelectedExam(exam);
+    setShowResults(true);
+    setResultsLoading(true);
+    try {
+      const res = await fetch(`/api/admin/exams/${exam.id}/results`);
+      if (res.ok) {
+        const data = await res.json();
+        setExamResults(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch results");
+    } finally {
+      setResultsLoading(false);
+    }
+  };
+  
+  const downloadTemplate = () => {
+    const wsData = [
+      ["QUESTION", "OPTION A", "OPTION B", "OPTION C", "OPTION D", "ANSWER"],
+      ["Sample Question: What is 2+2?", "3", "4", "5", "6", "B"]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Exam Template");
+    XLSX.writeFile(wb, "Ajinora_Exam_Template.xlsx");
+  };
+
   return (
     <div className="space-y-10 animate-in fly-in-from-bottom duration-700 bg-background min-h-screen">
       
       {/* ─── Header Section ─── */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 sm:gap-10">
         <div>
-          <div className="flex items-center gap-2 mb-3 bg-primary/10 w-fit px-4 py-1.5 rounded-full border border-primary/20 shadow-sm">
-            <ShieldCheck size={14} className="text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Academic Integrity Engine</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-foreground uppercase leading-none">Exam Management</h1>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-foreground uppercase leading-none">Exam Management</h1>
           <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground mt-4 italic opacity-60 underline underline-offset-8 decoration-primary/20 leading-relaxed">
             Deploy secure, automated examination protocols for Ajinora students.
           </p>
@@ -336,7 +364,7 @@ export default function ExamsManagement() {
                   </td>
                   <td className="px-8 py-6 text-right rounded-r-[2rem] pr-8">
                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="sm" className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all gap-2">
+                        <Button onClick={() => openResultsModal(exam)} variant="ghost" size="sm" className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all gap-2">
                            <Eye size={12} /> View Results
                         </Button>
                         <Button onClick={() => handleDelete(exam.id)} variant="ghost" size="icon" className="h-10 w-10 p-0 rounded-xl text-destructive hover:bg-destructive hover:text-white transition-all">
@@ -489,9 +517,17 @@ export default function ExamsManagement() {
                        <h3 className="text-4xl font-black tracking-tighter uppercase leading-tight">Excel Upload Protocol</h3>
                        <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/60 mt-4 leading-relaxed italic opacity-80 underline underline-offset-8 decoration-primary/20">Follow this strict schema for successful engine integration.</p>
                     </div>
-                    <button onClick={() => setShowInstructions(false)} className="h-12 w-12 rounded-2xl bg-accent flex items-center justify-center text-muted-foreground hover:rotate-90 transition-all hover:bg-primary hover:text-white group">
-                       <X size={20} className="group-hover:scale-110 transition-transform" />
-                    </button>
+                    <div className="flex gap-4 items-center">
+                        <Button 
+                          onClick={downloadTemplate}
+                          className="h-12 px-6 rounded-2xl bg-primary hover:bg-primary/95 text-white font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-lg shadow-primary/20"
+                        >
+                           <FileSpreadsheet size={16} /> Download Template
+                        </Button>
+                        <button onClick={() => setShowInstructions(false)} className="h-12 w-12 rounded-2xl bg-accent flex items-center justify-center text-muted-foreground hover:rotate-90 transition-all hover:bg-primary hover:text-white group">
+                           <X size={20} className="group-hover:scale-110 transition-transform" />
+                        </button>
+                     </div>
                  </div>
 
                  <div className="space-y-10">
@@ -501,12 +537,12 @@ export default function ExamsManagement() {
                           <table className="w-full border-separate border-spacing-0">
                              <thead className="bg-primary/5">
                                 <tr>
-                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">question</th>
-                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">optionA</th>
-                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">optionB</th>
-                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">optionC</th>
-                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">optionD</th>
-                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest text-primary">correctAnswer</th>
+                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">QUESTION</th>
+                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">OPTION A</th>
+                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">OPTION B</th>
+                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">OPTION C</th>
+                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest border-r border-border/50">OPTION D</th>
+                                   <th className="px-6 py-6 text-left text-[10px] font-black uppercase tracking-widest text-primary">ANSWER</th>
                                 </tr>
                              </thead>
                              <tbody className="bg-white/40 dark:bg-black/20">
@@ -527,7 +563,7 @@ export default function ExamsManagement() {
                        <Card className="p-8 rounded-[2.5rem] bg-primary/5 border-none space-y-4">
                           <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg"><Info size={20} /></div>
                           <h5 className="text-xs font-black uppercase tracking-widest">Logic: Correct Answer</h5>
-                          <p className="text-[11px] font-bold text-muted-foreground leading-relaxed italic opacity-80 uppercase">The <span className="text-primary underline decoration-2 underline-offset-4">correctAnswer</span> column must exclusively contain a single uppercase character: <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">A</span> <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">B</span> <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">C</span> or <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">D</span>. Any numeric or complex strings will cause engine failure.</p>
+                          <p className="text-[11px] font-bold text-muted-foreground leading-relaxed italic opacity-80 uppercase">The <span className="text-primary underline decoration-2 underline-offset-4">ANSWER</span> column must exclusively contain a single uppercase character: <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">A</span> <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">B</span> <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">C</span> or <span className="px-2 py-0.5 bg-primary text-white rounded-md mx-1">D</span>. Any numeric or complex strings will cause engine failure.</p>
                        </Card>
 
                        <Card className="p-8 rounded-[2.5rem] bg-orange-500/5 border-none space-y-4">
@@ -541,6 +577,76 @@ export default function ExamsManagement() {
                        Acknowledge Protocol Guidelines
                     </Button>
                  </div>
+              </div>
+           </Card>
+        </div>
+      )}
+
+      {/* ─── RESULTS MODAL ─── */}
+      {showResults && selectedExam && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
+           <Card className="w-full max-w-4xl rounded-[3rem] border-none bg-card overflow-hidden shadow-3xl animate-in zoom-in-95 duration-500 max-h-[90vh] flex flex-col">
+              <div className="bg-primary p-8 sm:p-10 text-white flex items-center justify-between shrink-0">
+                 <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mb-2">Examination Output</p>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase leading-none">{selectedExam.title}</h2>
+                 </div>
+                 <button onClick={() => setShowResults(false)} className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all">
+                    <X size={24} />
+                 </button>
+              </div>
+
+              <div className="p-8 overflow-y-auto flex-1 custom-scrollbar">
+                 {resultsLoading ? (
+                    <div className="py-20 flex flex-col items-center justify-center gap-4">
+                       <Loader2 className="animate-spin text-primary" size={40} />
+                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Aggregating records...</p>
+                    </div>
+                 ) : examResults.length === 0 ? (
+                    <div className="py-20 text-center opacity-20">
+                       <PieChart size={60} className="mx-auto mb-4" />
+                       <p className="text-sm font-black uppercase tracking-widest text-muted-foreground">No participation records yet.</p>
+                    </div>
+                 ) : (
+                    <table className="w-full border-separate border-spacing-y-3">
+                       <thead>
+                          <tr className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
+                             <th className="px-6 py-2 text-left">Student</th>
+                             <th className="px-6 py-2 text-center">Score Matrix</th>
+                             <th className="px-6 py-2 text-center">Efficiency</th>
+                             <th className="px-6 py-2 text-right">Completion Date</th>
+                          </tr>
+                       </thead>
+                       <tbody>
+                          {examResults.map((res: any) => (
+                             <tr key={res.id} className="bg-accent/20 rounded-2xl border border-border/40">
+                                <td className="px-6 py-5 rounded-l-2xl">
+                                   <div className="text-left">
+                                      <p className="font-black text-sm uppercase tracking-tight">{res.full_name}</p>
+                                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-60">@{res.username}</p>
+                                   </div>
+                                </td>
+                                <td className="px-6 py-5 text-center">
+                                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-lg">
+                                      <span className="text-xs font-black text-primary">{res.score} / {res.total}</span>
+                                   </div>
+                                </td>
+                                <td className="px-6 py-5 text-center">
+                                   <div className="flex flex-col items-center gap-1">
+                                      <span className="text-xs font-black">{Math.round((res.score / res.total) * 100)}%</span>
+                                      <div className="h-1 w-16 bg-border rounded-full overflow-hidden">
+                                         <div className="h-full bg-primary" style={{ width: `${(res.score / res.total) * 100}%` }} />
+                                      </div>
+                                   </div>
+                                </td>
+                                <td className="px-6 py-5 text-right rounded-r-2xl pr-8">
+                                   <span className="text-[10px] font-bold text-muted-foreground italic">{new Date(res.completed_at).toLocaleString()}</span>
+                                </td>
+                             </tr>
+                          ))}
+                       </tbody>
+                    </table>
+                 )}
               </div>
            </Card>
         </div>
