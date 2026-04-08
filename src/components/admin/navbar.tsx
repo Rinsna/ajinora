@@ -27,6 +27,17 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     fetchSession();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('admin-search')?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   if (!mounted) return null;
 
   return (
@@ -43,6 +54,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         <div className="relative max-w-sm w-full group hidden sm:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a1a1a1] group-focus-within:text-primary transition-colors" size={16} />
           <input 
+            id="admin-search"
             type="text" 
             placeholder="Search anything..." 
             className="w-full bg-[#f3f4f6] dark:bg-[#252525] border-transparent focus:bg-white dark:focus:bg-[#1a1a1a] border-[#e5e7eb] dark:border-[#2e2e2e] focus:border-primary/30 rounded-lg py-2 pl-10 pr-10 text-sm focus:ring-4 focus:ring-primary/5 focus:outline-none transition-all placeholder:text-[#a1a1a1]"

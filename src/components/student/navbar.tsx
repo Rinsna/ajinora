@@ -38,6 +38,17 @@ export function StudentNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
     fetchSession();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('global-search')?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   if (!mounted) return null;
 
   const currentPath = pathMap[pathname] || pathMap[`/student/${pathname.split('/')[2]}`] || "Dashboard";
@@ -61,10 +72,15 @@ export function StudentNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#f3f3f2] dark:bg-[#252525] rounded-md border border-[#e5e7eb] dark:border-[#2e2e2e] group cursor-text transition-all hover:bg-[#ebeaea] dark:hover:bg-[#2e2e2e] w-64 mr-4">
-           <Search size={14} className="text-[#a1a1a1]" />
-           <span className="text-xs text-[#a1a1a1] flex-1">Search assets...</span>
-           <div className="flex items-center gap-0.5 px-1 py-0.5 rounded border border-[#e5e7eb] dark:border-[#2e2e2e] bg-white dark:bg-[#1c1c1c] text-[9px] font-bold text-[#a1a1a1]">
+        <div className="hidden md:flex items-center relative group w-64 mr-4">
+           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a1a1a1] group-focus-within:text-primary transition-colors pointer-events-none" />
+           <input 
+              id="global-search"
+              type="text"
+              placeholder="Search assets..."
+              className="w-full bg-[#f3f3f2] dark:bg-[#252525] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-md py-1.5 pl-9 pr-10 text-xs text-[#37352f] dark:text-white focus:bg-white dark:focus:bg-[#1a1a1a] focus:ring-4 focus:ring-primary/5 focus:outline-none transition-all placeholder:text-[#a1a1a1]/50"
+           />
+           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1 py-0.5 rounded border border-[#e5e7eb] dark:border-[#2e2e2e] bg-white dark:bg-[#1c1c1c] text-[9px] font-bold text-[#a1a1a1] pointer-events-none">
              <Command size={10} /> K
            </div>
         </div>
