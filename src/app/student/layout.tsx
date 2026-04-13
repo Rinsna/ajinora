@@ -27,21 +27,12 @@ export default function StudentLayout({
       )}>
         <StudentNavbar onMenuClick={() => setMobileSidebarOpen(true)} />
         <main className="flex-1 relative">
-           <AnimatePresence mode="wait">
-              <motion.div
-                key={pathname}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className={cn(
-                  "mx-auto w-full transition-all duration-300",
-                  pathname === '/student/course' ? "p-0 max-w-none h-[calc(100vh-64px)] overflow-hidden" : "p-4 sm:p-8 max-w-[1600px]"
-                )}
-              >
-                {children}
-              </motion.div>
-           </AnimatePresence>
+        <main className={cn(
+          "flex-1 relative mx-auto w-full transition-all duration-300",
+          pathname === '/student/course' ? "p-0 max-w-none h-[calc(100vh-64px)] overflow-hidden" : "p-4 sm:p-8 max-w-[1600px]"
+        )}>
+          {children}
+        </main>
         </main>
       </div>
     </div>

@@ -51,6 +51,7 @@
     "@types/jsrsasign": "^10.5.15",
     "jest": "^30.3.0",
     "jest-environment-node": "^30.3.0",
-    "ts-jest": "^29.4.6"
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2"
   }
 }

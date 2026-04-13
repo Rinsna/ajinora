@@ -257,7 +257,7 @@ export default function StudentManagement() {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10 animate-fly-in-up text-left">
+    <div className="space-y-8 sm:space-y-10 text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
         <div>
           <h1 className="text-2xl sm:text-4xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none mb-2">Student Registry</h1>

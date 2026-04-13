@@ -1,34 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { decrypt } from "@/lib/auth";
 
 export async function middleware(request: NextRequest) {
-  const session = await getSession();
-  const { pathname } = request.nextUrl;
+  try {
+    const sessionCookie = request.cookies.get("session")?.value;
+    const { pathname, host, protocol } = request.nextUrl;
 
-  // 1. If trying to access admin routes
-  if (pathname.startsWith("/admin")) {
-    if (!session || session.user.role !== "admin") {
-      return NextResponse.redirect(new URL("/login", request.url));
+    console.log(`[Middleware] ${protocol}//${host}${pathname}, Cookies: ${JSON.stringify(request.cookies.getAll().map(c => c.name))}`);
+    
+    let session = null;
+    if (sessionCookie) {
+      try {
+        session = await decrypt(sessionCookie);
+        console.log(`[Middleware] Session Decrypted: ${!!session}`);
+      } catch (e) {
+        console.error("[Middleware] Decrypt failed:", e);
+      }
     }
-  }
 
-  // 2. If trying to access student routes
-  if (pathname.startsWith("/student")) {
-    if (!session || session.user.role !== "student") {
-      return NextResponse.redirect(new URL("/login", request.url));
+    // 1. If trying to access admin routes
+    if (pathname.startsWith("/admin")) {
+      if (!session || session.user.role !== "admin") {
+        console.log(`[Middleware] Redirecting to /login from ${pathname}`);
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
     }
-  }
 
-  // 3. If already logged in and at login page, redirect to correct dashboard
-  if (pathname === "/login" && session) {
-    if (session.user.role === "admin") {
-      return NextResponse.redirect(new URL("/admin", request.url));
-    } else {
-      return NextResponse.redirect(new URL("/student", request.url));
+    // 2. If trying to access student routes
+    if (pathname.startsWith("/student")) {
+      if (!session || session.user.role !== "student") {
+        console.log(`[Middleware] Redirecting to /login from ${pathname}`);
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
     }
-  }
 
-  return NextResponse.next();
+    // 3. If already logged in and at login page, redirect to correct dashboard
+    if (pathname === "/login" && session) {
+      const target = session.user.role === "admin" ? "/admin" : "/student";
+      console.log(`[Middleware] Redirecting to ${target} from /login`);
+      return NextResponse.redirect(new URL(target, request.url));
+    }
+
+    return NextResponse.next();
+  } catch (error) {
+    console.error("[Proxy Error]", error);
+    return NextResponse.next();
+  }
 }
 
 export const config = {
