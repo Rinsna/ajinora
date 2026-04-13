@@ -10,7 +10,9 @@ function getPool(): Pool {
     }
     pool = new Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false },
+      ssl: { 
+        rejectUnauthorized: false, // Required for most hosted PostgreSQL (Supabase/Neon)
+      },
       max: 10,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,

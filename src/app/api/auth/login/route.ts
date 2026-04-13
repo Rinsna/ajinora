@@ -14,7 +14,12 @@ export async function POST(request: Request) {
     const users: any = await query("SELECT * FROM users WHERE username = ?", [username]);
 
     if (!users || users.length === 0) {
-      return NextResponse.json({ error: "Invalid institutional credentials." }, { status: 401 });
+      console.warn(`[Auth Debug] User not found: ${username}`);
+      return NextResponse.json({ 
+        error: "Invalid institutional credentials.",
+        debug: "USER_NOT_FOUND",
+        db_status: "connected"
+      }, { status: 401 });
     }
 
     const user = users[0];
@@ -41,7 +46,12 @@ export async function POST(request: Request) {
 
     if (!isMatched) {
       console.warn(`[Auth Debug] Access Denied for: ${username}`);
-      return NextResponse.json({ error: "Access Denied. Verification failed." }, { status: 401 });
+      return NextResponse.json({ 
+        error: "Access Denied. Verification failed.",
+        debug: "PASSWORD_MISMATCH",
+        hash_format: user.password?.substring(0, 10),
+        attempted_user: username
+      }, { status: 401 });
     }
 
     // Success: create session
