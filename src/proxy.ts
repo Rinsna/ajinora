@@ -12,16 +12,16 @@ export default async function proxy(request: NextRequest) {
     if (sessionCookie) {
       try {
         session = await decrypt(sessionCookie);
-        console.log(`[Middleware] Session Decrypted: ${!!session}`);
+        console.log(`[Proxy] Session Decrypted: ${!!session}`);
       } catch (e) {
-        console.error("[Middleware] Decrypt failed:", e);
+        console.error("[Proxy] Decrypt failed:", e);
       }
     }
 
     // 1. If trying to access admin routes
     if (pathname.startsWith("/admin")) {
       if (!session || session.user.role !== "admin") {
-        console.log(`[Middleware] Redirecting to /login from ${pathname}`);
+        console.log(`[Proxy] Redirecting to /login from ${pathname}`);
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
@@ -29,7 +29,7 @@ export default async function proxy(request: NextRequest) {
     // 2. If trying to access student routes
     if (pathname.startsWith("/student")) {
       if (!session || session.user.role !== "student") {
-        console.log(`[Middleware] Redirecting to /login from ${pathname}`);
+        console.log(`[Proxy] Redirecting to /login from ${pathname}`);
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
@@ -37,7 +37,7 @@ export default async function proxy(request: NextRequest) {
     // 3. If already logged in and at login page, redirect to correct dashboard
     if (pathname === "/login" && session) {
       const target = session.user.role === "admin" ? "/admin" : "/student";
-      console.log(`[Middleware] Redirecting to ${target} from /login`);
+      console.log(`[Proxy] Redirecting to ${target} from /login`);
       return NextResponse.redirect(new URL(target, request.url));
     }
 
