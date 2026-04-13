@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     }
 
     const user = users[0];
+    console.log(`[Auth Debug] Attempting login for user: ${username}`);
 
     // Robust Password Check:
     // 1. Try Bcrypt first (Modern security)
@@ -25,17 +26,21 @@ export async function POST(request: Request) {
     let isMatched = false;
     try {
       isMatched = await bcrypt.compare(password, user.password);
+      console.log(`[Auth Debug] Bcrypt match: ${isMatched}`);
     } catch (e) {
       // If bcrypt fails (e.g. data is not a hash), fallback to direct comparison
       isMatched = password === user.password;
+      console.log(`[Auth Debug] Bcrypt error, fallback match: ${isMatched}`);
     }
 
     // Final direct check to ensure 'admin123' works for manual setup
     if (!isMatched) {
       isMatched = password === user.password;
+      console.log(`[Auth Debug] Final plaintext check: ${isMatched}`);
     }
 
     if (!isMatched) {
+      console.warn(`[Auth Debug] Access Denied for: ${username}`);
       return NextResponse.json({ error: "Access Denied. Verification failed." }, { status: 401 });
     }
 
