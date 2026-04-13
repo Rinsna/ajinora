@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "@/lib/auth";
 
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   try {
     const sessionCookie = request.cookies.get("session")?.value;
     const { pathname, host, protocol } = request.nextUrl;
 
-    console.log(`[Middleware] ${protocol}//${host}${pathname}, Cookies: ${JSON.stringify(request.cookies.getAll().map(c => c.name))}`);
+    console.log(`[Proxy] ${protocol}//${host}${pathname}, Cookies: ${JSON.stringify(request.cookies.getAll().map(c => c.name))}`);
     
     let session = null;
     if (sessionCookie) {
