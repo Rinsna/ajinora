@@ -30,7 +30,8 @@ export async function POST(request: Request) {
     // 2. Fallback to Plaintext check (Essential for manual SQL insertion during setup)
     let isMatched = false;
     try {
-      isMatched = await bcrypt.compare(password, user.password);
+      const storedHash = String(user.password || "");
+      isMatched = await bcrypt.compare(password, storedHash);
       console.log(`[Auth Debug] Bcrypt match: ${isMatched}`);
     } catch (e) {
       // If bcrypt fails (e.g. data is not a hash), fallback to direct comparison
