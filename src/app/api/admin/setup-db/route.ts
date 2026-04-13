@@ -43,7 +43,9 @@ const SCHEMA_STATEMENTS = [
     date DATE NOT NULL,
     time TIME NOT NULL,
     link TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    course_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE SET NULL
   )`,
 
   `CREATE TABLE IF NOT EXISTS exams (
