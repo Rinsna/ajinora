@@ -29,29 +29,18 @@ export async function login(user: { id: number; username: string; role: string; 
     httpOnly: true, 
     path: "/", 
     sameSite: "lax", 
-    secure: process.env.NODE_ENV === "production" 
+    secure: false 
   });
 }
 
 export async function logout() {
-  (await cookies()).set("session", "", { 
-    expires: new Date(0), 
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
-  });
+  (await cookies()).set("session", "", { expires: new Date(0), path: "/" });
 }
 
 export async function getSession() {
   const session = (await cookies()).get("session")?.value;
   if (!session) return null;
-  try {
-    return await decrypt(session);
-  } catch (error) {
-    console.error("Session decryption failed:", error);
-    return null;
-  }
+  return await decrypt(session);
 }
 
 export async function updateSession(request: NextRequest) {
@@ -68,7 +57,7 @@ export async function updateSession(request: NextRequest) {
     expires: parsed.expires,
     path: "/",
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
+    secure: false,
   });
   return res;
 }

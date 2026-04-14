@@ -1,17 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.public.blob.vercel-storage.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-      },
-    ],
-  },
+  /* Webpack is preferred for stability in this environment */
+  /* If you need to force Webpack and disable Turbopack, you can do so here if the CLI flag isn't enough */
 };
 
 export default nextConfig;

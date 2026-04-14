@@ -3,7 +3,6 @@
 import { StudentSidebar } from "@/components/student/sidebar";
 import { StudentNavbar } from "@/components/student/navbar";
 import { MobileSidebar } from "@/components/student/mobile-sidebar";
-import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,13 +25,11 @@ export default function StudentLayout({
         isCollapsed ? "lg:ml-[80px]" : "lg:ml-72"
       )}>
         <StudentNavbar onMenuClick={() => setMobileSidebarOpen(true)} />
-        <main className="flex-1 relative">
         <main className={cn(
           "flex-1 relative mx-auto w-full transition-all duration-300",
           pathname === '/student/course' ? "p-0 max-w-none h-[calc(100vh-64px)] overflow-hidden" : "p-4 sm:p-8 max-w-[1600px]"
         )}>
           {children}
-        </main>
         </main>
       </div>
     </div>

@@ -3,8 +3,6 @@
 import { Sidebar } from "@/components/admin/sidebar";
 import { Navbar } from "@/components/admin/navbar";
 import { MobileAdminSidebar } from "@/components/admin/mobile-sidebar";
-import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function AdminLayout({
@@ -12,7 +10,6 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (

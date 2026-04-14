@@ -314,11 +314,6 @@ export default function StudentManagement() {
                 </tr>
               </thead>
               <motion.tbody 
-                variants={{
-                  show: {
-                    transition: { staggerChildren: 0.03 }
-                  }
-                }}
                 className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]"
               >
                 {students
@@ -326,10 +321,8 @@ export default function StudentManagement() {
                   .map((student) => (
                     <motion.tr 
                       key={student.id} 
-                      variants={{
-                        hidden: { opacity: 0, x: -10 },
-                        show: { opacity: 1, x: 0 }
-                      }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       className="hover:bg-primary/5 transition-all group"
                     >
                       <td className="px-6 sm:px-8 py-4 sm:py-6">
