@@ -465,7 +465,7 @@ export default function CoursesManagement() {
       </div>
 
       {/* ── Module modal ── */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showModuleModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -524,7 +524,7 @@ export default function CoursesManagement() {
       </AnimatePresence>
 
       {/* ── Asset modal (video / recorded / video_url / notes) ── */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {assetModule && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -595,7 +595,7 @@ export default function CoursesManagement() {
       </AnimatePresence>
 
       {/* ── Exercise builder ── */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {quizModule && selectedCourse && (
           <QuizBuilder
             module={quizModule}
@@ -609,7 +609,7 @@ export default function CoursesManagement() {
       </AnimatePresence>
 
       {/* ── Course modal ── */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showCourseModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">

@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     const result: any = await query(
       "INSERT INTO courses (title, description, thumbnail) VALUES (?, ?, ?) RETURNING id",
-      [title, description, thumbnail || 'https://via.placeholder.com/400x300']
+      [title, description, thumbnail || 'https://placehold.co/400x300/f3f4f6/374151?text=Ajinora+LMS']
     );
 
     return NextResponse.json({ success: true, id: result[0]?.id });

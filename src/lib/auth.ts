@@ -24,17 +24,34 @@ export async function login(user: { id: number; username: string; role: string; 
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
   const session = await encrypt({ user, expires });
 
-  (await cookies()).set("session", session, { expires, httpOnly: true, path: "/", sameSite: "lax", secure: false });
+  (await cookies()).set("session", session, { 
+    expires, 
+    httpOnly: true, 
+    path: "/", 
+    sameSite: "lax", 
+    secure: process.env.NODE_ENV === "production" 
+  });
 }
 
 export async function logout() {
-  (await cookies()).set("session", "", { expires: new Date(0), path: "/" });
+  (await cookies()).set("session", "", { 
+    expires: new Date(0), 
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production"
+  });
 }
 
 export async function getSession() {
   const session = (await cookies()).get("session")?.value;
   if (!session) return null;
-  return await decrypt(session);
+  try {
+    return await decrypt(session);
+  } catch (error) {
+    console.error("Session decryption failed:", error);
+    return null;
+  }
 }
 
 export async function updateSession(request: NextRequest) {
@@ -49,6 +66,9 @@ export async function updateSession(request: NextRequest) {
     value: await encrypt(parsed),
     httpOnly: true,
     expires: parsed.expires,
+    path: "/",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production"
   });
   return res;
 }
