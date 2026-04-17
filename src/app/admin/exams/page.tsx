@@ -255,9 +255,7 @@ export default function ExamsManagement() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 sm:gap-10">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-foreground uppercase leading-none">Exam Management</h1>
-          <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground mt-4 italic opacity-60 underline underline-offset-8 decoration-primary/20 leading-relaxed">
-            Deploy secure, automated examination protocols for Ajinora students.
-          </p>
+
         </div>
         
         <div className="flex gap-4">
