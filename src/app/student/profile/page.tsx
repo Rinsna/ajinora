@@ -323,6 +323,7 @@ export default function StudentProfile() {
                               onChange={(e) => setDocTitle(e.target.value)}
                            />
                            <Button 
+                              type="button"
                               onClick={() => fileRef.current?.click()} 
                               disabled={uploading}
                               variant="outline" 

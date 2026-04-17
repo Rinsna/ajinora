@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 export async function PUT(req: Request) {
   try {
     const session = await getSession();
-    if (!session || session.role !== "student") {
+    if (!session || session.user?.role?.toLowerCase() !== "student") {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
 

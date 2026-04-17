@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 
   try {
     const certificates = await query(
-      "SELECT * FROM certificates WHERE user_id = ? ORDER BY created_at DESC",
+      "SELECT * FROM student_certificates WHERE user_id = ? ORDER BY issued_at DESC",
       [session.user.id]
     );
 
