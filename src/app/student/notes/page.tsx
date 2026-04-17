@@ -124,63 +124,63 @@ export default function StudentNotes() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 sm:gap-10 mt-8 sm:mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 mt-8 sm:mt-12">
         {loading ? (
           <div className="col-span-full py-20 flex justify-center text-muted-foreground animate-pulse">Loading resources...</div>
         ) : notes
           .filter(n => (activeCategory === "All" || n.category === activeCategory) && ((n.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) || (n.description?.toLowerCase() || "").includes(searchTerm.toLowerCase())))
           .map((note) => (
-             <Card key={note.id} className="group relative rounded-[2rem] border border-border bg-card shadow-sm hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden flex flex-col pt-2">
-               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none transform rotate-12 hidden sm:block text-primary">
-                 <Bookmark size={150} />
+             <Card key={note.id} className="group relative rounded-3xl border border-border bg-card shadow-sm hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden flex flex-col">
+               <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none transform rotate-12 hidden sm:block text-primary">
+                 <Bookmark size={100} />
                </div>
                
-               <CardHeader className="p-6 pb-2 relative z-10">
-                  <div className="flex justify-between items-center mb-4">
-                     <div className="px-3 py-1.5 rounded-lg bg-accent/50 text-xs font-medium text-muted-foreground border border-border">
+               <CardHeader className="p-4 pb-2 relative z-10">
+                  <div className="flex justify-between items-center mb-3">
+                     <div className="px-2 py-1 rounded-md bg-accent/50 text-[10px] font-medium text-muted-foreground border border-border">
                         {note.category}
                      </div>
-                     <div className="flex items-center gap-1.5 text-primary">
-                        <Star size={14} fill="currentColor" />
-                        <span className="text-xs font-semibold">{note.rating}</span>
+                     <div className="flex items-center gap-1 text-primary">
+                        <Star size={12} fill="currentColor" />
+                        <span className="text-[10px] font-semibold">{note.rating}</span>
                      </div>
                   </div>
-                  <CardTitle className="text-lg sm:text-xl font-semibold leading-snug mb-1 group-hover:text-primary transition-colors text-foreground line-clamp-2 min-h-[3.5rem]">{note.title}</CardTitle>
+                  <CardTitle className="text-base font-semibold leading-snug group-hover:text-primary transition-colors text-foreground line-clamp-2">{note.title}</CardTitle>
                </CardHeader>
                
-               <CardContent className="p-6 pt-2 flex-1 flex flex-col justify-between space-y-6 relative z-10">
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-accent/30 border border-transparent group-hover:bg-primary/5 group-hover:border-primary/10 transition-colors shadow-sm">
-                    <div className="h-12 w-12 rounded-xl bg-background shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform duration-300 border border-primary/10">
+               <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-between space-y-4 relative z-10">
+                  <p className="text-muted-foreground text-xs line-clamp-2 leading-relaxed flex-1">{note.description}</p>
+
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/30 border border-transparent group-hover:bg-primary/5 group-hover:border-primary/10 transition-colors shadow-sm">
+                    <div className="h-10 w-10 rounded-lg bg-background shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform duration-300 border border-primary/10">
                       {getIcon(note.type)}
                     </div>
                     <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] font-medium uppercase text-muted-foreground tracking-wider mb-1">Resource Type</p>
-                      <p className="text-sm font-semibold truncate capitalize text-foreground">{note.type} • {note.size || note.duration}</p>
+                      <p className="text-[9px] font-medium uppercase text-muted-foreground tracking-wider mb-0.5">Resource Type</p>
+                      <p className="text-xs font-semibold truncate capitalize text-foreground">{note.type} • {note.size || note.duration}</p>
                     </div>
                   </div>
                   
-                  <p className="text-muted-foreground text-sm line-clamp-2 h-10 leading-relaxed">{note.description}</p>
-                  
-                  <div className="pt-2 border-t border-border flex flex-col gap-4">
-                    <div className="flex items-center justify-between text-[10px] font-medium text-muted-foreground px-1 opacity-70 group-hover:opacity-100 transition-opacity">
-                       <span className="flex items-center gap-1.5"><Clock size={12} /> {new Date(note.created_at || note.date).toLocaleDateString()}</span>
-                       <span className="flex items-center gap-1.5"><TrendingUp size={12} /> Popular</span>
+                  <div className="pt-2 border-t border-border flex flex-col gap-3">
+                    <div className="flex items-center justify-between text-[9px] font-medium text-muted-foreground px-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                       <span className="flex items-center gap-1.5"><Clock size={10} /> {new Date(note.created_at || note.date).toLocaleDateString()}</span>
+                       <span className="flex items-center gap-1.5"><TrendingUp size={10} /> Popular</span>
                     </div>
-                    <Button onClick={() => window.open(note.url, "_blank")} variant="ghost" className="w-full h-12 rounded-xl font-semibold text-xs gap-2 bg-primary/5 border border-primary/10 hover:bg-primary hover:text-white hover:border-transparent transition-all group/dl py-3">
+                    <Button onClick={() => window.open(note.url, "_blank")} variant="ghost" className="w-full h-10 rounded-lg font-semibold text-xs gap-2 bg-primary/5 border border-primary/10 hover:bg-primary hover:text-white hover:border-transparent transition-all group/dl py-0">
                       {note.type === 'link' ? 'Access External Link' : 'Secure Download'}
-                      <ChevronRight size={16} className="group-hover/dl:translate-x-1 transition-transform" />
+                      <ChevronRight size={14} className="group-hover/dl:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                </CardContent>
             </Card>
           ))}
           
-          <Card onClick={() => setShowRequestModal(true)} className="rounded-[2rem] border-2 border-dashed border-border flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-accent/20 group cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 min-h-[300px]">
-             <div className="h-16 w-16 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-primary/10">
-                <Plus size={32} />
+          <Card onClick={() => setShowRequestModal(true)} className="rounded-3xl border-2 border-dashed border-border flex flex-col items-center justify-center p-6 text-center bg-accent/20 group cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 h-full min-h-[220px]">
+             <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-primary/10">
+                <Plus size={24} />
              </div>
-             <h3 className="font-semibold text-xl mb-3 text-foreground">Request Material</h3>
-             <p className="text-sm font-medium text-muted-foreground max-w-[200px] leading-relaxed">Need help with a specific topic? Send a request to your instructor.</p>
+             <h3 className="font-semibold text-lg mb-2 text-foreground">Request Material</h3>
+             <p className="text-xs font-medium text-muted-foreground max-w-[180px] leading-relaxed">Need help with a specific topic? Send a request to your instructor.</p>
           </Card>
       </div>
 
