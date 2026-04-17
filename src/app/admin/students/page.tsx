@@ -198,21 +198,41 @@ export default function StudentManagement() {
     }
   };
 
+  const syncStudentArchives = async (studentId: number) => {
+    try {
+      const [docsRes, certsRes, perfRes] = await Promise.all([
+        fetch(`/api/admin/students/${studentId}/documents`),
+        fetch(`/api/admin/students/${studentId}/certificates`),
+        fetch(`/api/admin/students/${studentId}/results`)
+      ]);
+      const [docs, certs, perf] = await Promise.all([
+        docsRes.json(),
+        certsRes.json(),
+        perfRes.json()
+      ]);
+      if (Array.isArray(docs)) setStudentDocs(docs);
+      if (Array.isArray(certs)) setStudentCerts(certs);
+      if (Array.isArray(perf)) setPerformanceResults(perf);
+    } catch (e) {
+      console.error("Sync Error:", e);
+    }
+  };
+
   const openDocumentsModal = async (student: any) => {
     setSelectedDocStudent(student);
     setShowDocuments(true);
     setDocsLoading(true);
     setActiveTab('docs');
-    try {
-      const [docsRes, certsRes] = await Promise.all([
-        fetch(`/api/admin/students/${student.id}/documents`),
-        fetch(`/api/admin/students/${student.id}/certificates`)
-      ]);
-      const docs = await docsRes.json();
-      const certs = await certsRes.json();
-      if (Array.isArray(docs)) setStudentDocs(docs);
-      if (Array.isArray(certs)) setStudentCerts(certs);
-    } catch (e) {} finally { setDocsLoading(false); }
+    await syncStudentArchives(student.id);
+    setDocsLoading(false);
+  };
+
+  const openPerformanceModal = async (student: any) => {
+    setSelectedPerformance(student);
+    setShowPerformance(true);
+    setPerformanceLoading(true);
+    await syncStudentArchives(student.id);
+    setPerformanceLoading(false);
   };
 
   const openAuditModal = async (student: any) => {
@@ -221,47 +241,31 @@ export default function StudentManagement() {
     setAuditLoading(true);
     setAuditTab('profile');
     
-    // Set these for cross-compatibility with existing logic
+    // Cross-compatibility sync
     setSelectedDocStudent(student);
     setSelectedPerformance(student);
 
-    try {
-      const [docsRes, certsRes, perfRes] = await Promise.all([
-        fetch(`/api/admin/students/${student.id}/documents`),
-        fetch(`/api/admin/students/${student.id}/certificates`),
-        fetch(`/api/admin/students/${student.id}/results`)
-      ]);
-      
-      const docs = await docsRes.json();
-      const certs = await certsRes.json();
-      const perf = await perfRes.json();
-
-      if (Array.isArray(docs)) setStudentDocs(docs);
-      if (Array.isArray(certs)) setStudentCerts(certs);
-      if (Array.isArray(perf)) setPerformanceResults(perf);
-    } catch (e) {
-      console.error("Failed to synchronize audit archives");
-    } finally {
-      setAuditLoading(false);
-    }
+    await syncStudentArchives(student.id);
+    setAuditLoading(false);
   };
 
   const updateDocStatus = async (docId: number, status: string) => {
     try {
-      const res = await fetch(`/api/admin/students/${selectedDocStudent.id}/documents`, {
+      const studentId = selectedAuditStudent?.id || selectedDocStudent?.id;
+      const res = await fetch(`/api/admin/students/${studentId}/documents`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: docId, status }),
       });
       if (res.ok) {
-        const updatedDocs = studentDocs.map(d => d.id === docId ? { ...d, status } : d);
-        setStudentDocs(updatedDocs);
+        await syncStudentArchives(studentId);
       }
     } catch (e) {}
   };
 
   const handleCertUpload = async (file: File) => {
     if (!certTitle) return alert("Select certificate protocol designation.");
+    const studentId = selectedAuditStudent?.id || selectedDocStudent?.id;
     setIssuing(true);
     try {
       const fd = new FormData();
@@ -270,14 +274,14 @@ export default function StudentManagement() {
       const upData = await upRes.json();
       if (!upRes.ok) throw new Error(upData.error);
 
-      await fetch(`/api/admin/students/${selectedDocStudent.id}/certificates`, {
+      await fetch(`/api/admin/students/${studentId}/certificates`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: certTitle, url: upData.url }),
       });
 
       setCertTitle("");
-      openDocumentsModal(selectedDocStudent);
+      await syncStudentArchives(studentId);
     } catch (e: any) {
       alert(e.message);
     } finally {
@@ -287,9 +291,10 @@ export default function StudentManagement() {
 
   const revokeCert = async (id: number) => {
     if (!confirm("Revoke this institutional certificate?")) return;
+    const studentId = selectedAuditStudent?.id || selectedDocStudent?.id;
     try {
-      await fetch(`/api/admin/students/${selectedDocStudent.id}/certificates?id=${id}`, { method: "DELETE" });
-      openDocumentsModal(selectedDocStudent);
+      await fetch(`/api/admin/students/${studentId}/certificates?id=${id}`, { method: "DELETE" });
+      await syncStudentArchives(studentId);
     } catch (e) {}
   };
 
