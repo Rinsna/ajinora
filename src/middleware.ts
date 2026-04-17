@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
         const { payload } = await jwtVerify(sessionCookie, key, {
           algorithms: ["HS256"],
         });
-        session = payload;
+        session = payload as { user?: { role: string } };
       } catch (e) {
         console.error("[Middleware] Token invalid or expired");
       }
