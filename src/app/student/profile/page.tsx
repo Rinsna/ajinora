@@ -243,9 +243,9 @@ export default function StudentProfile() {
                <CardDescription className="text-sm font-medium text-muted-foreground">Manage your credentials and institutional authentication parameters.</CardDescription>
             </CardHeader>
 
-            <CardContent className="p-8 sm:p-10 space-y-8 mt-4">
-              <form onSubmit={handleUpdate} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <CardContent className="p-8 sm:p-10 space-y-4 mt-1">
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Student Full Name</Label>
                     <div className="relative group">
@@ -302,7 +302,7 @@ export default function StudentProfile() {
                 </div>
 
                 {/* Identity Credentials Section */}
-                <div className="pt-8 border-t border-border/50 space-y-6">
+                <div className="pt-6 border-t border-border/50 space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-primary leading-none mb-1.5 block">Identity Credentials</Label>
