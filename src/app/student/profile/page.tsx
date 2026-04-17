@@ -35,6 +35,8 @@ export default function StudentProfile() {
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [password, setPassword] = useState("");
   const [user, setUser] = useState<any>(null);
   const [documents, setDocuments] = useState<any[]>([]);
   const [certificates, setCertificates] = useState<any[]>([]);
@@ -110,10 +112,31 @@ export default function StudentProfile() {
     } catch (e) {}
   };
 
-  const handleUpdate = (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
+    if (!password) {
+      alert("Please enter a new password to update.");
+      return;
+    }
+    setUpdating(true);
+    try {
+      const res = await fetch("/api/student/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.error || "Update failed");
+      }
+      setSuccess(true);
+      setPassword("");
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setUpdating(false);
+    }
   };
 
   if (loading) {
@@ -259,12 +282,23 @@ export default function StudentProfile() {
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-all" size={20} />
                     <Input 
                       type={showPassword ? "text" : "password"} 
-                      defaultValue="institution_secure_pass" 
+                      placeholder="Enter new secure password to update" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className="h-14 pl-12 pr-12 rounded-xl bg-accent/20 border-border focus:ring-2 focus:ring-primary transition-all font-semibold"
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-green-500 shadow-sm" />
                   </div>
-                  <p className="text-[10px] font-medium text-muted-foreground/70 italic ml-1">Security protocols suggest updating passwords every quarter.</p>
+                  <div className="flex items-center justify-between mt-4">
+                    <p className="text-[10px] font-medium text-muted-foreground/70 italic ml-1">Security protocols suggest updating passwords every quarter.</p>
+                    <Button 
+                      type="submit" 
+                      disabled={updating || !password}
+                      className="h-10 px-6 rounded-xl font-bold uppercase tracking-widest text-[9px] gap-2 shadow-sm bg-primary hover:bg-primary/95 transition-all"
+                    >
+                      {updating ? <Loader2 className="animate-spin" size={12} /> : <><Save size={12} /> Update Security Core</>}
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Identity Credentials Section */}
