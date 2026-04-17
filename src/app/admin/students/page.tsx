@@ -70,6 +70,12 @@ export default function StudentManagement() {
   const [issuing, setIssuing] = useState(false);
   const certRef = useRef<HTMLInputElement>(null);
 
+  // Unified Audit States
+  const [showAudit, setShowAudit] = useState(false);
+  const [selectedAuditStudent, setSelectedAuditStudent] = useState<any>(null);
+  const [auditTab, setAuditTab] = useState<'profile' | 'locker' | 'academic'>('profile');
+  const [auditLoading, setAuditLoading] = useState(false);
+
   const fetchStudents = async () => {
     try {
       const res = await fetch("/api/admin/students");
@@ -209,6 +215,37 @@ export default function StudentManagement() {
     } catch (e) {} finally { setDocsLoading(false); }
   };
 
+  const openAuditModal = async (student: any) => {
+    setSelectedAuditStudent(student);
+    setShowAudit(true);
+    setAuditLoading(true);
+    setAuditTab('profile');
+    
+    // Set these for cross-compatibility with existing logic
+    setSelectedDocStudent(student);
+    setSelectedPerformance(student);
+
+    try {
+      const [docsRes, certsRes, perfRes] = await Promise.all([
+        fetch(`/api/admin/students/${student.id}/documents`),
+        fetch(`/api/admin/students/${student.id}/certificates`),
+        fetch(`/api/admin/students/${student.id}/results`)
+      ]);
+      
+      const docs = await docsRes.json();
+      const certs = await certsRes.json();
+      const perf = await perfRes.json();
+
+      if (Array.isArray(docs)) setStudentDocs(docs);
+      if (Array.isArray(certs)) setStudentCerts(certs);
+      if (Array.isArray(perf)) setPerformanceResults(perf);
+    } catch (e) {
+      console.error("Failed to synchronize audit archives");
+    } finally {
+      setAuditLoading(false);
+    }
+  };
+
   const updateDocStatus = async (docId: number, status: string) => {
     try {
       const res = await fetch(`/api/admin/students/${selectedDocStudent.id}/documents`, {
@@ -330,8 +367,11 @@ export default function StudentManagement() {
                           <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white font-black uppercase text-sm sm:text-base transform group-hover:scale-110 transition-transform duration-500">
                             {student.name?.[0] || 'U'}
                           </div>
-                          <div>
-                            <p className="text-xs sm:text-sm font-black tracking-tight leading-none text-[#37352f] dark:text-white group-hover:text-primary transition-colors">{student.name}</p>
+                          <div 
+                            onClick={() => openAuditModal(student)}
+                            className="cursor-pointer group/name"
+                          >
+                            <p className="text-xs sm:text-sm font-black tracking-tight leading-none text-[#37352f] dark:text-white group-hover/name:text-primary transition-colors underline-offset-4 decoration-primary/30 group-hover/name:underline">{student.name}</p>
                             <p className="text-[10px] text-[#a1a1a1] font-black uppercase tracking-widest pt-1 opacity-60">Verified Student</p>
                           </div>
                         </div>
@@ -451,6 +491,280 @@ export default function StudentManagement() {
                     </Button>
                  </form>
               </CardContent>
+           </Card>
+        </div>
+      )}
+
+      {/* Unified Student Audit Modal */}
+      {showAudit && selectedAuditStudent && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in">
+           <Card className="w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl flex flex-col">
+              <CardHeader className="bg-primary p-8 sm:p-12 text-white relative shrink-0">
+                 <button onClick={() => setShowAudit(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
+                    <X className="w-6 h-6 sm:w-8 sm:h-8" />
+                 </button>
+                 <div className="flex items-center gap-6">
+                    <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white text-2xl sm:text-3xl font-black uppercase shadow-2xl">
+                       {selectedAuditStudent.name?.[0] || 'U'}
+                    </div>
+                    <div>
+                       <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase leading-none">{selectedAuditStudent.name}</CardTitle>
+                       <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2 flex items-center gap-3">
+                          <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10 text-[9px]">ID: {selectedAuditStudent.id.toString().padStart(6, '0')}</span>
+                          <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10 text-[9px]">{selectedAuditStudent.course_title}</span>
+                       </CardDescription>
+                    </div>
+                 </div>
+                 
+                 {/* Audit Tabs */}
+                 <div className="flex items-center gap-2 mt-8 sm:mt-10 overflow-x-auto no-scrollbar">
+                    {[
+                       { id: 'profile', label: 'Overview', icon: <ShieldCheck size={14} /> },
+                       { id: 'locker', label: 'Locker', icon: <FileText size={14} /> },
+                       { id: 'academic', label: 'Academic', icon: <BarChart2 size={14} /> }
+                    ].map(tab => (
+                       <button
+                         key={tab.id}
+                         onClick={() => setAuditTab(tab.id as any)}
+                         className={cn(
+                           "flex items-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0",
+                           auditTab === tab.id 
+                             ? "bg-white text-primary shadow-xl" 
+                             : "text-white/60 hover:bg-white/10"
+                         )}
+                       >
+                          {tab.icon}
+                          {tab.label}
+                       </button>
+                    ))}
+                 </div>
+              </CardHeader>
+              <CardContent className="p-0 flex-1 overflow-y-auto bg-[#f9fafb] dark:bg-[#151515]">
+                 {auditLoading ? (
+                    <div className="h-full flex items-center justify-center p-20">
+                       <Loader2 className="animate-spin text-primary" size={48} />
+                    </div>
+                 ) : (
+                    <div className="p-6 sm:p-10">
+                       {/* Profile & Credentials Tab */}
+                       {auditTab === 'profile' && (
+                          <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-500">
+                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div className="p-6 rounded-3xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm">
+                                   <p className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest mb-4">Access Credentials</p>
+                                   <div className="space-y-4">
+                                      <div className="flex items-center justify-between">
+                                         <span className="text-xs font-bold text-[#a1a1a1]">Username</span>
+                                         <span className="text-xs font-black uppercase text-primary tracking-tight">@{selectedAuditStudent.username}</span>
+                                      </div>
+                                      <div className="flex items-center justify-between">
+                                         <span className="text-xs font-bold text-[#a1a1a1]">Security Status</span>
+                                         <span className="text-[9px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">Bcrypt Secured</span>
+                                      </div>
+                                      <div className="pt-4 border-t border-[#e5e7eb] dark:border-[#2e2e2e] flex justify-center">
+                                         <Button onClick={() => { setShowAudit(false); openEditModal(selectedAuditStudent); }} variant="outline" className="w-full rounded-2xl h-12 text-[9px] font-black uppercase tracking-widest border-primary/20 text-primary hover:bg-primary/5 transition-all">
+                                            Reset Access Keys
+                                         </Button>
+                                      </div>
+                                   </div>
+                                </div>
+                                <div className="p-6 rounded-3xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm">
+                                   <p className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest mb-4">Institutional Timeline</p>
+                                   <div className="space-y-4">
+                                      <div className="flex items-center justify-between">
+                                         <span className="text-xs font-bold text-[#a1a1a1]">Enrollment Date</span>
+                                         <span className="text-xs font-black uppercase text-foreground">{new Date(selectedAuditStudent.created_at).toLocaleDateString()}</span>
+                                      </div>
+                                      <div className="flex items-center justify-between">
+                                         <span className="text-xs font-bold text-[#a1a1a1]">Verified By</span>
+                                         <span className="text-[9px] font-black uppercase text-amber-500">System Admin</span>
+                                      </div>
+                                      <div className="flex items-center justify-between">
+                                         <span className="text-xs font-bold text-[#a1a1a1]">Account Role</span>
+                                         <span className="text-[9px] font-black uppercase text-primary">Student Registry</span>
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+                             
+                             <div className="p-8 rounded-3xl bg-primary/5 border-2 border-primary/10 relative overflow-hidden group">
+                                <div className="relative z-10">
+                                   <p className="text-[10px] font-black uppercase text-primary tracking-[0.2em] mb-2">Institutional Bio</p>
+                                   <p className="text-sm font-bold text-[#37352f] dark:text-white/80 leading-relaxed italic">
+                                      "Student {selectedAuditStudent.name} is currently enrolled in the {selectedAuditStudent.course_title} academic path at Ajinora. This profile contains all historical academic data and institutional certifications."
+                                   </p>
+                                </div>
+                                <Award className="absolute -right-6 -bottom-6 w-32 h-32 text-primary/5 group-hover:rotate-12 transition-transform duration-700" />
+                             </div>
+                          </div>
+                       )}
+
+                       {/* Locker Tab - Docs & Certs */}
+                       {auditTab === 'locker' && (
+                          <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500">
+                             {/* Documents Section */}
+                             <div>
+                                <h3 className="text-xs font-black uppercase text-[#a1a1a1] tracking-[0.2em] mb-6 flex items-center gap-3">
+                                   Identity Records
+                                   <div className="flex-1 h-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e]" />
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                   {studentDocs.length === 0 ? (
+                                      <div className="col-span-full py-12 flex flex-col items-center justify-center border-4 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e] rounded-3xl opacity-40">
+                                         <p className="text-[10px] font-black uppercase tracking-widest italic">Zero documents filed in records.</p>
+                                      </div>
+                                   ) : studentDocs.map((doc) => (
+                                      <div key={doc.id} className="p-4 rounded-2xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group shadow-sm">
+                                         <div className="flex items-center gap-3">
+                                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                               <FileText size={18} />
+                                            </div>
+                                            <div>
+                                               <p className="font-black text-[11px] uppercase text-[#37352f] dark:text-white leading-none">{doc.title}</p>
+                                               <p className={cn(
+                                                  "text-[8px] font-bold uppercase tracking-widest mt-1.5",
+                                                  doc.status === 'pending' ? 'text-amber-500' : 
+                                                  doc.status === 'verified' ? 'text-emerald-500' : 'text-red-500'
+                                               )}>{doc.status}</p>
+                                            </div>
+                                         </div>
+                                         <div className="flex items-center gap-1.5">
+                                            <Button onClick={() => window.open(doc.url, '_blank')} variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10 rounded-lg"><BookOpen size={14}/></Button>
+                                            {doc.status === 'pending' && (
+                                               <>
+                                                  <Button onClick={() => updateDocStatus(doc.id, 'verified')} variant="ghost" size="icon" className="h-8 w-8 text-emerald-500 hover:bg-emerald-500/10 rounded-lg"><Check size={14}/></Button>
+                                                  <Button onClick={() => updateDocStatus(doc.id, 'rejected')} variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-500/10 rounded-lg"><XCircle size={14}/></Button>
+                                               </>
+                                            )}
+                                         </div>
+                                      </div>
+                                   ))}
+                                </div>
+                             </div>
+
+                             {/* Certificates Section */}
+                             <div>
+                                <h3 className="text-xs font-black uppercase text-[#a1a1a1] tracking-[0.2em] mb-6 flex items-center gap-3">
+                                   Achievements Matrix
+                                   <div className="flex-1 h-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e]" />
+                                </h3>
+                                <div className="space-y-4">
+                                   <div className="flex flex-col sm:flex-row gap-4 p-6 rounded-3xl bg-emerald-500/5 border-2 border-emerald-500/20">
+                                      <input 
+                                         value={certTitle}
+                                         onChange={(e) => setCertTitle(e.target.value)}
+                                         placeholder="CERTIFICATE DESIGNATION..."
+                                         className="flex-1 bg-white dark:bg-black border border-emerald-500/20 rounded-xl px-5 h-12 text-[10px] font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                                      />
+                                      <Button 
+                                         onClick={() => certRef.current?.click()}
+                                         disabled={issuing}
+                                         className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-500/20 gap-2 shrink-0"
+                                      >
+                                         {issuing ? <Loader2 className="animate-spin" size={14} /> : <><Upload size={14} /> Issue New Medal</>}
+                                      </Button>
+                                      <input ref={certRef} type="file" className="hidden" onChange={(e) => e.target.files?.[0] && handleCertUpload(e.target.files[0])} />
+                                   </div>
+
+                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                      {studentCerts.length === 0 ? (
+                                         <div className="col-span-full py-8 flex items-center justify-center opacity-40">
+                                            <p className="text-[10px] font-black uppercase tracking-widest italic">Zero awards issued.</p>
+                                         </div>
+                                      ) : studentCerts.map((cert) => (
+                                         <div key={cert.id} className="p-4 rounded-2xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group shadow-sm">
+                                            <div className="flex items-center gap-3">
+                                               <div className="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-500">
+                                                  <Award size={18} />
+                                               </div>
+                                               <div>
+                                                  <p className="font-black text-[11px] uppercase text-[#37352f] dark:text-white leading-none">{cert.title}</p>
+                                                  <p className="text-[8px] font-bold text-[#a1a1a1] uppercase mt-1.5 opacity-60">Matrix Date: {new Date(cert.issued_at).toLocaleDateString()}</p>
+                                               </div>
+                                            </div>
+                                            <div className="flex items-center gap-1.5">
+                                               <Button onClick={() => window.open(cert.url, '_blank')} variant="ghost" size="icon" className="h-8 w-8 text-emerald-500 hover:bg-emerald-500/10 rounded-lg"><BookOpen size={14}/></Button>
+                                               <Button onClick={() => revokeCert(cert.id)} variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-500/10 rounded-lg"><Trash2 size={14}/></Button>
+                                            </div>
+                                         </div>
+                                      ))}
+                                   </div>
+                                </div>
+                             </div>
+                          </div>
+                       )}
+
+                       {/* Academic Performance Tab */}
+                       {auditTab === 'academic' && (
+                          <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500">
+                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 text-center">
+                                   <p className="text-[10px] font-black uppercase text-amber-500/60 tracking-widest mb-2">Efficiency Rating</p>
+                                   <h4 className="text-3xl font-black text-amber-500 tracking-tighter">
+                                      {performanceResults.length > 0 
+                                         ? Math.round(performanceResults.reduce((acc, curr) => acc + (curr.percentage || 0), 0) / performanceResults.length) 
+                                         : 0}%
+                                   </h4>
+                                </div>
+                                <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 text-center">
+                                   <p className="text-[10px] font-black uppercase text-primary/60 tracking-widest mb-2">Exams Completed</p>
+                                   <h4 className="text-3xl font-black text-primary tracking-tighter">{performanceResults.length}</h4>
+                                </div>
+                                <div className="p-6 rounded-3xl bg-emerald-500/5 border border-emerald-500/10 text-center">
+                                   <p className="text-[10px] font-black uppercase text-emerald-500/60 tracking-widest mb-2">Global Rank</p>
+                                   <h4 className="text-3xl font-black text-emerald-500 tracking-tighter">A+</h4>
+                                </div>
+                             </div>
+
+                             <div className="space-y-4">
+                                <h3 className="text-xs font-black uppercase text-[#a1a1a1] tracking-[0.2em] mb-4 flex items-center gap-3">
+                                   Performance Matrix
+                                   <div className="flex-1 h-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e]" />
+                                </h3>
+                                {performanceResults.length === 0 ? (
+                                   <div className="py-20 flex flex-col items-center justify-center border-4 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e] rounded-[3rem] opacity-30">
+                                      <BarChart2 className="w-16 h-16 text-primary mb-6" />
+                                      <p className="text-[10px] font-black uppercase tracking-[0.2em] italic">Zero academic traces detected.</p>
+                                   </div>
+                                ) : (
+                                   <div className="grid grid-cols-1 gap-4">
+                                      {performanceResults.map((result, idx) => (
+                                         <div key={idx} className="p-6 rounded-[2rem] bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 hover:shadow-xl transition-all group">
+                                            <div className="flex items-center gap-5">
+                                               <div className="h-14 w-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 transition-transform">
+                                                  <Trophy size={28} />
+                                               </div>
+                                               <div>
+                                                  <p className="text-base font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">{result.exam_title || 'Institutional Module'}</p>
+                                                  <p className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest mt-2">{new Date(result.completed_at).toLocaleDateString()}</p>
+                                               </div>
+                                            </div>
+                                            <div className="flex items-center gap-8 w-full sm:w-auto border-t sm:border-t-0 border-[#e5e7eb] dark:border-[#2e2e2e] pt-4 sm:pt-0">
+                                               <div className="text-right flex-1 sm:flex-none">
+                                                  <p className="text-[9px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">Score Delta</p>
+                                                  <p className="text-xl font-black text-primary tracking-tighter">{result.score}/{result.total}</p>
+                                               </div>
+                                               <div className="h-10 w-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e] hidden sm:block" />
+                                               <div className="text-right flex-1 sm:flex-none">
+                                                  <p className="text-[9px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">Efficiency</p>
+                                                  <p className="text-xl font-black text-emerald-500 tracking-tighter">{result.percentage}%</p>
+                                               </div>
+                                            </div>
+                                         </div>
+                                      ))}
+                                   </div>
+                                )}
+                             </div>
+                          </div>
+                       )}
+                    </div>
+                 )}
+              </CardContent>
+              <div className="p-6 sm:p-10 border-t border-[#e5e7eb] dark:border-[#2e2e2e] bg-white dark:bg-[#1a1a1a] shrink-0">
+                 <Button onClick={() => setShowAudit(false)} className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-2xl h-14 sm:h-16 text-[10px] font-black uppercase tracking-[0.2em] transition-all">
+                    Dismiss Student Audit Matrix
+                 </Button>
+              </div>
            </Card>
         </div>
       )}
