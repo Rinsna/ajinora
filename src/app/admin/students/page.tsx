@@ -359,7 +359,7 @@ export default function StudentManagement() {
                 className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]"
               >
                 {students
-                  .filter(s => (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase())) && (!filterCourse || String(s.course_id) === String(filterCourse)))
+                  .filter(s => (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase()) || s.id.toString().includes(searchTerm)) && (!filterCourse || String(s.course_id) === String(filterCourse)))
                   .map((student) => (
                     <motion.tr 
                       key={student.id} 
