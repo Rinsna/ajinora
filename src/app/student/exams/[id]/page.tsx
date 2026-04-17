@@ -138,7 +138,7 @@ export default function ExamSession({ params }: { params: Promise<{ id: string }
     return (
       <div className="min-h-[85vh] flex flex-col items-center justify-center">
          <Loader2 className="animate-spin text-primary mb-6" size={48} />
-         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground animate-pulse">Initializing Secure Protocol...</p>
+         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground animate-pulse">Initializing Secure Exam...</p>
       </div>
     );
   }
@@ -216,7 +216,7 @@ export default function ExamSession({ params }: { params: Promise<{ id: string }
             <div className="text-center mb-12">
                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 mb-6">
                   <Trophy size={16} />
-                  <span className="text-xs font-semibold">Assessment Synchronized Successfully</span>
+                  <span className="text-xs font-semibold">Exam Synchronized Successfully</span>
                </div>
                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground leading-tight mb-4">
                  Performance <br /> <span className="text-primary">Report.</span>
@@ -303,7 +303,7 @@ export default function ExamSession({ params }: { params: Promise<{ id: string }
                 
                 <CardHeader className="p-5 sm:p-6 pb-2 relative z-10">
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Protocol Frame {currentQuestion + 1}</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Exam Frame {currentQuestion + 1}</span>
                     <div className="h-px flex-1 bg-border/40" />
                   </div>
                   <CardTitle className="text-lg sm:text-xl font-medium leading-relaxed text-foreground">{questions[currentQuestion]?.question}</CardTitle>
@@ -431,7 +431,7 @@ export default function ExamSession({ params }: { params: Promise<{ id: string }
                 </div>
                 <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-4">Confirm Commit</h3>
                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 mb-12 italic leading-relaxed">
-                  You have completed <span className="text-primary">{Object.keys(selectedAnswers).length}</span> out of <span className="text-primary">{questions.length}</span> evaluation items. Initializing submission protocol?
+                  You have completed <span className="text-primary">{Object.keys(selectedAnswers).length}</span> out of <span className="text-primary">{questions.length}</span> evaluation items. Initializing submission?
                 </p>
                 
                 <div className="grid grid-cols-2 gap-6">

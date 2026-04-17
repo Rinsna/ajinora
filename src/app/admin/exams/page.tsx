@@ -321,8 +321,8 @@ export default function ExamsManagement() {
           <table className="w-full border-separate border-spacing-y-4">
             <thead>
               <tr className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
-                <th className="px-8 py-3 text-left">Internal Protocol / Title</th>
-                <th className="px-8 py-3 text-left">Protocol Date</th>
+                <th className="px-8 py-3 text-left">Internal Exam / Title</th>
+                <th className="px-8 py-3 text-left">Exam Date</th>
                 <th className="px-8 py-3 text-center">Duration</th>
                 <th className="px-8 py-3 text-center">Metrics</th>
                 <th className="px-8 py-3 text-right pr-12 text-primary/60">Operations</th>
@@ -377,7 +377,7 @@ export default function ExamsManagement() {
           {exams.length === 0 && !loading && (
             <div className="py-24 text-center opacity-20">
                <FilePlus size={80} className="mx-auto mb-6 text-muted-foreground/40" />
-               <p className="text-xl font-black uppercase tracking-tighter italic">Zero protocols initialized.</p>
+               <p className="text-xl font-black uppercase tracking-tighter italic">Zero exams initialized.</p>
             </div>
           )}
         </div>
@@ -416,7 +416,7 @@ export default function ExamsManagement() {
                        </div>
                        
                        <div className="space-y-1">
-                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Protocol Date</label>
+                          <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Exam Date</label>
                           <input required type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-accent/20 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary/40 focus:outline-none transition-all shadow-inner uppercase tracking-widest" />
                        </div>
                     </div>
@@ -512,7 +512,7 @@ export default function ExamsManagement() {
                           <Info size={12} className="text-primary" />
                           <span className="text-[9px] font-black uppercase tracking-widest text-primary">Data Schema Definition</span>
                        </div>
-                       <h3 className="text-4xl font-black tracking-tighter uppercase leading-tight">Excel Upload Protocol</h3>
+                       <h3 className="text-4xl font-black tracking-tighter uppercase leading-tight">Excel Upload Process</h3>
                        <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/60 mt-4 leading-relaxed italic opacity-80 underline underline-offset-8 decoration-primary/20">Follow this strict schema for successful engine integration.</p>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -567,12 +567,12 @@ export default function ExamsManagement() {
                        <Card className="p-8 rounded-[2.5rem] bg-orange-500/5 border-none space-y-4">
                           <div className="h-10 w-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-lg"><ShieldCheck size={20} /></div>
                           <h5 className="text-xs font-black uppercase tracking-widest">Logic: Negative Marks</h5>
-                          <p className="text-[11px] font-bold text-muted-foreground leading-relaxed italic opacity-80 uppercase">Negative marking is applied globally to all questions in the protocol during auto-evaluation. Ensure the value provided (e.g., <span className="text-orange-600 underline">0.25</span>) aligns with your institutional policy.</p>
+                          <p className="text-[11px] font-bold text-muted-foreground leading-relaxed italic opacity-80 uppercase">Negative marking is applied globally to all questions in the exam during auto-evaluation. Ensure the value provided (e.g., <span className="text-orange-600 underline">0.25</span>) aligns with your institutional policy.</p>
                        </Card>
                     </div>
 
                     <Button onClick={() => setShowInstructions(false)} className="w-full h-20 rounded-[2.5rem] font-black uppercase tracking-[0.4em] text-[10px] bg-primary hover:bg-primary/95 text-white transition-all shadow-xl shadow-primary/20">
-                       Acknowledge Protocol Guidelines
+                       Acknowledge Exam Guidelines
                     </Button>
                  </div>
               </div>

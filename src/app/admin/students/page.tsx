@@ -716,7 +716,7 @@ export default function StudentManagement() {
                                 {performanceResults.length === 0 ? (
                                     <div className="py-20 text-center opacity-40">
                                        <BarChart2 className="mx-auto mb-4 text-[#a1a1a1]" size={40} />
-                                       <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero academic protocols identified.</p>
+                                       <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero academic exams identified.</p>
                                     </div>
                                  ) : (
                                     <div className="grid grid-cols-1 gap-4">
