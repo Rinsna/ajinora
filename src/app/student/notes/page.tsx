@@ -97,7 +97,7 @@ export default function StudentNotes() {
              <BookOpen size={16} className="text-primary" />
              <span className="text-xs font-semibold text-primary leading-none">Resource Library v2.0</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-none mb-3">Study Center</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Study Center</h1>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">Access curated learning materials and institutional intelligence.</p>
         </div>
         <div className="relative w-full md:w-[350px]">

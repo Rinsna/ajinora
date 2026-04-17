@@ -254,7 +254,7 @@ export default function ExamsManagement() {
       {/* ─── Header Section ─── */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 sm:gap-10">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-foreground uppercase leading-none">Exam Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Exam Management</h1>
 
         </div>
         

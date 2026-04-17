@@ -277,7 +277,7 @@ export default function CoursesManagement() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase">Curriculum</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Curriculum</h1>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#a1a1a1] mt-1 opacity-70">Design institutional courses.</p>
         </div>
         <Button onClick={() => openCourseModal()} className="flex items-center gap-2 h-12 px-6 font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-xl shadow-primary/20">

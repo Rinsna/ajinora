@@ -260,7 +260,7 @@ export default function StudentManagement() {
     <div className="space-y-8 sm:space-y-10 text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none mb-2">Student Registry</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Student Registry</h1>
           <p className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-[#a1a1a1] mt-2 opacity-70 italic underline underline-offset-4 decoration-primary/20">Manage credentials and enrollments.</p>
         </div>
         <Button onClick={() => setShowModal(true)} className="flex items-center gap-3 h-12 sm:h-14 px-6 sm:px-8 shadow-xl shadow-primary/20 font-black uppercase tracking-widest text-[10px] sm:text-xs bg-primary hover:bg-primary/90 text-white rounded-xl sm:rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95">

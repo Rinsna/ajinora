@@ -182,7 +182,7 @@ export default function NotesManagement() {
     <div className="space-y-8 animate-in zoom-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="text-left">
-          <h1 className="text-3xl font-black tracking-tighter uppercase">Resource Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Resource Management</h1>
           <p className="text-muted-foreground mt-2 text-sm font-medium">Upload and categorize study notes, videos, and links for students.</p>
         </div>
         <Button onClick={() => { resetForm(); setShowModal(true); }} className="flex items-center gap-2 h-14 px-8 shadow-2xl shadow-primary/30 font-black uppercase text-xs tracking-widest bg-primary hover:bg-primary/90 text-white rounded-2xl">

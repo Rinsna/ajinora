@@ -131,7 +131,7 @@ export default function StudentProfile() {
     <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Profile Settings</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Profile Settings</h1>
           <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">Configure your institutional profile and security protocols.</p>
         </div>
         {success && (

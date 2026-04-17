@@ -49,7 +49,7 @@ export default function StudentExams() {
               <ShieldCheck size={14} className="text-primary" />
               <span className="text-xs font-semibold text-primary">Secure Exam Center</span>
            </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight mb-2">Examination Portal</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Examination Portal</h1>
           <p className="text-sm text-muted-foreground mt-2 max-w-xl">Measure your institutional intelligence.</p>
         </div>
         

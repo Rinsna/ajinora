@@ -90,7 +90,7 @@ export default function StudentSessions() {
     <div className="space-y-8 sm:space-y-12 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase leading-none mb-2">Live Sessions</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Live Sessions</h1>
           <p className="text-sm text-muted-foreground font-medium">Join your scheduled live classes</p>
         </div>
         <div className="flex bg-muted/50 p-1 rounded-2xl border shadow-inner w-full md:w-fit">

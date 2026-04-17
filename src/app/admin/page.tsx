@@ -70,7 +70,7 @@ export default function AdminDashboard() {
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">Institutional Pulse</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Institutional Pulse</h1>
         </div>
         <div className="flex gap-3 w-full sm:w-auto">
           <Link href="/admin/students" className="flex-1 sm:flex-none">

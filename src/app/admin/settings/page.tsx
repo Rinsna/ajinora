@@ -106,7 +106,7 @@ export default function AdminSettings() {
     <div className="space-y-8 animate-fly-in-up text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">Global Configurations</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Global Configurations</h1>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#a1a1a1] mt-2 opacity-70">Manage institutional parameters and branding protocols.</p>
         </div>
         <Button onClick={handleSave} disabled={saving} className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 flex items-center gap-2">

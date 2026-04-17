@@ -18,7 +18,7 @@ export default function StudentSettings() {
     <div className="space-y-8 animate-fly-in-up text-left max-w-5xl mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#e5e7eb] dark:border-[#2e2e2e]">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">Experience Protocols</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Experience Protocols</h1>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#a1a1a1] mt-2 opacity-70">Customize your institutional interface and identity.</p>
         </div>
         <Button onClick={handleSave} disabled={saving} className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 flex items-center gap-2">

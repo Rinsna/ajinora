@@ -58,7 +58,7 @@ export default function ActivityLogs() {
     <div className="space-y-8 sm:space-y-12 animate-in fly-in-from-bottom duration-700 text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 px-2 sm:px-0">
         <div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase leading-none text-[#37352f] dark:text-white">Institutional Records</h1>
+          <h1 className="text-3xl font-bold tracking-tight uppercase">Institutional Records</h1>
           <p className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-[#a1a1a1] mt-3 opacity-70 italic underline underline-offset-4 decoration-primary/20">Real-time surveillance of student behavior and system events.</p>
         </div>
         <Button variant="outline" className="flex items-center gap-4 h-14 sm:h-16 px-6 sm:px-10 border-2 border-dashed border-primary/20 hover:bg-primary/5 rounded-[1.5rem] sm:rounded-2xl font-black uppercase text-[10px] sm:text-xs tracking-widest text-primary shadow-xl shadow-primary/5 transition-all active:scale-95 py-6 h-auto">
