@@ -381,7 +381,7 @@ export default function StudentProfile() {
                             </div>
                             <div className="flex-1 overflow-hidden">
                                <p className="text-xs font-black uppercase text-foreground leading-none truncate">{cert.title}</p>
-                               <p className="text-[9px] font-bold text-muted-foreground uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.created_at).toLocaleDateString()}</p>
+                               <p className="text-[9px] font-bold text-muted-foreground uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.issued_at).toLocaleDateString()}</p>
                             </div>
                             <Button onClick={() => window.open(cert.url, '_blank')} variant="outline" size="sm" className="h-10 px-4 rounded-xl border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest shrink-0">
                                Download

@@ -633,7 +633,7 @@ export default function StudentManagement() {
                                    </div>
                                    <div>
                                       <p className="font-black text-sm uppercase text-[#37352f] dark:text-white leading-none">{cert.title}</p>
-                                      <p className="text-[9px] font-bold text-[#a1a1a1] uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.created_at).toLocaleDateString()}</p>
+                                      <p className="text-[9px] font-bold text-[#a1a1a1] uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.issued_at).toLocaleDateString()}</p>
                                    </div>
                                 </div>
                                 <div className="flex items-center gap-2">

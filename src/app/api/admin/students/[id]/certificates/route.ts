@@ -14,17 +14,17 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     // Self-healing: Ensure table exists
     await query(`
-      CREATE TABLE IF NOT EXISTS certificates (
+      CREATE TABLE IF NOT EXISTS student_certificates (
         id SERIAL PRIMARY KEY,
         user_id INT REFERENCES users(id),
-        title VARCHAR(100),
+        title VARCHAR(255),
         url TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
     const certificates = await query(
-      "SELECT * FROM certificates WHERE user_id = ? ORDER BY created_at DESC",
+      "SELECT * FROM student_certificates WHERE user_id = ? ORDER BY issued_at DESC",
       [studentId]
     );
 
@@ -49,12 +49,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (!title || !url) return NextResponse.json({ error: "Missing data" }, { status: 400 });
 
     await query(
-      "INSERT INTO certificates (user_id, title, url) VALUES (?, ?, ?)",
+      "INSERT INTO student_certificates (user_id, title, url) VALUES (?, ?, ?)",
       [studentId, title, url]
     );
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Certificate Issuance Error:", error);
     return NextResponse.json({ error: "Issuance failed" }, { status: 500 });
   }
 }
@@ -69,9 +70,10 @@ export async function DELETE(request: Request) {
   const id = searchParams.get('id');
 
   try {
-    await query("DELETE FROM certificates WHERE id = ?", [id]);
+    await query("DELETE FROM student_certificates WHERE id = ?", [id]);
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Certificate Revocation Error:", error);
     return NextResponse.json({ error: "Revocation failed" }, { status: 500 });
   }
 }
