@@ -183,21 +183,6 @@ export default function StudentManagement() {
     }
   };
 
-  const openPerformanceModal = async (student: any) => {
-    setSelectedPerformance(student);
-    setShowPerformance(true);
-    setPerformanceLoading(true);
-    try {
-      const res = await fetch(`/api/admin/students/${student.id}/results`);
-      const data = await res.json();
-      if (res.ok) setPerformanceResults(data);
-    } catch (e) {
-      console.error("Failed to load performance matrix");
-    } finally {
-      setPerformanceLoading(false);
-    }
-  };
-
   const syncStudentArchives = async (studentId: number) => {
     try {
       const [docsRes, certsRes, perfRes] = await Promise.all([
