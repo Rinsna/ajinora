@@ -13,6 +13,7 @@ import {
   GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/components/settings-provider";
 
 const studentMenuItems = [
   { name: "My Dashboard", icon: LayoutDashboard, path: "/student" },
@@ -30,6 +31,7 @@ interface StudentSidebarProps {
 
 export function StudentSidebar({ isCollapsed, onToggle }: StudentSidebarProps) {
   const pathname = usePathname();
+  const { settings } = useSettings();
 
   const handleLogout = async () => {
     try {
@@ -50,12 +52,12 @@ export function StudentSidebar({ isCollapsed, onToggle }: StudentSidebarProps) {
           onClick={onToggle}
           className="flex items-center gap-4 group cursor-pointer"
         >
-          <div className="h-10 w-10 shrink-0 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 ring-4 ring-primary/5 group-hover:scale-105 transition-transform">
-             <GraduationCap size={22} />
+          <div className="h-10 w-10 shrink-0 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 ring-4 ring-primary/5 group-hover:scale-105 transition-transform overflow-hidden">
+             {settings?.logo_url ? <img src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-1 bg-white" /> : <GraduationCap size={22} />}
           </div>
           {!isCollapsed && (
             <div className="flex flex-col overflow-hidden animate-in fade-in slide-in-from-left-2 duration-300">
-              <span className="text-xl font-black tracking-tight leading-none">Ajinora</span>
+              <span className="text-xl font-black tracking-tight leading-none truncate max-w-[140px]">{settings?.brand_name || "Ajinora"}</span>
               <span className="text-[10px] font-bold text-primary tracking-widest uppercase mt-1 opacity-70">Learner Portal</span>
             </div>
           )}

@@ -15,6 +15,7 @@ import {
   GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/components/settings-provider";
 
 const menuItems = [
   { name: "Overview", icon: LayoutDashboard, path: "/admin" },
@@ -28,6 +29,7 @@ const menuItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { settings } = useSettings();
 
   const handleLogout = async () => {
     try {
@@ -42,11 +44,11 @@ export function Sidebar() {
     <div className="w-72 h-screen sticky top-0 bg-[#f7f6f3] dark:bg-[#1a1a1a] border-r border-[#e5e7eb] dark:border-[#2e2e2e] text-[#37352f] dark:text-white flex-col z-50 transition-all shadow-sm hidden lg:flex">
       <div className="p-8 pb-10">
         <Link href="/admin" className="flex items-center gap-4 group">
-          <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 ring-4 ring-primary/5 group-hover:scale-105 transition-transform">
-             <GraduationCap size={22} />
+          <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/30 ring-4 ring-primary/5 group-hover:scale-105 transition-transform overflow-hidden">
+             {settings?.logo_url ? <img src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-1 bg-white" /> : <GraduationCap size={22} />}
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tight leading-none">Ajinora</span>
+            <span className="text-xl font-black tracking-tight leading-none truncate max-w-[140px]">{settings?.brand_name || "Ajinora"}</span>
             <span className="text-[10px] font-bold text-primary tracking-widest uppercase mt-1 opacity-70">Admin Hub</span>
           </div>
         </Link>

@@ -171,6 +171,25 @@ const SCHEMA_STATEMENTS = [
   `INSERT INTO users (username, password, role, full_name)
    VALUES ('admin', '$2b$10$kN1yoraqLjIOndmqvmWa9e2IQ29rE8DslUlB9QDedK7ng/QiBoWym', 'admin', 'System Administrator')
    ON CONFLICT (username) DO UPDATE SET password = EXCLUDED.password, role = EXCLUDED.role, full_name = EXCLUDED.full_name`,
+
+  `CREATE TABLE IF NOT EXISTS global_settings (
+    id SERIAL PRIMARY KEY,
+    brand_name VARCHAR(255) DEFAULT 'Ajinora',
+    tagline VARCHAR(255) DEFAULT 'Next-Gen Learning',
+    hero_title TEXT DEFAULT 'Empowering the minds of tomorrow',
+    hero_description TEXT DEFAULT 'A limitless educational ecosystem combining intelligent tools, interactive curriculums, and seamless performance tracking',
+    logo_url TEXT,
+    two_factor_auth BOOLEAN DEFAULT false,
+    ip_restriction BOOLEAN DEFAULT false,
+    session_heartbeat BOOLEAN DEFAULT true,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
+
+  `ALTER TABLE global_settings ADD COLUMN IF NOT EXISTS two_factor_auth BOOLEAN DEFAULT false`,
+  `ALTER TABLE global_settings ADD COLUMN IF NOT EXISTS ip_restriction BOOLEAN DEFAULT false`,
+  `ALTER TABLE global_settings ADD COLUMN IF NOT EXISTS session_heartbeat BOOLEAN DEFAULT true`,
+
+  `INSERT INTO global_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`
 ];
 
 export async function POST(request: Request) {
@@ -182,7 +201,7 @@ export async function POST(request: Request) {
   const secret = searchParams.get("secret");
   const SETUP_SECRET = process.env.SETUP_SECRET || "ajinora_init_2026";
 
-  if (!(session?.role === "admin") && secret !== SETUP_SECRET) {
+  if (!(session?.user?.role === "admin") && secret !== SETUP_SECRET) {
     return NextResponse.json({ error: "Institutional clearance required. Please provide a valid synchronization secret." }, { status: 401 });
   }
 

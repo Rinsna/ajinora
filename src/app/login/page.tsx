@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, User, Eye, EyeOff, Loader, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSettings } from "@/components/settings-provider";
 
 export default function LoginPage() {
+  const { settings } = useSettings();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -59,22 +61,21 @@ export default function LoginPage() {
         
         {/* Top Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+          <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg overflow-hidden">
+             {settings?.logo_url ? <img src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-1 bg-white" /> : <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>}
           </div>
-          <span className="text-2xl font-black tracking-tighter uppercase">Ajinora</span>
+          <span className="text-2xl font-black tracking-tighter uppercase">{settings?.brand_name || "Ajinora"}</span>
         </div>
 
         {/* Main Landing Copy */}
         <div className="relative z-10 my-auto pt-2">
           <div className="inline-block px-3 py-1 mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-widest text-white">
-            Next-Gen Learning
+            {settings?.tagline || "Next-Gen Learning"}
           </div>
-          <h1 className="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.1] mb-4">
-            Empowering the <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">minds of tomorrow</span>
+          <h1 className="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.1] mb-4" dangerouslySetInnerHTML={{ __html: settings?.hero_title || 'Empowering the <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">minds of tomorrow</span>' }}>
           </h1>
           <p className="text-lg text-white/60 max-w-md leading-relaxed font-medium mb-4">
-            A limitless educational ecosystem combining intelligent tools, interactive curriculums, and seamless performance tracking
+            {settings?.hero_description || "A limitless educational ecosystem combining intelligent tools, interactive curriculums, and seamless performance tracking"}
           </p>
 
           <div className="space-y-3">
@@ -112,10 +113,10 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-[#f8f9fb] dark:bg-background relative p-2 sm:p-4 overflow-y-auto">
         {/* Mobile only logo */}
         <div className="absolute top-4 left-6 lg:hidden flex items-center gap-3">
-          <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+          <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary overflow-hidden">
+             {settings?.logo_url ? <img src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-1" /> : <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>}
           </div>
-          <span className="text-xl font-black tracking-tighter uppercase text-gray-900 dark:text-white">Ajinora</span>
+          <span className="text-xl font-black tracking-tighter uppercase text-gray-900 dark:text-white">{settings?.brand_name || "Ajinora"}</span>
         </div>
 
         <div className="w-full max-w-[400px] animate-in fade-in slide-in-from-bottom-4 duration-700">

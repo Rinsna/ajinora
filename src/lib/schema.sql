@@ -153,3 +153,17 @@ CREATE TABLE IF NOT EXISTS student_certificates (
   issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Global Application Settings
+CREATE TABLE IF NOT EXISTS global_settings (
+  id SERIAL PRIMARY KEY,
+  brand_name VARCHAR(255) DEFAULT 'Ajinora',
+  tagline VARCHAR(255) DEFAULT 'Next-Gen Learning',
+  hero_title TEXT DEFAULT 'Empowering the minds of tomorrow',
+  hero_description TEXT DEFAULT 'A limitless educational ecosystem combining intelligent tools, interactive curriculums, and seamless performance tracking',
+  logo_url TEXT,
+  two_factor_auth BOOLEAN DEFAULT false,
+  ip_restriction BOOLEAN DEFAULT false,
+  session_heartbeat BOOLEAN DEFAULT true,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
