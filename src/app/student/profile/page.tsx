@@ -151,7 +151,7 @@ export default function StudentProfile() {
   const initials = user?.full_name?.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || "ST";
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom duration-700">
+    <div className="max-w-6xl mx-auto min-h-[85vh] space-y-10 animate-in fade-in slide-in-from-bottom duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
           <h1 className="text-3xl font-bold tracking-tight uppercase">Profile Settings</h1>

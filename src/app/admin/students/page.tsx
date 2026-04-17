@@ -52,6 +52,7 @@ export default function StudentManagement() {
   const [eFullName, setEFullName] = useState("");
   const [eUsername, setEUsername] = useState("");
   const [eCourseId, setECourseId] = useState("");
+  const [ePassword, setEPassword] = useState("");
   const [updating, setUpdating] = useState(false);
 
   const [showPerformance, setShowPerformance] = useState(false);
@@ -152,6 +153,7 @@ export default function StudentManagement() {
     setEFullName(student.name);
     setEUsername(student.username);
     setECourseId(student.course_id?.toString() || "");
+    setEPassword("");
     setShowEditModal(true);
   };
 
@@ -168,7 +170,8 @@ export default function StudentManagement() {
         body: JSON.stringify({ 
           fullName: eFullName, 
           username: eUsername, 
-          courseId: eCourseId ? parseInt(eCourseId) : null 
+          courseId: eCourseId ? parseInt(eCourseId) : null,
+          password: ePassword || undefined
         }),
       });
       const data = await res.json();
@@ -488,7 +491,7 @@ export default function StudentManagement() {
       {/* Unified Student Audit Modal */}
       {showAudit && selectedAuditStudent && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in">
-           <Card className="w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl flex flex-col">
+           <Card className="w-full max-w-4xl max-h-[90vh] min-h-[600px] rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl flex flex-col">
               <CardHeader className="bg-primary p-8 sm:p-12 text-white relative shrink-0">
                  <button onClick={() => setShowAudit(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
                     <X className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -791,19 +794,31 @@ export default function StudentManagement() {
                        />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Active Course Assignment</label>
-                       <select 
-                         required
-                         value={eCourseId}
-                         onChange={(e) => setECourseId(e.target.value)}
-                         className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black appearance-none uppercase"
-                       >
-                          <option value="">No Path Assigned</option>
-                          {courses.map(course => (
-                            <option key={course.id} value={course.id}>{course.title}</option>
-                          ))}
-                       </select>
-                    </div>
+                        <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">Active Course Assignment</label>
+                        <select 
+                          required
+                          value={eCourseId}
+                          onChange={(e) => setECourseId(e.target.value)}
+                          className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black appearance-none uppercase"
+                        >
+                           <option value="">No Path Assigned</option>
+                           {courses.map(course => (
+                             <option key={course.id} value={course.id}>{course.title}</option>
+                           ))}
+                        </select>
+                     </div>
+
+                     <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest ml-2">New Access Password (Optional)</label>
+                        <input 
+                          type="password"
+                          value={ePassword}
+                          onChange={(e) => setEPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full bg-[#f9fafb] dark:bg-[#202020] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl p-4 sm:p-5 text-sm font-black tracking-tight focus:ring-4 focus:ring-primary/10 transition-all shadow-inner"
+                        />
+                        <p className="text-[8px] font-bold uppercase text-[#a1a1a1] ml-2 opacity-60 italic">Leave empty to retain existing security credentials.</p>
+                     </div>
 
                     {error && (
                       <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-[10px] font-black uppercase tracking-widest italic border border-red-500/20">

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import bcrypt from "bcryptjs";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -10,7 +11,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 
   try {
-    const { fullName, username, courseId } = await request.json();
+    const { fullName, username, courseId, password } = await request.json();
     
     // Build update query dynamically
     const fields = [];
@@ -19,6 +20,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (fullName) { fields.push("full_name = ?"); values.push(fullName); }
     if (username) { fields.push("username = ?"); values.push(username); }
     if (courseId) { fields.push("course_id = ?"); values.push(parseInt(courseId)); }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      fields.push("password = ?"); 
+      values.push(hashedPassword);
+    }
     
     if (fields.length === 0) {
       return NextResponse.json({ error: "No fields to update." }, { status: 400 });
