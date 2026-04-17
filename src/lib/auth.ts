@@ -1,24 +1,7 @@
-import { SignJWT, jwtVerify } from "jose";
+import { encrypt, decrypt } from "./crypto";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const secretKey = "ajinora-lms-super-secret-key-change-this-in-env"; // Should be from process.env.JWT_SECRET
-const key = new TextEncoder().encode(secretKey);
-
-export async function encrypt(payload: any) {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("24h")
-    .sign(key);
-}
-
-export async function decrypt(input: string): Promise<any> {
-  const { payload } = await jwtVerify(input, key, {
-    algorithms: ["HS256"],
-  });
-  return payload;
-}
 
 export async function login(user: { id: number; username: string; role: string; full_name?: string }) {
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours

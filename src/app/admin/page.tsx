@@ -136,7 +136,7 @@ export default function AdminDashboard() {
                           initial={{ height: 0 }}
                           animate={{ height: `${h}%` }}
                           transition={{ duration: 0.5, delay: i * 0.05 }}
-                          className="flex-1 bg-primary/5 dark:bg-primary/10 rounded-t-md sm:rounded-t-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-all duration-300 relative group cursor-pointer border-x border-transparent hover:border-primary/20 shadow-inner"
+                          className="flex-1 min-w-[3px] sm:min-w-[8px] bg-primary/5 dark:bg-primary/10 rounded-t-md sm:rounded-t-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-all duration-300 relative group cursor-pointer border-x border-transparent hover:border-primary/20 shadow-inner"
                        >
                           <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#37352f] text-white text-[8px] font-bold px-2 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                              {h}% Engagement

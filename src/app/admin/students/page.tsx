@@ -487,30 +487,29 @@ export default function StudentManagement() {
            </Card>
         </div>
       )}
-
       {/* Unified Student Audit Modal */}
       {showAudit && selectedAuditStudent && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in">
-           <Card className="w-full max-w-4xl max-h-[90vh] min-h-[600px] rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl flex flex-col">
-              <CardHeader className="bg-primary p-8 sm:p-12 text-white relative shrink-0">
-                 <button onClick={() => setShowAudit(false)} className="absolute top-6 sm:top-8 right-8 sm:right-10 text-white/60 hover:text-white transition-colors">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 transform-gpu">
+           <Card className="w-full max-w-5xl max-h-[98vh] h-[92vh] rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-primary/20 bg-white dark:bg-[#1a1a1a] overflow-hidden shadow-3xl flex flex-col transform-gpu will-change-transform animate-in zoom-in-95 duration-200">
+               <CardHeader className="bg-primary px-6 py-4 sm:px-10 sm:py-5 text-white relative shrink-0">
+                  <button onClick={() => setShowAudit(false)} className="absolute top-4 sm:top-5 right-6 sm:right-10 text-white/60 hover:text-white transition-colors">
                     <X className="w-6 h-6 sm:w-8 sm:h-8" />
                  </button>
-                 <div className="flex items-center gap-6">
-                    <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white text-2xl sm:text-3xl font-black uppercase shadow-2xl">
+                  <div className="flex items-center gap-4">
+                     <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-base sm:text-xl font-black uppercase shadow-2xl transform-gpu">
                        {selectedAuditStudent.name?.[0] || 'U'}
                     </div>
-                    <div>
-                       <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase leading-none">{selectedAuditStudent.name}</CardTitle>
-                       <CardDescription className="text-white/70 text-[10px] sm:text-xs font-black uppercase tracking-widest pt-2 flex items-center gap-3">
-                          <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10 text-[9px]">ID: {selectedAuditStudent.id.toString().padStart(6, '0')}</span>
-                          <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10 text-[9px]">{selectedAuditStudent.course_title}</span>
+                     <div>
+                        <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter uppercase leading-none">{selectedAuditStudent?.name || 'N/A'}</CardTitle>
+                        <CardDescription className="text-white/70 text-[8px] sm:text-[10px] font-black uppercase tracking-widest pt-1 flex items-center gap-2">
+                          <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10 text-[9px]">ID: {selectedAuditStudent?.id?.toString().padStart(6, '0') || '000000'}</span>
+                          <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10 text-[9px]">{selectedAuditStudent?.course_title || 'Unassigned Track'}</span>
                        </CardDescription>
                     </div>
                  </div>
                  
                  {/* Audit Tabs */}
-                 <div className="flex items-center gap-2 mt-8 sm:mt-10 overflow-x-auto no-scrollbar">
+                  <div className="flex items-center gap-2 mt-2 sm:mt-3 overflow-x-auto no-scrollbar">
                     {[
                        { id: 'profile', label: 'Overview', icon: <ShieldCheck size={14} /> },
                        { id: 'locker', label: 'Locker', icon: <FileText size={14} /> },
@@ -532,7 +531,7 @@ export default function StudentManagement() {
                     ))}
                  </div>
               </CardHeader>
-              <CardContent className="p-0 flex-1 overflow-y-auto bg-[#f9fafb] dark:bg-[#151515]">
+              <CardContent className="p-0 flex-1 overflow-y-auto no-scrollbar bg-[#f9fafb] dark:bg-[#151515]">
                  {auditLoading ? (
                     <div className="h-full flex items-center justify-center p-20">
                        <Loader2 className="animate-spin text-primary" size={48} />
@@ -541,7 +540,7 @@ export default function StudentManagement() {
                     <div className="p-6 sm:p-10">
                        {/* Profile & Credentials Tab */}
                        {auditTab === 'profile' && (
-                          <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-500">
+                          <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-200">
                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="p-6 rounded-3xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm">
                                    <p className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest mb-4">Access Credentials</p>
@@ -594,7 +593,7 @@ export default function StudentManagement() {
 
                        {/* Locker Tab - Docs & Certs */}
                        {auditTab === 'locker' && (
-                          <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500">
+                          <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-200">
                              {/* Documents Section */}
                              <div>
                                 <h3 className="text-xs font-black uppercase text-[#a1a1a1] tracking-[0.2em] mb-6 flex items-center gap-3">
@@ -667,7 +666,7 @@ export default function StudentManagement() {
                                       ) : studentCerts.map((cert) => (
                                          <div key={cert.id} className="p-4 rounded-2xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group shadow-sm">
                                             <div className="flex items-center gap-3">
-                                               <div className="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-500">
+                                               <div className="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-200">
                                                   <Award size={18} />
                                                </div>
                                                <div>
@@ -689,7 +688,7 @@ export default function StudentManagement() {
 
                        {/* Academic Performance Tab */}
                        {auditTab === 'academic' && (
-                          <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500">
+                          <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-200">
                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10 text-center">
                                    <p className="text-[10px] font-black uppercase text-amber-500/60 tracking-widest mb-2">Efficiency Rating</p>
@@ -715,38 +714,38 @@ export default function StudentManagement() {
                                    <div className="flex-1 h-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e]" />
                                 </h3>
                                 {performanceResults.length === 0 ? (
-                                   <div className="py-20 flex flex-col items-center justify-center border-4 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e] rounded-[3rem] opacity-30">
-                                      <BarChart2 className="w-16 h-16 text-primary mb-6" />
-                                      <p className="text-[10px] font-black uppercase tracking-[0.2em] italic">Zero academic traces detected.</p>
-                                   </div>
-                                ) : (
-                                   <div className="grid grid-cols-1 gap-4">
-                                      {performanceResults.map((result, idx) => (
-                                         <div key={idx} className="p-6 rounded-[2rem] bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 hover:shadow-xl transition-all group">
-                                            <div className="flex items-center gap-5">
-                                               <div className="h-14 w-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 transition-transform">
-                                                  <Trophy size={28} />
-                                               </div>
-                                               <div>
-                                                  <p className="text-base font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">{result.exam_title || 'Institutional Module'}</p>
-                                                  <p className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest mt-2">{new Date(result.completed_at).toLocaleDateString()}</p>
-                                               </div>
-                                            </div>
-                                            <div className="flex items-center gap-8 w-full sm:w-auto border-t sm:border-t-0 border-[#e5e7eb] dark:border-[#2e2e2e] pt-4 sm:pt-0">
-                                               <div className="text-right flex-1 sm:flex-none">
-                                                  <p className="text-[9px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">Score Delta</p>
-                                                  <p className="text-xl font-black text-primary tracking-tighter">{result.score}/{result.total}</p>
-                                               </div>
-                                               <div className="h-10 w-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e] hidden sm:block" />
-                                               <div className="text-right flex-1 sm:flex-none">
-                                                  <p className="text-[9px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">Efficiency</p>
-                                                  <p className="text-xl font-black text-emerald-500 tracking-tighter">{result.percentage}%</p>
-                                               </div>
-                                            </div>
-                                         </div>
-                                      ))}
-                                   </div>
-                                )}
+                                    <div className="py-20 text-center opacity-40">
+                                       <BarChart2 className="mx-auto mb-4 text-[#a1a1a1]" size={40} />
+                                       <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero academic protocols identified.</p>
+                                    </div>
+                                 ) : (
+                                    <div className="grid grid-cols-1 gap-4">
+                                       {performanceResults.map((result, idx) => (
+                                          <div key={idx} className="p-6 rounded-[2rem] bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 hover:shadow-xl transition-all group">
+                                             <div className="flex items-center gap-5">
+                                                <div className="h-14 w-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-inner group-hover:scale-110 transition-transform">
+                                                   <Trophy size={28} />
+                                                </div>
+                                                <div>
+                                                   <p className="text-base font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">{result.exam_title || 'Institutional Module'}</p>
+                                                   <p className="text-[10px] font-black uppercase text-[#a1a1a1] tracking-widest mt-2">{result.completed_at ? new Date(result.completed_at).toLocaleDateString() : 'N/A'}</p>
+                                                </div>
+                                             </div>
+                                             <div className="flex items-center gap-8 w-full sm:w-auto border-t sm:border-t-0 border-[#e5e7eb] dark:border-[#2e2e2e] pt-4 sm:pt-0">
+                                                <div className="text-right flex-1 sm:flex-none">
+                                                   <p className="text-[9px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">Score Delta</p>
+                                                   <p className="text-xl font-black text-primary tracking-tighter">{result.score}/{result.total}</p>
+                                                </div>
+                                                <div className="h-10 w-[1px] bg-[#e5e7eb] dark:bg-[#2e2e2e] hidden sm:block" />
+                                                <div className="text-right flex-1 sm:flex-none">
+                                                   <p className="text-[9px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">Efficiency</p>
+                                                   <p className="text-xl font-black text-emerald-500 tracking-tighter">{result.percentage}%</p>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 )}
                              </div>
                           </div>
                        )}
@@ -830,237 +829,6 @@ export default function StudentManagement() {
                        {updating ? <Loader2 className="animate-spin" size={24} /> : "Record Modifications"}
                     </Button>
                  </form>
-              </CardContent>
-           </Card>
-        </div>
-      )}
-
-      {/* ── Documents & Certificates Audit Modal ── */}
-      {showDocuments && selectedDocStudent && (
-        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-           <Card className="w-full max-w-2xl bg-white dark:bg-[#111] rounded-[2.5rem] shadow-3xl border-none overflow-hidden animate-in zoom-in-95 leading-none">
-              <CardHeader className="p-8 pb-0 border-b border-[#e5e7eb] dark:border-[#2e2e2e]">
-                 <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-4">
-                       <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-black">
-                          <ShieldCheck size={24} />
-                       </div>
-                       <div>
-                          <p className="text-[10px] font-black uppercase text-emerald-500 tracking-widest mb-1">Institutional Locker Audit</p>
-                          <h2 className="text-xl font-black text-[#37352f] dark:text-white uppercase leading-none">{selectedDocStudent.name}</h2>
-                       </div>
-                    </div>
-                    <Button onClick={() => setShowDocuments(false)} variant="ghost" className="h-10 w-10 p-0 rounded-full text-[#a1a1a1] hover:text-red-500">
-                       <X size={20} />
-                    </Button>
-                 </div>
-
-                 {/* TAB NAVIGATION */}
-                 <div className="flex gap-8 border-b-2 border-transparent">
-                    <button 
-                      onClick={() => setActiveTab('docs')}
-                      className={cn(
-                        "pb-4 text-[10px] font-black uppercase tracking-widest transition-all relative",
-                        activeTab === 'docs' ? "text-primary" : "text-[#a1a1a1] opacity-60 hover:opacity-100"
-                      )}
-                    >
-                      Identity Proofs
-                      {activeTab === 'docs' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-full animate-in fade-in slide-in-from-bottom-1" />}
-                    </button>
-                    <button 
-                      onClick={() => setActiveTab('certs')}
-                      className={cn(
-                        "pb-4 text-[10px] font-black uppercase tracking-widest transition-all relative",
-                        activeTab === 'certs' ? "text-emerald-500" : "text-[#a1a1a1] opacity-60 hover:opacity-100"
-                      )}
-                    >
-                      Issued Certificates
-                      {activeTab === 'certs' && <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-500 rounded-full animate-in fade-in slide-in-from-bottom-1" />}
-                    </button>
-                 </div>
-              </CardHeader>
-
-              <CardContent className="p-8">
-                 {docsLoading ? (
-                    <div className="py-20 flex justify-center"><Loader2 className="animate-spin text-emerald-500" size={32} /></div>
-                 ) : activeTab === 'docs' ? (
-                    /* IDENTITY PROOFS TAB */
-                    studentDocs.length === 0 ? (
-                       <div className="py-20 text-center opacity-40">
-                          <FileText className="mx-auto mb-4 text-[#a1a1a1]" size={40} />
-                          <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero identity artifacts pulled.</p>
-                       </div>
-                    ) : (
-                       <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                          {studentDocs.map((doc) => (
-                             <div key={doc.id} className="p-5 rounded-2xl bg-[#f9fafb] dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group">
-                                <div className="flex items-center gap-4">
-                                   <div className="h-10 w-10 rounded-xl bg-white dark:bg-black flex items-center justify-center text-primary shadow-sm border border-border/50 transition-transform group-hover:scale-110">
-                                      <FileText size={20} />
-                                   </div>
-                                   <div>
-                                      <p className="font-black text-sm uppercase text-[#37352f] dark:text-white leading-none">{doc.title}</p>
-                                      <p className={`text-[9px] font-black uppercase tracking-widest mt-2 ${doc.status === 'verified' ? 'text-green-500' : doc.status === 'rejected' ? 'text-red-500' : 'text-amber-500'}`}>
-                                         {doc.status}
-                                      </p>
-                                   </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                   <Button onClick={() => window.open(doc.url, '_blank')} variant="outline" size="sm" className="h-9 px-4 rounded-lg text-[10px] font-black uppercase tracking-widest border-[#e5e7eb]">View</Button>
-                                   <Button onClick={() => updateDocStatus(doc.id, 'verified')} disabled={doc.status === 'verified'} variant="ghost" size="icon" className="h-9 w-9 text-green-500 hover:bg-green-500/10 rounded-lg"><Check size={16}/></Button>
-                                   <Button onClick={() => updateDocStatus(doc.id, 'rejected')} disabled={doc.status === 'rejected'} variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-500/10 rounded-lg"><XCircle size={16}/></Button>
-                                </div>
-                             </div>
-                          ))}
-                       </div>
-                    )
-                 ) : (
-                    /* ISSUED CERTIFICATES TAB */
-                    <div className="space-y-6">
-                       {/* ISSUANCE CONTROL */}
-                       <div className="p-6 rounded-3xl bg-emerald-500/5 border-2 border-emerald-500/20 shadow-inner space-y-4">
-                          <p className="text-[10px] font-black uppercase text-emerald-600 tracking-widest leading-none">Issuance Protocol</p>
-                          <div className="flex flex-col sm:flex-row gap-3">
-                             <input 
-                               value={certTitle}
-                               onChange={(e) => setCertTitle(e.target.value)}
-                               placeholder="CERTIFICATE DESIGNATION..."
-                               className="flex-1 bg-white dark:bg-black border border-emerald-500/20 rounded-xl px-5 h-12 text-[10px] font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                             />
-                             <Button 
-                               onClick={() => certRef.current?.click()}
-                               disabled={issuing}
-                               className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[9px] shadow-lg shadow-emerald-500/20 gap-2 shrink-0"
-                             >
-                                {issuing ? <Loader2 className="animate-spin" size={14} /> : <><Upload size={14} /> Upload Matrix</>}
-                             </Button>
-                             <input ref={certRef} type="file" className="hidden" onChange={(e) => e.target.files?.[0] && handleCertUpload(e.target.files[0])} />
-                          </div>
-                       </div>
-
-                       <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-                          {studentCerts.length === 0 ? (
-                             <div className="py-12 text-center opacity-40">
-                                <Award className="mx-auto mb-4 text-[#a1a1a1]" size={40} />
-                                <p className="text-[10px] font-black uppercase tracking-widest italic text-[#a1a1a1]">Zero institutional certificates issued.</p>
-                             </div>
-                          ) : studentCerts.map((cert) => (
-                             <div key={cert.id} className="p-5 rounded-2xl bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] flex items-center justify-between group shadow-sm">
-                                <div className="flex items-center gap-4">
-                                   <div className="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-500">
-                                      <Award size={20} />
-                                   </div>
-                                   <div>
-                                      <p className="font-black text-sm uppercase text-[#37352f] dark:text-white leading-none">{cert.title}</p>
-                                      <p className="text-[9px] font-bold text-[#a1a1a1] uppercase mt-2 opacity-60">Matrix Date: {new Date(cert.issued_at).toLocaleDateString()}</p>
-                                   </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                   <Button onClick={() => window.open(cert.url, '_blank')} variant="ghost" size="icon" className="h-9 w-9 text-emerald-500 hover:bg-emerald-500/10 rounded-lg"><BookOpen size={16}/></Button>
-                                   <Button onClick={() => revokeCert(cert.id)} variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-500/10 rounded-lg"><Trash2 size={16}/></Button>
-                                </div>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-                 )}
-              </CardContent>
-           </Card>
-        </div>
-      )}
-
-      {/* ── Performance Matrix Modal ── */}
-      {showPerformance && selectedPerformance && (
-        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-           <Card className="w-full max-w-4xl bg-white dark:bg-[#111] rounded-[2.5rem] sm:rounded-[4rem] shadow-3xl border-none overflow-hidden animate-in zoom-in-95 duration-500">
-              <CardHeader className="p-8 sm:p-14 pb-0 bg-gradient-to-br from-amber-500/10 to-transparent border-b-2 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e]">
-                 <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-6">
-                       <div className="h-16 w-16 rounded-[1.5rem] bg-amber-500 shadow-2xl flex items-center justify-center text-white rotate-6 hover:rotate-0 transition-transform duration-500">
-                          <BarChart2 size={32} />
-                       </div>
-                       <div>
-                          <p className="text-[10px] font-black uppercase text-amber-500 tracking-[0.3em] mb-1">Academic Performance Matrix</p>
-                          <h2 className="text-2xl sm:text-4xl font-black tracking-tighter text-[#37352f] dark:text-white uppercase leading-none">{selectedPerformance.name}</h2>
-                       </div>
-                    </div>
-                    <Button onClick={() => setShowPerformance(false)} variant="ghost" className="h-14 w-14 rounded-full bg-[#f9fafb] dark:bg-[#202020] text-[#a1a1a1] hover:text-red-500 transition-colors">
-                       <ArrowLeft size={24} />
-                    </Button>
-                 </div>
-              </CardHeader>
-              <CardContent className="p-8 sm:p-14">
-                 {performanceLoading ? (
-                   <div className="py-20 flex flex-col items-center justify-center space-y-4">
-                      <Loader2 className="animate-spin text-amber-500" size={48} />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Synchronizing records...</p>
-                   </div>
-                 ) : performanceResults.length === 0 ? (
-                    <div className="py-20 text-center space-y-6 bg-[#f9fafb] dark:bg-[#202020] rounded-[3rem] border-4 border-dashed border-[#e5e7eb] dark:border-[#2e2e2e] opacity-40">
-                       <Trophy className="mx-auto text-[#a1a1a1]/30" size={64} />
-                       <p className="text-xs font-black uppercase tracking-widest text-[#a1a1a1] italic">No exercise protocols identified for this instance.</p>
-                    </div>
-                 ) : (
-                    <div className="grid grid-cols-1 gap-6">
-                       {/* Performance Stats */}
-                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-                          {[
-                            { label: 'Protocols Logged', value: performanceResults.length, color: 'text-primary' },
-                            { label: 'Matrix Mean', value: `${Math.round(performanceResults.reduce((acc, curr) => acc + curr.percentage, 0) / performanceResults.length)}%`, color: 'text-green-500' },
-                            { label: 'Accumulated Pts', value: performanceResults.reduce((acc, curr) => acc + curr.score, 0), color: 'text-amber-500' },
-                            { label: 'Efficiency', value: `${Math.round(performanceResults.reduce((acc, curr) => acc + (curr.correct_count || 0), 0) / performanceResults.reduce((acc, curr) => acc + (curr.total_questions || 1), 0) * 100)}%`, color: 'text-blue-500' }
-                          ].map((stat, i) => (
-                            <div key={i} className="p-6 rounded-[1.5rem] bg-[#f9fafb] dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-inner text-center">
-                               <p className="text-[8px] font-black uppercase text-[#a1a1a1] tracking-widest mb-1">{stat.label}</p>
-                               <p className={cn("text-2xl font-black tracking-tight", stat.color)}>{stat.value}</p>
-                            </div>
-                          ))}
-                       </div>
-
-                       {/* Detailed Registry */}
-                       <div className="bg-[#fdfdfd] dark:bg-[#151515] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-[2rem] overflow-hidden shadow-xl overflow-x-auto">
-                          <table className="w-full text-left min-w-[600px]">
-                             <thead>
-                                <tr className="bg-[#f3f3f2] dark:bg-[#252525] border-b border-[#e5e7eb] dark:border-[#2e2e2e]">
-                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Assessment Title</th>
-                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Integrity</th>
-                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Final Score</th>
-                                   <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-[#a1a1a1]">Date Protocol</th>
-                                </tr>
-                             </thead>
-                             <tbody className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]">
-                                {performanceResults.map((res: any, i: number) => (
-                                   <tr key={i} className="hover:bg-amber-500/5 transition-all group">
-                                      <td className="px-8 py-5">
-                                         <p className="font-black text-sm text-[#37352f] dark:text-white uppercase leading-none">{res.assetTitle}</p>
-                                         <p className="text-[10px] text-[#a1a1a1] pt-1 uppercase font-bold tracking-widest opacity-60">Archive ID: {res.asset_id}</p>
-                                      </td>
-                                      <td className="px-8 py-5">
-                                         <span className={cn(
-                                            "inline-flex items-center px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em]",
-                                            res.percentage >= 80 ? "bg-green-500/10 text-green-500" :
-                                            res.percentage >= 50 ? "bg-amber-500/10 text-amber-500" :
-                                            "bg-red-500/10 text-red-500"
-                                         )}>
-                                            {res.correct_count} / {res.total_questions} Valid
-                                         </span>
-                                      </td>
-                                      <td className="px-8 py-5">
-                                         <p className="text-xl font-black text-[#37352f] dark:text-white leading-none">{res.percentage}%</p>
-                                         <div className="mt-2 h-1.5 w-24 bg-[#f3f3f2] dark:bg-[#252525] rounded-full overflow-hidden">
-                                            <div className="h-full bg-amber-500" style={{ width: `${res.percentage}%` }} />
-                                         </div>
-                                      </td>
-                                      <td className="px-8 py-5 text-[10px] font-bold text-[#a1a1a1] uppercase">
-                                         {new Date(res.created_at).toLocaleString()}
-                                      </td>
-                                   </tr>
-                                ))}
-                             </tbody>
-                          </table>
-                       </div>
-                    </div>
-                 )}
               </CardContent>
            </Card>
         </div>

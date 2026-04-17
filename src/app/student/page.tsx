@@ -127,7 +127,7 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          <div className="hidden lg:grid grid-cols-2 gap-4">
+          <div className="hidden md:grid grid-cols-2 gap-4">
              {[
                { icon: CheckCircle2, label: "Archives Verified", val: "12/24", color: "text-green-500", bg: "bg-green-500/10" },
                { icon: TrendingUp, label: "Performance Metric", val: "94%", color: "text-blue-500", bg: "bg-blue-500/10" },
