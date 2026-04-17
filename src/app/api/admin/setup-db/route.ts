@@ -77,7 +77,9 @@ const SCHEMA_STATEMENTS = [
     type VARCHAR(20) NOT NULL,
     url TEXT NOT NULL,
     category VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    course_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE SET NULL
   )`,
 
   `CREATE TABLE IF NOT EXISTS exam_results (
@@ -149,6 +151,21 @@ const SCHEMA_STATEMENTS = [
     issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   )`,
+
+  `CREATE TABLE IF NOT EXISTS resource_requests (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    topic VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(20) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )`,
+
+  // 📝 Institutional Schema Migrations
+  `ALTER TABLE notes ADD COLUMN IF NOT EXISTS course_id INT`,
+  `ALTER TABLE notes DROP CONSTRAINT IF EXISTS notes_course_id_fkey`,
+  `ALTER TABLE notes ADD CONSTRAINT notes_course_id_fkey FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE SET NULL`,
 
   // Seed default admin account (password: admin123)
   `INSERT INTO users (username, password, role, full_name)

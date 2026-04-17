@@ -328,16 +328,16 @@ export default function NotesManagement() {
 
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in overflow-y-auto">
-          <Card className="w-full max-w-lg rounded-[2rem] border-2 border-primary/20 bg-card overflow-hidden shadow-3xl my-4 text-left">
-            <CardHeader className="bg-primary px-8 py-5 text-white relative text-left">
-              <button onClick={() => { setShowModal(false); resetForm(); }} className="absolute top-5 right-7 text-white/60 hover:text-white transition-colors">
-                <X size={22} />
+          <Card className="w-full max-w-md rounded-[2rem] border-2 border-primary/20 bg-card overflow-hidden shadow-3xl my-auto text-left">
+            <CardHeader className="bg-primary px-6 py-4 text-white relative text-left">
+              <button onClick={() => { setShowModal(false); resetForm(); }} className="absolute top-4 right-6 text-white/60 hover:text-white transition-colors">
+                <X size={20} />
               </button>
-              <CardTitle className="text-xl font-black uppercase tracking-tighter leading-none text-left">{editingNoteId ? 'Update Resource' : 'Upload Resource'}</CardTitle>
-              <CardDescription className="text-white/60 font-black uppercase text-[10px] tracking-widest pt-1 italic text-left">{editingNoteId ? 'Modify existing resource' : 'Add to library'}</CardDescription>
+              <CardTitle className="text-lg font-black uppercase tracking-tighter leading-none text-left">{editingNoteId ? 'Update Resource' : 'Upload Resource'}</CardTitle>
+              <CardDescription className="text-white/60 font-black uppercase text-[9px] tracking-widest pt-1 italic text-left">{editingNoteId ? 'Modify existing resource' : 'Add to library'}</CardDescription>
             </CardHeader>
-            <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <CardContent className="p-5">
+              <form onSubmit={handleSubmit} className="space-y-3 text-left">
                 {/* Title */}
                 <div className="space-y-1 text-left">
                   <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Title</label>
@@ -410,7 +410,7 @@ export default function NotesManagement() {
                 {/* Description */}
                 <div className="space-y-1 text-left">
                   <label className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest ml-1">Description</label>
-                  <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all h-16 resize-none shadow-inner" placeholder="Brief description..." />
+                  <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-accent/30 border-2 border-transparent rounded-xl p-3 text-sm font-bold focus:border-primary focus:outline-none transition-all h-14 resize-none shadow-inner" placeholder="Brief description..." />
                 </div>
 
                 {error && <div className="bg-destructive/10 text-destructive p-3 rounded-xl text-xs font-bold">{error}</div>}
