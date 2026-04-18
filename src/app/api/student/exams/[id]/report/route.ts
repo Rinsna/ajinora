@@ -22,11 +22,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             SELECT user_id, RANK() OVER(ORDER BY score DESC, completed_at ASC) as rank
             FROM exam_results
             WHERE exam_id = ?
-          ) ranks WHERE user_id = ?
+          ) ranks WHERE user_id = ? LIMIT 1
         ) as student_rank
       FROM exam_results r
       JOIN users u ON r.user_id = u.id
       WHERE r.exam_id = ? AND r.user_id = ?
+      ORDER BY r.completed_at DESC
+      LIMIT 1
     `, [id, session.user.id, id, session.user.id]);
 
     if (results.length === 0) {

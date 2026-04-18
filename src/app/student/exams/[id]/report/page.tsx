@@ -34,6 +34,10 @@ export default function ExamReport() {
     return <div className="h-screen flex items-center justify-center font-mono">Generating Official Report Array...</div>;
   }
 
+  if (!data) {
+    return <div className="h-screen flex items-center justify-center font-mono text-red-500">Failed to load examination report. Please try again or contact administration.</div>;
+  }
+
   return (
     <div className="min-h-screen bg-white text-black p-10 max-w-4xl mx-auto font-sans">
         <div className="flex justify-between items-start border-b-2 border-gray-100 pb-8 mb-8">
