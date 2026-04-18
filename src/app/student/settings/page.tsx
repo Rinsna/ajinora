@@ -15,15 +15,14 @@ export default function StudentSettings() {
   };
 
   return (
-    <div className="space-y-8 animate-fly-in-up text-left max-w-5xl mx-auto py-8 px-4">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#e5e7eb] dark:border-[#2e2e2e]">
+    <div className="space-y-6 animate-fly-in-up text-left">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Experience Protocols</h1>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#a1a1a1] mt-2 opacity-70">Customize your institutional interface and identity.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Settings</h1>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 flex items-center gap-2">
-          {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
-          Commit Preferences
+        <Button onClick={handleSave} disabled={saving} className="h-10 px-5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold uppercase tracking-widest text-xs shadow-md flex items-center gap-2">
+          {saving ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
+          Save
         </Button>
       </div>
 

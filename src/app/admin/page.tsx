@@ -66,20 +66,20 @@ export default function AdminDashboard() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="space-y-10"
+      className="space-y-6"
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Institutional Pulse</h1>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Dashboard</h1>
         </div>
         <div className="flex gap-3 w-full sm:w-auto">
           <Link href="/admin/students" className="flex-1 sm:flex-none">
-            <Button className="w-full h-11 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-primary/20 transition-all active:scale-95">
-              <Plus size={16} /> Enroll
+            <Button className="w-full h-10 px-5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-md transition-all active:scale-95">
+              <Plus size={15} /> Enroll
             </Button>
           </Link>
           <Link href="/admin/courses" className="flex-1 sm:flex-none">
-            <Button variant="outline" className="w-full h-11 px-6 rounded-xl border-[#e5e7eb] dark:border-[#2e2e2e] bg-white dark:bg-[#1a1a1a] shadow-sm text-xs font-bold uppercase tracking-widest text-[#37352f] dark:text-white">
+            <Button variant="outline" className="w-full h-10 px-5 rounded-xl border border-border/50 text-xs font-semibold uppercase tracking-widest">
               Programs
             </Button>
           </Link>
@@ -88,46 +88,39 @@ export default function AdminDashboard() {
 
       <motion.div 
         variants={container}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
       >
         {stats.map((stat, i) => (
           <motion.div key={i} variants={item}>
-            <Card className="border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm bg-white dark:bg-[#1a1a1a] hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden group cursor-default">
-              <CardHeader className="flex flex-row items-center justify-between pb-1 p-4">
-                <CardTitle className="text-[9px] font-black text-[#a1a1a1] uppercase tracking-[0.2em] opacity-60">
-                  {stat.title}
-                </CardTitle>
-                <div className={`p-1.5 rounded-lg ${stat.bg} dark:bg-primary/10 ${stat.color} group-hover:scale-110 transition-transform shadow-sm`}>
-                  <stat.icon size={14} />
+            <Card className="rounded-2xl border border-border/40 bg-card shadow-sm p-4 flex items-center gap-4 hover:shadow-md transition-all duration-200 group cursor-default">
+              <div className={`h-11 w-11 rounded-xl ${stat.bg} dark:bg-primary/10 ${stat.color} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                <stat.icon size={20} />
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-0.5">{stat.title}</p>
+                <h4 className="text-xl font-bold tracking-tight leading-none">{stat.value}</h4>
+                <div className={`flex items-center gap-1 mt-1 text-[9px] font-semibold uppercase tracking-widest ${stat.color}`}>
+                  <ArrowUpRight size={10} /> {stat.trend}
                 </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="text-2xl font-black tracking-tighter text-[#37352f] dark:text-white leading-none mb-1">{stat.value}</div>
-                <div className="flex items-center gap-2">
-                   <div className={`flex items-center text-[8px] font-black uppercase tracking-tighter ${stat.color} bg-white dark:bg-[#252525] border border-current/10 px-1 py-0.5 rounded shadow-sm`}>
-                      <ArrowUpRight size={8} className="mr-0.5" /> {stat.trend}
-                   </div>
-                   <span className="text-[8px] text-[#a1a1a1] font-bold uppercase tracking-tight opacity-40">Matrix Sync</span>
-                </div>
-              </CardContent>
+              </div>
             </Card>
           </motion.div>
         ))}
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <motion.div variants={item} className="lg:col-span-2">
-          <Card className="border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-xl bg-white dark:bg-[#1a1a1a] rounded-3xl overflow-hidden h-full">
-            <CardHeader className="p-6 sm:p-8 border-b border-[#f3f4f6] dark:border-[#252525] flex flex-row items-center justify-between">
+          <Card className="rounded-2xl border border-border/40 bg-card shadow-sm overflow-hidden h-full">
+            <CardHeader className="px-5 py-4 border-b border-border/50 flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-xl font-bold text-[#37352f] dark:text-white">Engagement Activity</CardTitle>
-                <CardDescription className="text-xs text-[#a1a1a1] font-medium uppercase tracking-wider">Analytical view of interactions.</CardDescription>
+                <CardTitle className="text-base font-semibold">Engagement Activity</CardTitle>
+                <CardDescription className="text-xs text-muted-foreground/60">Analytical view of interactions.</CardDescription>
               </div>
-              <Button variant="ghost" size="sm" className="hidden sm:flex text-xs text-primary font-bold gap-1 p-0 px-2 h-8 rounded-md hover:bg-primary/5">
+              <Button variant="ghost" size="sm" className="hidden sm:flex text-xs text-primary font-semibold gap-1 p-0 px-2 h-8 rounded-md hover:bg-primary/5">
                  View Report <ExternalLink size={12} />
               </Button>
             </CardHeader>
-            <CardContent className="p-4 sm:p-8">
+            <CardContent className="p-4">
                <div className="w-full flex flex-col items-center">
                   <div className="w-full h-32 sm:h-48 flex items-end gap-1.5 sm:gap-2 justify-between px-2 pt-6 sm:pt-10">
                      {[30, 60, 45, 80, 55, 90, 40, 75, 65, 85, 50, 95].map((h, i) => (
@@ -155,10 +148,10 @@ export default function AdminDashboard() {
         </motion.div>
 
         <motion.div variants={item}>
-          <Card className="border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm bg-white dark:bg-[#1a1a1a] rounded-xl h-full flex flex-col overflow-hidden">
-            <CardHeader className="p-6 border-b border-[#f3f4f6] dark:border-[#252525]">
-              <CardTitle className="text-lg font-bold text-[#37352f] dark:text-white">Live Logs</CardTitle>
-              <CardDescription className="text-xs text-[#a1a1a1]">Real-time system event monitoring.</CardDescription>
+          <Card className="rounded-2xl border border-border/40 bg-card shadow-sm h-full flex flex-col overflow-hidden">
+            <CardHeader className="px-5 py-4 border-b border-border/50">
+              <CardTitle className="text-base font-semibold">Live Logs</CardTitle>
+              <CardDescription className="text-xs text-muted-foreground/60">Real-time event monitoring.</CardDescription>
             </CardHeader>
             <CardContent className="p-0 flex-1 flex flex-col">
               <div className="flex-1 overflow-y-auto max-h-[300px] scrollbar-none divide-y divide-[#f3f4f6] dark:divide-[#252525]">

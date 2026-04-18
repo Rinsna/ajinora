@@ -126,79 +126,76 @@ export default function SessionsManagement() {
 
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-right duration-500">
+    <div className="space-y-6 animate-in slide-in-from-right duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="text-left">
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Live Sessions</h1>
-          <p className="text-muted-foreground mt-2 text-sm font-medium">Schedule and manage live learning sessions for your students.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Live Sessions</h1>
         </div>
-        <Button onClick={() => setShowModal(true)} className="flex items-center gap-2 h-12 px-6 shadow-xl shadow-primary/20">
-          <MonitorPlay size={20} /> Schedule Session
+        <Button onClick={() => setShowModal(true)} className="flex items-center gap-2 h-10 px-5 rounded-xl font-semibold uppercase text-xs tracking-widest shadow-md">
+          <MonitorPlay size={16} /> Schedule Session
         </Button>
       </div>
 
       <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-xl w-fit border shadow-inner">
         {["upcoming", "completed"].map((tab) => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-8 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab ? "bg-background text-primary shadow-lg border border-primary/10" : "hover:bg-background/50 opacity-60"}`}>
+            className={`px-6 py-2 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all ${activeTab === tab ? "bg-background text-primary shadow-md border border-primary/10" : "hover:bg-background/50 opacity-60"}`}>
             {tab === "upcoming" ? "Upcoming" : "History"}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {loading ? (
-          <div className="col-span-full py-40 flex justify-center items-center">
-            <Loader2 className="animate-spin text-primary" size={40} />
+          <div className="col-span-full py-20 flex justify-center items-center">
+            <Loader2 className="animate-spin text-primary" size={36} />
           </div>
         ) : filteredSessions.map((session) => (
-          <Card key={session.id} className="border-none shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden bg-card/40 backdrop-blur-xl p-2 rounded-[2rem]">
-            <div className="absolute top-0 left-0 w-1.5 h-full bg-primary opacity-20 group-hover:opacity-100 transition-opacity" />
-            <CardHeader className="pb-2 p-8 pt-10">
-              <div className="flex justify-between items-start mb-4">
-                <div className="p-4 rounded-2xl bg-primary/10 text-primary shadow-inner">
-                  <Video size={20} />
+          <Card key={session.id} className="rounded-2xl border border-border/40 bg-card shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-20 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="pb-2 p-5">
+              <div className="flex justify-between items-start mb-3">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+                  <Video size={18} />
                 </div>
                 <Button onClick={() => handleDelete(session.id)} variant="ghost" size="icon"
-                  className="h-10 w-10 text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Trash2 size={16} />
+                  className="h-8 w-8 text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Trash2 size={14} />
                 </Button>
               </div>
-              <CardTitle className="text-xl font-black tracking-tight line-clamp-1 group-hover:text-primary transition-colors uppercase leading-none">{session.title}</CardTitle>
+              <CardTitle className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{session.title}</CardTitle>
               {session.course_title && (
-                <div className="flex items-center gap-2 mt-2">
-                  <BookOpen size={12} className="text-emerald-500" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">{session.course_title}</span>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <BookOpen size={11} className="text-emerald-500" />
+                  <span className="text-[10px] font-medium text-emerald-600">{session.course_title}</span>
                 </div>
               )}
-              <CardDescription className="line-clamp-2 mt-2 text-xs font-medium leading-relaxed italic opacity-80">{session.description}</CardDescription>
+              <CardDescription className="line-clamp-2 mt-1 text-xs leading-relaxed opacity-70">{session.description}</CardDescription>
             </CardHeader>
-            <CardContent className="p-8 pb-10">
-              <div className="grid grid-cols-2 gap-4 my-2">
-                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-accent/40 p-4 rounded-2xl border border-border/50">
-                  <Calendar size={14} className="text-primary" />
+            <CardContent className="p-5 pt-0">
+              <div className="grid grid-cols-2 gap-2 my-1">
+                <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground bg-accent/40 p-2.5 rounded-xl border border-border/50">
+                  <Calendar size={12} className="text-primary" />
                   <span>{new Date(session.date).toLocaleDateString()}</span>
                 </div>
-                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-accent/40 p-4 rounded-2xl border border-border/50">
-                  <Clock size={14} className="text-primary" />
+                <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground bg-accent/40 p-2.5 rounded-xl border border-border/50">
+                  <Clock size={12} className="text-primary" />
                   <span>{session.time}</span>
                 </div>
               </div>
-              <div className="mt-6 pt-6 border-t border-dashed border-border/50">
+              <div className="mt-4 pt-4 border-t border-border/50">
                 <Button onClick={() => handleJoin(session)} variant="ghost" disabled={loadingMeeting === session.id}
-                  className="w-full h-12 rounded-xl border-2 border-dashed border-primary/20 text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white hover:border-transparent transition-all gap-2">
-                  {loadingMeeting === session.id ? <Loader2 className="animate-spin" size={16} /> : <><Link2 size={16} /> {isZoomLink(session.link) ? "Host Zoom Class" : "Open external link"}</>}
+                  className="w-full h-9 rounded-xl border border-dashed border-primary/20 text-xs font-semibold uppercase tracking-widest hover:bg-primary hover:text-white hover:border-transparent transition-all gap-2">
+                  {loadingMeeting === session.id ? <Loader2 className="animate-spin" size={14} /> : <><Link2 size={14} /> {isZoomLink(session.link) ? "Host Zoom Class" : "Open External Link"}</>}
                 </Button>
               </div>
             </CardContent>
           </Card>
         ))}
         {!loading && filteredSessions.length === 0 && (
-          <div className="col-span-full py-40 flex flex-col items-center justify-center text-center opacity-40">
-            <div className="h-24 w-24 rounded-full bg-accent/50 flex items-center justify-center mb-6">
-              <Video size={40} className="text-muted-foreground" />
-            </div>
-            <h3 className="text-xl font-black uppercase tracking-tighter">No sessions scheduled</h3>
+          <div className="col-span-full py-20 flex flex-col items-center justify-center text-center opacity-30">
+            <Video size={36} className="text-muted-foreground mb-3" />
+            <h3 className="text-lg font-bold uppercase tracking-tight">No sessions scheduled</h3>
           </div>
         )}
       </div>

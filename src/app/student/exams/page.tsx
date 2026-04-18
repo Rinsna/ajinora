@@ -42,21 +42,16 @@ export default function StudentExams() {
   }, []);
 
   return (
-    <div className="space-y-8 sm:space-y-12 animate-in fly-in-from-bottom duration-700">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 sm:gap-10 px-2 sm:px-0">
+    <div className="space-y-6 animate-in fly-in-from-bottom duration-700">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-           <div className="flex items-center gap-2 mb-3 bg-primary/10 w-fit px-3 py-1.5 rounded-full border border-primary/20">
-              <ShieldCheck size={14} className="text-primary" />
-              <span className="text-xs font-semibold text-primary">Secure Exam Center</span>
-           </div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Examination Portal</h1>
-          <p className="text-sm text-muted-foreground mt-2 max-w-xl">Measure your institutional intelligence.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Assessments</h1>
         </div>
         
-        <div className="flex bg-[#f3f3f2] dark:bg-[#252525] p-1 rounded-2xl border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-inner w-full md:w-fit h-fit">
+        <div className="flex bg-muted/50 p-1 rounded-xl w-full md:w-fit h-fit border border-border/40">
            <button 
              onClick={() => setActiveTab("available")}
-             className={`flex-1 md:w-40 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all gap-2 flex items-center justify-center ${activeTab === "available" ? "bg-white dark:bg-[#1a1a1a] text-primary shadow-xl ring-1 ring-primary/20" : "text-muted-foreground hover:bg-white/50 dark:hover:bg-white/5 opacity-80 hover:opacity-100"}`}
+             className={`flex-1 md:w-32 py-2 rounded-lg text-xs font-medium transition-all gap-2 flex items-center justify-center ${activeTab === "available" ? "bg-background text-primary shadow-md ring-1 ring-primary/20" : "text-muted-foreground hover:bg-background/50 opacity-80 hover:opacity-100"}`}
            >
              <Play size={14} fill="currentColor" /> Available
            </button>

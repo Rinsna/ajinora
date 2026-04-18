@@ -179,24 +179,23 @@ export default function NotesManagement() {
   };
 
   return (
-    <div className="space-y-8 animate-in zoom-in duration-500">
+    <div className="space-y-6 animate-in zoom-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="text-left">
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Resource Management</h1>
-          <p className="text-muted-foreground mt-2 text-sm font-medium">Upload and categorize study notes, videos, and links for students.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Resources</h1>
         </div>
-        <Button onClick={() => { resetForm(); setShowModal(true); }} className="flex items-center gap-2 h-14 px-8 shadow-2xl shadow-primary/30 font-black uppercase text-xs tracking-widest bg-primary hover:bg-primary/90 text-white rounded-2xl">
-          <UploadCloud size={20} /> Upload New Resource
+        <Button onClick={() => { resetForm(); setShowModal(true); }} className="flex items-center gap-2 h-10 px-5 font-semibold uppercase text-xs tracking-widest bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md">
+          <UploadCloud size={15} /> Upload Resource
         </Button>
       </div>
 
-      <div className="flex flex-col gap-10">
-        <div className="flex flex-col sm:flex-row gap-6 items-center justify-between bg-accent/20 p-4 rounded-[1.5rem] shadow-inner">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card border border-border/40 rounded-2xl px-5 py-3 shadow-sm">
           <div className="relative w-full max-w-lg">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-            <input type="text" placeholder="Search resources..." className="w-full bg-background border-none rounded-xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-primary focus:outline-none transition-all shadow-xl font-bold italic" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" size={16} />
+            <input type="text" placeholder="Search resources..." className="w-full bg-accent/30 border border-border/40 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-muted-foreground/50 placeholder:text-xs" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground bg-white/40 dark:bg-black/20 px-6 py-4 rounded-xl border border-primary/5">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 bg-primary/5 px-4 py-2 rounded-lg border border-primary/10 whitespace-nowrap">
             {notes.length} Resources
           </div>
         </div>
@@ -258,11 +257,11 @@ export default function NotesManagement() {
         </div>
 
         {/* Intelligence Requests Section */}
-        <div className="mt-20 space-y-8 text-left">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-black tracking-tighter uppercase">Intelligence Requests</h2>
-            <div className="px-3 py-1 bg-amber-500/10 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-amber-500/20">
-              {requests.filter(r => r.status === 'pending').length} Actions Required
+        <div className="mt-8 space-y-4 text-left">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-bold tracking-tight uppercase">Resource Requests</h2>
+            <div className="px-2.5 py-1 bg-amber-500/10 text-amber-600 rounded-lg text-[9px] font-semibold uppercase tracking-widest border border-amber-500/20">
+              {requests.filter(r => r.status === 'pending').length} Pending
             </div>
           </div>
 

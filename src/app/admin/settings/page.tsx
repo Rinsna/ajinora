@@ -103,15 +103,14 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="space-y-8 animate-fly-in-up text-left">
+    <div className="space-y-6 animate-fly-in-up text-left">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Global Configurations</h1>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#a1a1a1] mt-2 opacity-70">Manage institutional parameters and branding protocols.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Settings</h1>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 flex items-center gap-2">
-          {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
-          Synchronize Changes
+        <Button onClick={handleSave} disabled={saving} className="h-10 px-5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold uppercase tracking-widest text-xs shadow-md flex items-center gap-2">
+          {saving ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
+          Save Changes
         </Button>
       </div>
 

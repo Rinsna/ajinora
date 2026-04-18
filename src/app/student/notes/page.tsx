@@ -90,22 +90,17 @@ export default function StudentNotes() {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-12 animate-in slide-in-from-right duration-700">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 sm:gap-10 px-2 sm:px-0">
-        <div className="max-w-3xl">
-          <div className="flex items-center gap-2 mb-4 bg-primary/10 w-fit px-3 py-1.5 rounded-xl border border-primary/20">
-             <BookOpen size={16} className="text-primary" />
-             <span className="text-xs font-semibold text-primary leading-none">Resource Library v2.0</span>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Study Center</h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">Access curated learning materials and institutional intelligence.</p>
+    <div className="space-y-6 animate-in slide-in-from-right duration-700">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Study Center</h1>
         </div>
-        <div className="relative w-full md:w-[350px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={20} />
+        <div className="relative w-full md:w-[300px]">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={16} />
           <input 
             type="text" 
-            placeholder="Search by topic, subject..." 
-            className="w-full bg-accent/30 border border-border focus:border-primary/40 rounded-xl py-3 pl-12 pr-4 focus:ring-0 focus:outline-none transition-all shadow-sm text-sm font-medium placeholder:text-muted-foreground/60"
+            placeholder="Search resources..." 
+            className="w-full bg-accent/30 border border-border/40 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-muted-foreground/50 placeholder:text-xs"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

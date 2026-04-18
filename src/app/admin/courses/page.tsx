@@ -274,14 +274,12 @@ export default function CoursesManagement() {
   // ── render ─────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-8 text-left animate-fly-in-up">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Curriculum</h1>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#a1a1a1] mt-1 opacity-70">Design institutional courses.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Curriculum</h1>
         </div>
-        <Button onClick={() => openCourseModal()} className="flex items-center gap-2 h-12 px-6 font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-xl shadow-primary/20">
-          <PlusCircle size={16} /> New Course
+        <Button onClick={() => openCourseModal()} className="flex items-center gap-2 h-10 px-5 font-semibold uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 text-white rounded-xl shadow-md">
+          <PlusCircle size={15} /> New Course
         </Button>
       </div>
 
