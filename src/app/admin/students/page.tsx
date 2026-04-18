@@ -287,25 +287,24 @@ export default function StudentManagement() {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10 text-left">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2 sm:px-0">
+    <div className="space-y-6 text-left">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Student Registry</h1>
-          
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Student Registry</h1>
         </div>
-        <Button onClick={() => setShowModal(true)} className="flex items-center gap-3 h-12 sm:h-14 px-6 sm:px-8 shadow-xl shadow-primary/20 font-black uppercase tracking-widest text-[10px] sm:text-xs bg-primary hover:bg-primary/90 text-white rounded-xl sm:rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95">
-          <UserPlus size={18} /> Enroll Student
+        <Button onClick={() => setShowModal(true)} className="flex items-center gap-2 h-10 px-6 shadow-md font-semibold uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 text-white rounded-xl transition-all hover:scale-[1.02] active:scale-95">
+          <UserPlus size={16} /> Enroll Student
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl p-2 sm:p-4">
-        <div className="p-4 sm:p-8 border-b-2 border-dashed border-[#f3f3f2] dark:border-[#252525] flex flex-col lg:flex-row gap-4 sm:gap-6 justify-between items-center bg-[#f9fafb] dark:bg-[#202020] rounded-2xl sm:rounded-[2.5rem] mb-4 sm:mb-6">
+      <Card className="rounded-2xl border border-border/40 bg-card shadow-sm overflow-hidden">
+        <div className="px-5 py-3 flex flex-col lg:flex-row gap-4 justify-between items-center border-b border-border/50">
           <div className="relative w-full max-w-lg">
-            <Search className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-[#a1a1a1]/40" size={20} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" size={16} />
             <input 
               type="text" 
               placeholder="Search by name, ID..." 
-              className="w-full bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl py-3.5 sm:py-5 pl-12 sm:pl-16 pr-6 focus:ring-4 focus:ring-primary/10 focus:border-primary/20 focus:outline-none transition-all shadow-xl font-black tracking-tight text-xs sm:text-sm placeholder:text-[#a1a1a1]/30"
+              className="w-full bg-accent/30 border border-border/40 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-muted-foreground/50 placeholder:text-xs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -314,38 +313,36 @@ export default function StudentManagement() {
              <select
                value={filterCourse}
                onChange={(e) => setFilterCourse(e.target.value)}
-               className="bg-white dark:bg-[#1a1a1a] border border-[#e5e7eb] dark:border-[#2e2e2e] rounded-xl sm:rounded-2xl py-3.5 sm:py-5 px-4 text-xs font-black uppercase tracking-widest focus:ring-4 focus:ring-primary/10 focus:outline-none shadow-sm appearance-none"
+               className="bg-accent/30 border border-border/40 rounded-lg py-2 px-3 text-xs focus:ring-2 focus:ring-primary/20 focus:outline-none appearance-none"
              >
                <option value="">All Courses</option>
                {courses.map(c => (
                  <option key={c.id} value={c.id}>{c.title}</option>
                ))}
              </select>
-             <div className="flex-1 lg:flex-none text-[10px] font-black uppercase tracking-widest text-[#a1a1a1] bg-white dark:bg-[#1a1a1a] px-4 sm:px-6 py-3.5 sm:py-5 rounded-xl sm:rounded-2xl border border-[#e5e7eb] dark:border-[#2e2e2e] shadow-sm text-center">
-                Total Students: {students.length}
+             <div className="flex-1 lg:flex-none text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 bg-primary/5 px-4 py-2 rounded-lg border border-primary/10 text-center whitespace-nowrap">
+               Total: {students.length}
              </div>
           </div>
         </div>
 
-        <div className="overflow-x-auto min-h-[300px] sm:min-h-[400px]">
+        <div className="overflow-x-auto min-h-[300px]">
           {loading ? (
-            <div className="flex items-center justify-center py-20 sm:py-40">
-              <Loader2 className="animate-spin text-primary" size={40} />
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="animate-spin text-primary" size={36} />
             </div>
           ) : (
-            <table className="w-full text-left border-collapse min-w-[800px]">
+            <table className="w-full text-left border-separate border-spacing-y-1.5 px-3 pb-3 min-w-[700px]">
               <thead>
-                <tr className="border-b border-[#e5e7eb] dark:border-[#2e2e2e] bg-[#f3f3f2] dark:bg-[#252525]">
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Student</th>
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Username</th>
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Course</th>
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest">Date Joined</th>
-                  <th className="px-6 sm:px-8 py-4 sm:py-5 text-[10px] sm:text-xs font-black text-[#a1a1a1] uppercase tracking-widest text-right">Actions</th>
+                <tr className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                  <th className="px-5 py-2.5 text-left">Student</th>
+                  <th className="px-5 py-2.5 text-left">Username</th>
+                  <th className="px-5 py-2.5 text-left">Course</th>
+                  <th className="px-5 py-2.5 text-left">Date Joined</th>
+                  <th className="px-5 py-2.5 text-right pr-8">Actions</th>
                 </tr>
               </thead>
-              <motion.tbody 
-                className="divide-y divide-[#e5e7eb] dark:divide-[#2e2e2e]"
-              >
+              <motion.tbody>
                 {students
                   .filter(s => (s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.username?.toLowerCase().includes(searchTerm.toLowerCase()) || s.id.toString().includes(searchTerm)) && (!filterCourse || String(s.course_id) === String(filterCourse)))
                   .map((student) => (
@@ -353,45 +350,45 @@ export default function StudentManagement() {
                       key={student.id} 
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="hover:bg-primary/5 transition-all group"
+                      className="group bg-accent/20 hover:bg-primary/5 transition-all duration-200 rounded-xl"
                     >
-                      <td className="px-6 sm:px-8 py-4 sm:py-6">
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-primary shadow-lg shadow-primary/20 flex items-center justify-center text-white font-black uppercase text-sm sm:text-base transform group-hover:scale-110 transition-transform duration-500">
+                      <td className="px-5 py-3.5 rounded-l-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold uppercase text-sm shrink-0">
                             {student.name?.[0] || 'U'}
                           </div>
                           <div 
                             onClick={() => openAuditModal(student)}
                             className="cursor-pointer group/name"
                           >
-                            <p className="text-xs sm:text-sm font-black tracking-tight leading-none text-[#37352f] dark:text-white group-hover/name:text-primary transition-colors underline-offset-4 decoration-primary/30 group-hover/name:underline">{student.name}</p>
-                            <p className="text-[10px] text-[#a1a1a1] font-black uppercase tracking-widest pt-1 opacity-60">Verified Student</p>
+                            <p className="text-sm font-semibold tracking-tight text-foreground group-hover/name:text-primary transition-colors">{student.name}</p>
+                            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">Verified Student</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-6 text-xs sm:text-sm font-black italic text-[#a1a1a1] tracking-tight">@{student.username}</td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-6">
-                        <span className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border border-primary/10 shadow-sm">
-                           <BookOpen size={12} className="mr-2" />
-                           {student.course_title || 'Unassigned Course'}
+                      <td className="px-5 py-3.5 text-xs text-muted-foreground">@{student.username}</td>
+                      <td className="px-5 py-3.5">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-medium uppercase tracking-wide bg-primary/5 text-primary border border-primary/10">
+                           <BookOpen size={11} className="mr-1.5" />
+                           {student.course_title || 'Unassigned'}
                         </span>
                       </td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-6 text-[10px] sm:text-xs text-[#a1a1a1] font-bold uppercase tracking-tight opacity-50">
+                      <td className="px-5 py-3.5 text-xs text-muted-foreground/60">
                         {new Date(student.created_at).toLocaleDateString()}
                       </td>
-                      <td className="px-6 sm:px-8 py-4 sm:py-6 text-right">
-                        <div className="flex items-center justify-end gap-2 sm:gap-3 lg:opacity-0 group-hover:opacity-100 transition-opacity">
-                           <Button onClick={() => openDocumentsModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-emerald-500 hover:bg-emerald-500/10 rounded-xl">
-                             <FileText size={16} />
+                      <td className="px-5 py-3.5 text-right rounded-r-xl pr-5">
+                        <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <Button onClick={() => openDocumentsModal(student)} variant="ghost" size="icon" className="h-8 w-8 text-emerald-500 hover:bg-emerald-500/10 rounded-lg">
+                             <FileText size={14} />
                            </Button>
-                           <Button onClick={() => openPerformanceModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-amber-500 hover:bg-amber-500/10 rounded-xl">
-                             <BarChart2 size={16} />
+                           <Button onClick={() => openPerformanceModal(student)} variant="ghost" size="icon" className="h-8 w-8 text-amber-500 hover:bg-amber-500/10 rounded-lg">
+                             <BarChart2 size={14} />
                            </Button>
-                           <Button onClick={() => openEditModal(student)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-primary hover:bg-primary/10 rounded-xl">
-                             <Edit2 size={16} />
+                           <Button onClick={() => openEditModal(student)} variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10 rounded-lg">
+                             <Edit2 size={14} />
                            </Button>
-                           <Button onClick={() => handleDelete(student.id)} variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-destructive hover:bg-destructive/10 rounded-xl">
-                             <Trash2 size={16} />
+                           <Button onClick={() => handleDelete(student.id)} variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10 rounded-lg">
+                             <Trash2 size={14} />
                            </Button>
                         </div>
                       </td>
@@ -402,14 +399,14 @@ export default function StudentManagement() {
           )}
           
           {!loading && students.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-12 sm:p-20 bg-[#f9fafb] dark:bg-[#202020] rounded-[3rem] sm:rounded-[5rem] border-4 border-dashed border-primary/10 opacity-30 h-full min-h-[400px] text-center">
-                  <UserPlus className="text-primary w-10 h-10 sm:w-16 sm:h-16 mb-6" />
-                  <h3 className="text-xl font-black uppercase tracking-tighter text-[#37352f] dark:text-white">No Students Found</h3>
-                  <p className="text-xs font-black uppercase tracking-widest text-[#a1a1a1] mt-2">Enroll a student to populate the registry.</p>
+            <div className="flex flex-col items-center justify-center p-16 opacity-30 text-center">
+                  <UserPlus className="text-primary w-10 h-10 mb-4" />
+                  <h3 className="text-lg font-bold uppercase tracking-tight">No Students Found</h3>
+                  <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mt-1">Enroll a student to populate the registry.</p>
                </div>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Creation Modal */}
       {showModal && (
