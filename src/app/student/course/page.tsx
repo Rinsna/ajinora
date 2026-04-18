@@ -181,20 +181,17 @@ export default function StudentCourse() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-full overflow-hidden bg-background">
+    <div className="flex flex-col-reverse lg:flex-row h-full overflow-hidden bg-background">
 
       {/* ── Left Sidebar: Module List ── */}
-      <motion.div 
-        initial={false}
-        animate={{ width: sidebarCollapsed ? 0 : 300, opacity: 1 }}
-        transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+      <div 
         className={cn(
-          "h-full border-r border-border/50 bg-card flex flex-col relative shrink-0",
-          sidebarCollapsed && "border-none"
+          "h-1/2 lg:h-full border-t lg:border-t-0 lg:border-r border-border/50 bg-card flex flex-col relative shrink-0 transition-all duration-300 ease-in-out",
+          sidebarCollapsed ? "lg:w-0 h-0 lg:h-full overflow-hidden border-none" : "lg:w-[300px] w-full"
         )}
       >
         <div className={cn(
-          "flex-1 flex flex-col min-w-[300px] h-full overflow-hidden transition-opacity duration-300",
+          "flex-1 flex flex-col w-full lg:w-[300px] h-full overflow-hidden transition-opacity duration-300",
           sidebarCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
         )}>
           {/* Course Title & Progress */}
@@ -252,9 +249,9 @@ export default function StudentCourse() {
             sidebarCollapsed ? "left-0" : "-right-2.5 border-l-0"
           )}
         >
-          <ChevronRight size={13} className={cn("transition-transform duration-300 text-primary", sidebarCollapsed ? "" : "rotate-180")} />
+          <ChevronRight size={13} className={cn("transition-transform duration-300 text-primary hidden lg:block", sidebarCollapsed ? "" : "rotate-180")} />
         </button>
-      </motion.div>
+      </div>
 
       {/* ── Right Content ── */}
       <div className="flex-1 flex flex-col min-w-0 bg-background overflow-y-auto">
