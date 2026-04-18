@@ -249,124 +249,122 @@ export default function ExamsManagement() {
   };
 
   return (
-    <div className="space-y-10 animate-in fly-in-from-bottom duration-700 bg-background min-h-screen">
+    <div className="space-y-6 animate-in fly-in-from-bottom duration-700 bg-background min-h-screen">
       
       {/* ─── Header Section ─── */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 sm:gap-10">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight uppercase">Exam Management</h1>
-
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Exam Management</h1>
         </div>
         
-        <div className="flex gap-4">
+        <div className="flex gap-3">
            <Button 
              variant="outline" 
              onClick={() => setShowInstructions(true)}
-             className="h-14 sm:h-16 px-6 sm:px-8 border-2 border-dashed border-primary/20 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs text-primary hover:bg-primary/5 transition-all group shadow-sm"
+             className="h-10 px-5 border border-dashed border-primary/30 rounded-xl font-semibold uppercase tracking-widest text-xs text-primary hover:bg-primary/5 transition-all group"
            >
-             <Info size={18} className="group-hover:scale-110 transition-transform" /> Instruction
+             <Info size={15} className="group-hover:scale-110 transition-transform" /> Instruction
            </Button>
            <Button 
              onClick={() => setShowModal(true)} 
-             className="h-14 sm:h-16 px-8 sm:px-10 bg-primary hover:bg-primary/95 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] sm:text-xs shadow-[0_5px_20px_-5px_rgba(var(--primary),0.3)] transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-3"
+             className="h-10 px-6 bg-primary hover:bg-primary/95 text-white rounded-xl font-semibold uppercase tracking-widest text-xs shadow-md transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2"
            >
-             <Plus size={20} strokeWidth={3} /> Create Exam
+             <Plus size={16} strokeWidth={2.5} /> Create Exam
            </Button>
         </div>
       </div>
 
       {/* ─── Stats / Filter Overview ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { icon: Target, label: "Active Exams", value: exams.length, color: "text-primary bg-primary/10" },
           { icon: PieChart, label: "Participation Rate", value: "94.2%", color: "text-blue-500 bg-blue-500/10" },
           { icon: Award, label: "Avg. Proficiency", value: "78/100", color: "text-green-500 bg-green-500/10" },
         ].map((stat, i) => (
-          <Card key={i} className="rounded-[2.5rem] border-none bg-card/40 backdrop-blur-md shadow-sm p-6 flex items-center gap-6">
-             <div className={cn("h-16 w-16 rounded-3xl flex items-center justify-center", stat.color)}>
-                <stat.icon size={24} />
+          <Card key={i} className="rounded-2xl border border-border/40 bg-card shadow-sm p-4 flex items-center gap-4">
+             <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0", stat.color)}>
+                <stat.icon size={20} />
              </div>
              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">{stat.label}</p>
-                <h4 className="text-2xl font-black tracking-tight leading-none">{stat.value}</h4>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-0.5">{stat.label}</p>
+                <h4 className="text-xl font-bold tracking-tight leading-none">{stat.value}</h4>
              </div>
           </Card>
         ))}
       </div>
 
       {/* ─── Main Content Table ─── */}
-      <Card className="rounded-[3rem] border-none bg-card/30 backdrop-blur-lg shadow-xl p-2 sm:p-4 overflow-hidden border border-border/40">
-        <div className="p-8 pb-4 flex flex-col md:flex-row items-center justify-between gap-6 border-b border-border/50 mb-4 bg-accent/20 rounded-[2.5rem]">
+      <Card className="rounded-2xl border border-border/40 bg-card shadow-sm overflow-hidden">
+        <div className="px-5 py-3 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-border/50">
            <div className="relative w-full max-w-xl group">
-             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60 group-focus-within:text-primary transition-colors" size={20} />
+             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 group-focus-within:text-primary transition-colors" size={16} />
              <input 
                type="text" 
                placeholder="Filter through assessment archives..." 
                value={searchTerm}
                onChange={(e) => setSearchTerm(e.target.value)}
-               className="w-full bg-background border-none rounded-2xl py-5 pl-14 pr-8 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all shadow-inner placeholder:text-muted-foreground/40 placeholder:font-black placeholder:uppercase placeholder:tracking-widest"
+               className="w-full bg-accent/30 border border-border/40 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-muted-foreground/50 placeholder:text-xs"
              />
            </div>
            
-           <div className="flex items-center gap-4 bg-white/50 dark:bg-black/20 p-2 rounded-2xl border border-border/40 shrink-0">
-              <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-muted-foreground/60 hover:text-primary hover:bg-primary/5 transition-all"><Settings size={20} /></Button>
-              <div className="h-8 w-px bg-border/60 mx-1" />
-              <div className="px-6 py-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 rounded-xl border border-primary/10">
+           <div className="flex items-center gap-3 shrink-0">
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg text-muted-foreground/60 hover:text-primary hover:bg-primary/5 transition-all"><Settings size={16} /></Button>
+              <div className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary bg-primary/5 rounded-lg border border-primary/10">
                  Database Synchronized
               </div>
            </div>
         </div>
 
-        <div className="overflow-x-auto p-4 custom-scrollbar">
-          <table className="w-full border-separate border-spacing-y-4">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full border-separate border-spacing-y-1.5 px-3 pb-3">
             <thead>
-              <tr className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
-                <th className="px-8 py-3 text-left">Internal Exam / Title</th>
-                <th className="px-8 py-3 text-left">Exam Date</th>
-                <th className="px-8 py-3 text-center">Duration</th>
-                <th className="px-8 py-3 text-center">Metrics</th>
-                <th className="px-8 py-3 text-right pr-12 text-primary/60">Operations</th>
+              <tr className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                <th className="px-5 py-2.5 text-left">Internal Exam / Title</th>
+                <th className="px-5 py-2.5 text-left">Exam Date</th>
+                <th className="px-5 py-2.5 text-center">Duration</th>
+                <th className="px-5 py-2.5 text-center">Metrics</th>
+                <th className="px-5 py-2.5 text-right pr-8 text-primary/60">Operations</th>
               </tr>
             </thead>
             <tbody>
               {exams.filter(e => e.title.toLowerCase().includes(searchTerm.toLowerCase())).map((exam) => (
-                <tr key={exam.id} className="group bg-white/40 dark:bg-white/5 hover:bg-primary/5 transition-all duration-300 rounded-[2rem] shadow-sm hover:shadow-lg border border-transparent hover:border-primary/10 overflow-hidden relative isolate">
-                  <td className="px-8 py-6 rounded-l-[2rem]">
-                    <div className="flex items-center gap-4">
-                       <div className="h-12 w-12 rounded-2xl bg-accent flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all transform group-hover:scale-110 shadow-sm">
-                          <FileSpreadsheet size={20} />
+                <tr key={exam.id} className="group bg-accent/20 hover:bg-primary/5 transition-all duration-200 rounded-xl border border-transparent hover:border-primary/10">
+                  <td className="px-5 py-3.5 rounded-l-xl">
+                    <div className="flex items-center gap-3">
+                       <div className="h-9 w-9 rounded-lg bg-accent flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all shrink-0">
+                          <FileSpreadsheet size={16} />
                        </div>
                        <div>
-                          <p className="font-black text-sm uppercase tracking-tight text-foreground">{exam.title}</p>
-                          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60">MCQ Dynamic Session</p>
+                          <p className="font-semibold text-sm text-foreground">{exam.title}</p>
+                          <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">MCQ Dynamic</p>
                        </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-3">
-                       <Calendar size={14} className="text-primary/60" />
-                       <span className="text-xs font-bold text-muted-foreground italic">{new Date(exam.start_date).toLocaleDateString()}</span>
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-2">
+                       <Calendar size={13} className="text-primary/60" />
+                       <span className="text-xs text-muted-foreground">{new Date(exam.start_date).toLocaleDateString()}</span>
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/30 rounded-full border border-border/40">
-                       <Clock size={12} className="text-muted-foreground/60" />
-                       <span className="text-[10px] font-black uppercase tracking-widest text-foreground">{exam.duration}m</span>
+                  <td className="px-5 py-3.5 text-center">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/50 rounded-md border border-border/40">
+                       <Clock size={11} className="text-muted-foreground/60" />
+                       <span className="text-xs font-medium text-foreground">{exam.duration}m</span>
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-center">
-                    <div className="flex flex-col items-center gap-1">
-                       <span className="text-xs font-black uppercase tracking-tighter text-foreground">{exam.questionsCount} Questions</span>
-                       {exam.negative_mark > 0 && <span className="text-[8px] font-black uppercase tracking-widest text-red-500 bg-red-500/10 px-2 rounded-md">-{exam.negative_mark} Negative</span>}
+                  <td className="px-5 py-3.5 text-center">
+                    <div className="flex flex-col items-center gap-0.5">
+                       <span className="text-xs font-medium text-foreground">{exam.questionsCount} Questions</span>
+                       {exam.negative_mark > 0 && <span className="text-[10px] text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded">-{exam.negative_mark} Neg.</span>}
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right rounded-r-[2rem] pr-8">
-                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button onClick={() => openResultsModal(exam)} variant="ghost" size="sm" className="h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all gap-2">
-                           <Eye size={12} /> View Results
+                  <td className="px-5 py-3.5 text-right rounded-r-xl pr-5">
+                     <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button onClick={() => openResultsModal(exam)} variant="ghost" size="sm" className="h-8 px-3 rounded-lg text-xs font-medium bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all gap-1.5">
+                           <Eye size={12} /> Results
                         </Button>
-                        <Button onClick={() => handleDelete(exam.id)} variant="ghost" size="icon" className="h-10 w-10 p-0 rounded-xl text-destructive hover:bg-destructive hover:text-white transition-all">
-                           <Trash2 size={16} />
+                        <Button onClick={() => handleDelete(exam.id)} variant="ghost" size="icon" className="h-8 w-8 p-0 rounded-lg text-destructive hover:bg-destructive/10 transition-all">
+                           <Trash2 size={14} />
                         </Button>
                      </div>
                   </td>
