@@ -55,135 +55,131 @@ export default function ActivityLogs() {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-12 animate-in fly-in-from-bottom duration-700 text-left">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 px-2 sm:px-0">
+    <div className="space-y-6 animate-in fly-in-from-bottom duration-700 text-left">
+
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight uppercase">Institutional Records</h1>
-          <p className="text-[10px] sm:text-sm font-medium uppercase tracking-widest text-[#a1a1a1] mt-3 opacity-70 italic underline underline-offset-4 decoration-primary/20">Real-time surveillance of student behavior and system events.</p>
+          <h1 className="text-2xl font-bold tracking-tight uppercase">Audit Logs</h1>
         </div>
-        <Button variant="outline" className="flex items-center gap-4 h-14 sm:h-16 px-6 sm:px-10 border-2 border-dashed border-primary/20 hover:bg-primary/5 rounded-[1.5rem] sm:rounded-2xl font-bold uppercase text-[10px] sm:text-xs tracking-widest text-primary shadow-xl shadow-primary/5 transition-all active:scale-95 py-6 h-auto">
-          <Download size={20} />
-          Export Dataset
+        <Button variant="outline" className="flex items-center gap-2 h-10 px-5 border border-dashed border-primary/30 rounded-xl font-semibold uppercase text-xs tracking-widest text-primary hover:bg-primary/5 transition-all active:scale-95">
+          <Download size={15} />
+          Export
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="bg-card/40 backdrop-blur-md border-none shadow-sm rounded-[2rem] p-2 will-change-transform">
-          <CardHeader className="pb-2 p-6">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 leading-none">Total Event Load</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 pt-0">
-            <div className="text-4xl font-bold tracking-tighter">{logs.length}</div>
-            <div className="flex items-center gap-1 mt-2 text-[10px] text-green-500 font-bold uppercase tracking-widest">
-              <TrendingUp size={14} /> Synchronized <span className="text-muted-foreground/40 font-medium ml-1">Live Feed</span>
-            </div>
-          </CardContent>
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="rounded-2xl border border-border/40 bg-card shadow-sm p-4 flex items-center gap-4">
+          <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <TrendingUp size={20} className="text-primary" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-0.5">Total Events</p>
+            <h4 className="text-xl font-bold tracking-tight leading-none">{logs.length}</h4>
+          </div>
         </Card>
-        <Card className="bg-card/40 backdrop-blur-md border-none shadow-sm rounded-[2rem] p-2 will-change-transform">
-          <CardHeader className="pb-2 p-6">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 leading-none">Security Status</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 pt-0">
-            <div className="text-4xl font-bold tracking-tighter uppercase text-primary">Normal</div>
-            <div className="flex items-center gap-2 mt-2 text-[10px] text-primary font-bold uppercase tracking-widest">
-              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" /> Monitoring Institutional ID's
-            </div>
-          </CardContent>
+        <Card className="rounded-2xl border border-border/40 bg-card shadow-sm p-4 flex items-center gap-4">
+          <div className="h-11 w-11 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
+            <span className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-0.5">Security Status</p>
+            <h4 className="text-xl font-bold tracking-tight leading-none text-green-500">Normal</h4>
+          </div>
         </Card>
-        <Card className="bg-card/40 backdrop-blur-md border-none shadow-sm rounded-[2rem] p-2 will-change-transform">
-          <CardHeader className="pb-2 p-6">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 leading-none">System Latency</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 pt-0">
-            <div className="text-4xl font-bold tracking-tighter">0.2s</div>
-            <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest leading-none">
-              High Performance Mode Active
-            </div>
-          </CardContent>
+        <Card className="rounded-2xl border border-border/40 bg-card shadow-sm p-4 flex items-center gap-4">
+          <div className="h-11 w-11 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+            <Clock size={20} className="text-blue-500" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-0.5">System Latency</p>
+            <h4 className="text-xl font-bold tracking-tight leading-none">0.2s</h4>
+          </div>
         </Card>
       </div>
 
-      <div className="bg-card/40 backdrop-blur-md border-none rounded-[2.5rem] overflow-hidden shadow-sm p-4 will-change-transform">
-        <div className="p-8 border-b-2 border-dashed border-border/50 flex flex-col sm:flex-row gap-6 justify-between items-center bg-accent/20 rounded-[2rem] mb-6">
+      {/* Table Card */}
+      <Card className="rounded-2xl border border-border/40 bg-card shadow-sm overflow-hidden">
+        <div className="px-5 py-3 flex flex-col sm:flex-row gap-4 justify-between items-center border-b border-border/50">
           <div className="relative w-full max-w-lg">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={24} />
-            <input 
-              type="text" 
-              placeholder="Filter audit trail by student or event type..." 
-              className="w-full bg-background border-none rounded-xl py-4 pl-14 pr-6 focus:ring-2 focus:ring-primary focus:outline-none transition-all shadow-xl font-medium italic"
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" size={16} />
+            <input
+              type="text"
+              placeholder="Filter by student or event type..."
+              className="w-full bg-accent/30 border border-border/40 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-muted-foreground/50 placeholder:text-xs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-            <Button variant="outline" className="flex-1 sm:flex-none h-14 px-8 rounded-xl font-bold uppercase text-xs tracking-widest gap-3">
-              <Calendar size={20} />
+          <div className="flex items-center gap-3 shrink-0">
+            <Button variant="outline" className="h-9 px-4 rounded-lg font-semibold uppercase text-xs tracking-widest gap-2">
+              <Calendar size={14} />
               Set Period
             </Button>
+            <div className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary bg-primary/5 rounded-lg border border-primary/10 whitespace-nowrap">
+              Live Feed
+            </div>
           </div>
         </div>
 
         <div className="overflow-x-auto min-h-[400px]">
           {loading ? (
-             <div className="flex justify-center items-center py-40">
-                <Loader2 className="animate-spin text-primary" size={40} />
-             </div>
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="animate-spin text-primary" size={36} />
+            </div>
           ) : (
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-separate border-spacing-y-1.5 px-3 pb-3">
               <thead>
-                <tr className="border-b bg-accent/30 rounded-t-xl">
-                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Institutional Activity</th>
-                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Entity Identifier</th>
-                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Contextual Detail</th>
-                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60 text-right">Chronology</th>
+                <tr className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                  <th className="px-5 py-2.5 text-left">Activity</th>
+                  <th className="px-5 py-2.5 text-left">User</th>
+                  <th className="px-5 py-2.5 text-left">Detail</th>
+                  <th className="px-5 py-2.5 text-right">Time</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/30">
+              <tbody>
                 {logs
                   .filter(l => l.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) || l.action?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((log) => (
-                    <tr key={log.id} className="hover:bg-primary/5 transition-all group cursor-default">
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-5">
-                          <div className={`p-4 rounded-2xl bg-background shadow-xl border border-border/50 group-hover:bg-primary/5 transition-all duration-300 will-change-transform`}>
+                    <tr key={log.id} className="group bg-accent/20 hover:bg-primary/5 transition-all duration-200 rounded-xl cursor-default">
+                      <td className="px-5 py-3.5 rounded-l-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2.5 rounded-lg bg-background border border-border/50 group-hover:bg-primary/5 transition-all duration-200 shrink-0">
                             {getTypeIcon(log.action?.toLowerCase()?.includes('login') ? 'auth' : log.action?.toLowerCase()?.includes('session') ? 'session' : 'info')}
                           </div>
                           <div>
-                            <p className="text-sm font-bold uppercase tracking-tight group-hover:text-primary transition-colors">
+                            <p className="text-sm font-medium group-hover:text-primary transition-colors">
                               {log.action}
                             </p>
-                            <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest italic leading-none pt-1">
-                              Institutional Event
+                            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">
+                              System Event
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center text-[11px] text-primary font-bold uppercase border border-primary/20 shadow-inner">
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-xs text-primary font-semibold uppercase border border-primary/20 shrink-0">
                             {log.full_name?.[0] || 'A'}
                           </div>
                           <div>
-                            <p className="text-sm font-bold tracking-tight leading-none mb-1">{log.full_name}</p>
-                            <p className="text-[10px] text-muted-foreground/60 font-medium uppercase tracking-widest">@{log.username}</p>
+                            <p className="text-sm font-medium leading-none mb-0.5">{log.full_name}</p>
+                            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">@{log.username}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-2 max-w-[300px]">
-                          <p className="text-xs text-muted-foreground font-medium italic tracking-tight line-clamp-1">{log.details || 'System audit completed'}</p>
-                        </div>
+                      <td className="px-5 py-3.5 max-w-[260px]">
+                        <p className="text-xs text-muted-foreground italic line-clamp-1">{log.details || 'System audit completed'}</p>
                       </td>
-                      <td className="px-8 py-6 text-right">
-                        <div className="space-y-1">
-                          <p className="text-sm font-bold flex items-center justify-end gap-3 whitespace-nowrap">
-                            <Clock size={16} className="text-primary" />
-                            {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                          <p className="text-[9px] text-muted-foreground/40 uppercase font-bold tracking-widest">
-                            {new Date(log.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
+                      <td className="px-5 py-3.5 text-right rounded-r-xl">
+                        <p className="text-sm font-medium flex items-center justify-end gap-2 whitespace-nowrap">
+                          <Clock size={13} className="text-primary" />
+                          {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground/50 uppercase tracking-widest text-right">
+                          {new Date(log.created_at).toLocaleDateString()}
+                        </p>
                       </td>
                     </tr>
                   ))}
@@ -191,26 +187,22 @@ export default function ActivityLogs() {
             </table>
           )}
           {!loading && logs.length === 0 && (
-            <div className="py-40 text-center flex flex-col items-center justify-center opacity-30">
-              <div className="p-8 bg-accent/50 rounded-full mb-6">
-                <Terminal className="text-muted-foreground" size={48} />
-              </div>
-              <h3 className="text-2xl font-bold uppercase tracking-tighter">Zero Audit Records</h3>
-              <p className="text-xs font-medium uppercase tracking-widest mt-2">The system logs are clear of all institutional events.</p>
+            <div className="py-24 text-center flex flex-col items-center justify-center opacity-30">
+              <Terminal className="text-muted-foreground mb-4" size={40} />
+              <h3 className="text-lg font-bold uppercase tracking-tight">No Audit Records</h3>
+              <p className="text-xs font-medium uppercase tracking-widest mt-1">The system logs are clear of all events.</p>
             </div>
           )}
         </div>
 
-        <div className="p-8 border-t-2 border-dashed border-border/50 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 bg-accent/10 rounded-b-[2.5rem]">
-          <p>Displaying latest institutional surveillance feed</p>
-          <div className="flex gap-4">
-            <Button variant="ghost" className="text-primary text-[10px] font-bold uppercase tracking-widest gap-3 p-1 hover:bg-transparent hover:underline group">
-              Historical Pull
-              <ExternalLink size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </Button>
-          </div>
+        <div className="px-5 py-3 border-t border-border/50 flex items-center justify-between">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">Showing latest feed</p>
+          <Button variant="ghost" className="text-primary text-[10px] font-semibold uppercase tracking-widest gap-2 p-1 hover:bg-transparent hover:underline group h-auto">
+            View All
+            <ExternalLink size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
