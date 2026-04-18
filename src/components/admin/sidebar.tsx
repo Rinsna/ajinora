@@ -48,8 +48,8 @@ export function Sidebar() {
              {settings?.logo_url ? <img src={settings.logo_url} alt="Logo" className="w-full h-full object-contain p-1 bg-white" /> : <GraduationCap size={22} />}
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tight leading-none truncate max-w-[140px]">{settings?.brand_name || "Ajinora"}</span>
-            <span className="text-[10px] font-bold text-primary tracking-widest uppercase mt-1 opacity-70">Admin Hub</span>
+            <span className="text-xl font-bold tracking-tight leading-none truncate max-w-[140px]">{settings?.brand_name || "Ajinora"}</span>
+            <span className="text-[10px] font-semibold text-primary tracking-widest uppercase mt-1 opacity-70">Admin Hub</span>
           </div>
         </Link>
       </div>
@@ -69,7 +69,7 @@ export function Sidebar() {
               )}
             >
               <item.icon className={cn("shrink-0", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary transition-colors")} size={20} />
-              <span className="font-bold text-sm tracking-tight">{item.name}</span>
+              <span className="font-semibold text-sm tracking-tight">{item.name}</span>
               {isActive && (
                 <div className="absolute right-3 h-1.5 w-1.5 rounded-full bg-white shadow-white" />
               )}
@@ -84,11 +84,11 @@ export function Sidebar() {
           className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#737373] dark:text-[#a1a1a1] hover:bg-[#ebeaea] dark:hover:bg-[#2e2e2e] transition-all group"
         >
           <Settings size={18} className="group-hover:rotate-45 transition-transform" />
-          <span className="text-sm font-bold">Settings</span>
+          <span className="text-sm font-semibold">Settings</span>
         </Link>
         <button 
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-all font-bold"
+          className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-all font-semibold"
         >
           <LogOut size={18} />
           <span className="text-sm">Logout</span>

@@ -91,11 +91,11 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         </Button>
 
         <div className="flex items-center gap-3 pl-2 group cursor-pointer hover:bg-[#f3f4f6] dark:hover:bg-[#252525] p-1 rounded-lg transition-colors">
-          <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold shadow-sm">
+          <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-semibold shadow-sm">
             {user?.full_name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || <User size={16} />}
           </div>
           <div className="text-left hidden sm:block">
-            <p className="text-xs font-semibold text-[#37352f] dark:text-white leading-none mb-1">{user?.full_name || "Admin"}</p>
+            <p className="text-xs font-medium text-[#37352f] dark:text-white leading-none mb-1">{user?.full_name || "Admin"}</p>
             <p className="text-[10px] text-[#a1a1a1] leading-none uppercase tracking-tighter">{user?.role || "Administrator"}</p>
           </div>
         </div>

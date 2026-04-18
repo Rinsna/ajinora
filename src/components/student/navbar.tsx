@@ -54,7 +54,7 @@ export function StudentNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const currentPath = pathMap[pathname] || pathMap[`/student/${pathname.split('/')[2]}`] || "Dashboard";
 
   return (
-    <header className="h-14 border-b border-[#e5e7eb] dark:border-[#2e2e2e] bg-white/70 dark:bg-[#1a1a1a]/70 backdrop-blur-md sticky top-0 z-40 px-6 flex items-center justify-between">
+    <header className="h-14 border-b border-[#e5e7eb] dark:border-[#2e2e2e] bg-white/70 dark:bg-[#1a1a1a]/70 backdrop-blur-sm sticky top-0 z-40 px-6 flex items-center justify-between transition-colors will-change-[background-color,backdrop-filter]">
       <div className="flex items-center gap-3">
         <Button 
           variant="ghost" 

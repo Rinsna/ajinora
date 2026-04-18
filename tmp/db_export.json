@@ -1,0 +1,194 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "full_name": "System Admin",
+      "created_at": "2026-03-26T06:34:29.000Z",
+      "course_id": null
+    },
+    {
+      "id": 3,
+      "username": "rinsnac44@gmail.com",
+      "password": "$2b$10$hl7oJ/jIjcwfrKLoFptE8usmk7l5nvl0Ppu6sJedrfhdY.eAbg4f6",
+      "role": "student",
+      "full_name": "Rinsna",
+      "created_at": "2026-03-26T07:08:26.000Z",
+      "course_id": 1
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "title": "React Mastering",
+      "description": "This React course provides comprehensive training on building fast, dynamic, and scalable front-end applications using the component-based React library. Participants will learn JSX, state management, hooks, event handling, and React Router for single-page apps (SPAs). Projects focus on practical skills, culminating in deployable web apps.",
+      "thumbnail": "/uploads/mn7dbgqpltd-ChatGPT_Image_Feb_19,_2026,_11_43_40_PM.png",
+      "created_at": "2026-03-26T07:07:34.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Next Js ",
+      "description": "A typical Next.js course outline covers everything from fundamental concepts like routing and components to advanced topics such as data fetching, authentication, and deployment. The official Next.js documentation offers a free, project-based course, which is an excellent starting point.",
+      "thumbnail": "https://via.placeholder.com/400x300",
+      "created_at": "2026-03-26T09:55:31.000Z"
+    }
+  ],
+  "course_content": [
+    {
+      "id": 4,
+      "course_id": 1,
+      "title": "01: Intro to Javascript",
+      "details": "/uploads/mn7nkksml11-ChatGPT_Image_Feb_17,_2026,_03_59_43_PM.png",
+      "type": "module",
+      "created_at": "2026-03-26T15:54:34.000Z"
+    },
+    {
+      "id": 5,
+      "course_id": 2,
+      "title": "01: Introduction",
+      "details": "",
+      "type": "module",
+      "created_at": "2026-03-27T04:15:22.000Z"
+    },
+    {
+      "id": 6,
+      "course_id": 2,
+      "title": "02: Test Module",
+      "details": "",
+      "type": "module",
+      "created_at": "2026-03-27T04:32:29.000Z"
+    }
+  ],
+  "module_assets": [
+    {
+      "id": 1,
+      "module_id": 4,
+      "title": "first",
+      "type": "video",
+      "details": "/uploads/mn7nlmscbtq-42011f5b3de683dfbcd039e68bfe8940.mp4",
+      "created_at": "2026-03-26T15:55:18.000Z"
+    },
+    {
+      "id": 2,
+      "module_id": 4,
+      "title": "2",
+      "type": "video_url",
+      "details": "https://www.youtube.com/watch?v=SqcY0GlETPk",
+      "created_at": "2026-03-26T15:56:07.000Z"
+    },
+    {
+      "id": 3,
+      "module_id": 4,
+      "title": "docker_tutorial_notes",
+      "type": "notes",
+      "details": "/uploads/mn7nn6w3pli-docker_tutorial_notes.pdf",
+      "created_at": "2026-03-26T15:56:23.000Z"
+    },
+    {
+      "id": 4,
+      "module_id": 5,
+      "title": "Intro Exercise",
+      "type": "exercise",
+      "details": "{\"questions\":[{\"id\":\"d14px08\",\"text\":\"What is React?\",\"options\":[\"A library\",\"A framework\",\"A language\",\"A database\"],\"correct\":0,\"explanation\":\"\",\"points\":10}],\"totalPoints\":10}",
+      "created_at": "2026-03-27T04:16:27.000Z"
+    },
+    {
+      "id": 5,
+      "module_id": 5,
+      "title": "Test Exercise 2",
+      "type": "exercise",
+      "details": "{\"questions\":[{\"id\":\"noalql5\",\"text\":\"What is 2+2?\",\"options\":[\"4\",\"5\",\"6\",\"7\"],\"correct\":0,\"explanation\":\"\",\"points\":10}],\"totalPoints\":10}",
+      "created_at": "2026-03-27T04:18:16.000Z"
+    },
+    {
+      "id": 6,
+      "module_id": 5,
+      "title": "Tab Test",
+      "type": "exercise",
+      "details": "{\"questions\":[{\"id\":\"lclkflq\",\"text\":\"Final Quest?Tab Quest?\",\"options\":[\"Opt A\",\"Opt B\",\"Opt C\",\"Opt D\"],\"correct\":0,\"explanation\":\"\",\"points\":10}],\"totalPoints\":10}",
+      "created_at": "2026-03-27T04:20:43.000Z"
+    },
+    {
+      "id": 7,
+      "module_id": 5,
+      "title": "True/False Test",
+      "type": "exercise",
+      "details": "{\"questions\":[{\"id\":1,\"question\":\"Is this a test?\",\"options\":[\"True\",\"False\"],\"correct\":0,\"explanation\":\"\",\"points\":10}],\"totalPoints\":10}",
+      "created_at": "2026-03-27T04:27:26.000Z"
+    },
+    {
+      "id": 8,
+      "module_id": 4,
+      "title": "hgjhg",
+      "type": "exercise",
+      "details": "{\"questions\":[{\"id\":1,\"question\":\"dhbfghn\",\"options\":[\"hnhg\",\"hjnhg\",\"hgjhgjn\",\"hgjhg\"],\"correct\":0,\"explanation\":\"ghjhgjhg\",\"points\":10},{\"id\":2,\"question\":\"1,2,3,4\",\"options\":[\"6\",\"8\",\"7\",\"5\"],\"correct\":3,\"explanation\":\"\",\"points\":10}],\"totalPoints\":20}",
+      "created_at": "2026-03-27T04:42:19.000Z"
+    }
+  ],
+  "sessions": [],
+  "exams": [],
+  "questions": [],
+  "notes": [
+    {
+      "id": 1,
+      "title": "hgrj",
+      "description": "ystjryjrk",
+      "type": "pdf",
+      "url": "https://www.youtube.com/watch?v=SqcY0GlETPk",
+      "category": "yrjyrjky",
+      "created_at": "2026-03-26T09:30:33.000Z"
+    }
+  ],
+  "exam_results": [],
+  "activity_logs": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "action": "Created student account for @rinsnac44@gmail.com enrolled in Course ID: 1",
+      "timestamp": "2026-03-26T07:08:26.000Z"
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "action": "Uploaded Resource: hgrj",
+      "timestamp": "2026-03-26T09:30:33.000Z"
+    }
+  ],
+  "exercise_results": [
+    {
+      "id": 1,
+      "user_id": 3,
+      "asset_id": 8,
+      "score": 100,
+      "total_points": 20,
+      "correct_count": 1,
+      "total_questions": 2,
+      "percentage": 50,
+      "created_at": "2026-03-27T05:10:14.000Z"
+    },
+    {
+      "id": 2,
+      "user_id": 3,
+      "asset_id": 8,
+      "score": 250,
+      "total_points": 20,
+      "correct_count": 2,
+      "total_questions": 2,
+      "percentage": 100,
+      "created_at": "2026-03-27T05:10:27.000Z"
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "asset_id": 8,
+      "score": 250,
+      "total_points": 20,
+      "correct_count": 2,
+      "total_questions": 2,
+      "percentage": 100,
+      "created_at": "2026-03-27T05:17:06.000Z"
+    }
+  ]
+}

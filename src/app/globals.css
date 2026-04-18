@@ -102,13 +102,15 @@
 
   .animate-scale-in {
     animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    will-change: transform, opacity;
   }
 
   .glass {
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    will-change: transform, backdrop-filter;
   }
 
   .dark .glass {
@@ -159,7 +161,8 @@
   }
 
   .animate-glow {
-    animation: glow 2s ease-in-out infinite;
+    animation: glow 3s ease-in-out infinite;
+    will-change: box-shadow;
   }
 
   .no-scrollbar::-webkit-scrollbar {

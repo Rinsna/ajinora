@@ -31,7 +31,7 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.05
     }
   }
 };
@@ -90,7 +90,7 @@ export default function StudentDashboard() {
       >
         {data?.user?.course_thumbnail && (
           <div className="absolute inset-0 z-0">
-             <img src={data.user.course_thumbnail} alt="" className="w-full h-full object-cover opacity-40 group-hover:scale-105 transition-all duration-[5000ms]" />
+             <img src={data.user.course_thumbnail} alt="" className="w-full h-full object-cover opacity-40 group-hover:scale-105 transition-all duration-[2000ms] will-change-transform" />
              <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-purple-900/60 to-black/90" />
           </div>
         )}
@@ -101,7 +101,7 @@ export default function StudentDashboard() {
         
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="max-w-xl">
-            <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-md w-fit px-4 py-1.5 rounded-full border border-white/20 shadow-xl">
+            <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-sm w-fit px-4 py-1.5 rounded-full border border-white/20 shadow-xl will-change-transform">
                <Sparkles size={14} className="text-primary animate-pulse" />
                <span className={`text-[10px] font-black uppercase tracking-widest ${data?.user?.course_thumbnail ? 'text-white/90' : 'text-[#a1a1a1]'}`}>
                  {data?.user?.course_title || 'Academic Portal'}
@@ -120,7 +120,7 @@ export default function StudentDashboard() {
                 </Button>
               </Link>
               <Link href="/student/sessions">
-                <Button variant="outline" className={`border-2 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-xs shadow-sm transition-all ${data?.user?.course_thumbnail ? 'bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-md' : 'bg-white dark:bg-[#1a1a1a] border-[#e2e8f0] dark:border-[#2e2e2e] text-[#37352f] dark:text-white hover:bg-slate-50 dark:hover:bg-[#252525]'}`}>
+                <Button variant="outline" className={`border-2 rounded-2xl h-14 px-8 font-black uppercase tracking-widest text-xs shadow-sm transition-all ${data?.user?.course_thumbnail ? 'bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-sm' : 'bg-white dark:bg-[#1a1a1a] border-[#e2e8f0] dark:border-[#2e2e2e] text-[#37352f] dark:text-white hover:bg-slate-50 dark:hover:bg-[#252525]'}`}>
                   Sync Intervals
                 </Button>
               </Link>
@@ -134,7 +134,7 @@ export default function StudentDashboard() {
                { icon: Clock, label: "Session Attendance", val: "98%", color: "text-purple-500", bg: "bg-purple-500/10" },
                { icon: Award, label: "Matrix Rank", val: "#03", color: "text-amber-500", bg: "bg-amber-500/10" }
              ].map((stat, i) => (
-               <div key={i} className="p-6 rounded-[1.5rem] bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
+               <div key={i} className="p-6 rounded-[1.5rem] bg-white/5 backdrop-blur-md border border-white/10 shadow-lg will-change-transform">
                   <div className={`h-10 w-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center mb-3 shadow-inner`}>
                     <stat.icon size={20} />
                   </div>
@@ -163,9 +163,9 @@ export default function StudentDashboard() {
             <CardContent className="p-8 space-y-4">
               {upcomingSessions.length > 0 ? upcomingSessions.map((session: any) => (
                 <motion.div 
-                   whileHover={{ y: -4, scale: 1.01 }}
+                   whileHover={{ y: -2 }}
                    key={session.id} 
-                   className="flex items-center gap-6 p-5 rounded-[1.5rem] bg-slate-50/50 dark:bg-[#202020] border border-[#e2e8f0] dark:border-[#2e2e2e] group/session cursor-pointer transition-all hover:shadow-xl hover:shadow-slate-200/40 hover:bg-white"
+                   className="flex items-center gap-6 p-5 rounded-[1.5rem] bg-slate-50/50 dark:bg-[#202020] border border-[#e2e8f0] dark:border-[#2e2e2e] group/session cursor-pointer transition-all hover:bg-white will-change-transform"
                 >
                   <div className="h-16 w-16 rounded-2xl bg-white dark:bg-[#1a1a1a] flex items-center justify-center text-primary shadow-sm border border-[#e2e8f0] dark:border-[#2e2e2e] group-hover/session:shadow-lg transition-all duration-300">
                     <MonitorPlay size={28} />
