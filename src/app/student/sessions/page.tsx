@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { formatTimeTo12h } from "@/lib/utils";
 
 const ZoomMeeting = dynamic(() => import("@/components/ZoomMeeting"), { ssr: false });
 const JitsiMeeting = dynamic(() => import("@/components/JitsiMeeting"), { ssr: false });
@@ -152,7 +153,7 @@ export default function StudentSessions() {
                   </div>
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-accent/30 border border-border/50">
                     <Clock size={14} className="text-primary" />
-                    <span className="text-xs font-black uppercase tracking-widest">{session.time}</span>
+                    <span className="text-xs font-black uppercase tracking-widest">{formatTimeTo12h(session.time)}</span>
                   </div>
                 </div>
 

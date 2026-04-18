@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { formatTimeTo12h } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 const container = {
@@ -174,7 +175,7 @@ export default function StudentDashboard() {
                     <h3 className="font-black text-base text-[#37352f] dark:text-white mb-1.5 truncate tracking-tight uppercase">{session.title}</h3>
                     <div className="flex items-center gap-4 text-[10px] font-black text-[#a1a1a1] uppercase tracking-widest">
                       <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white dark:bg-black/20 animate-pulse"><Calendar size={12} /> {new Date(session.date).toLocaleDateString()}</span>
-                      <span className="flex items-center gap-1.5"><Clock size={12} /> {session.time}</span>
+                      <span className="flex items-center gap-1.5"><Clock size={12} /> {formatTimeTo12h(session.time)}</span>
                     </div>
                   </div>
                   <Link href="/student/sessions" className="block shrink-0">
